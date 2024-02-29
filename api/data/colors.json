@@ -1,0 +1,34 @@
+[
+    {
+        "name": "black",
+        "class": "bg-black"
+    }, 
+    {
+        "name": "white",
+        "class": "bg-white"
+    },
+    {
+        "name": "red",
+        "class": "bg-red-600"
+    },
+    {
+        "name": "orange",
+        "class": "bg-orange-600"
+    },
+    {
+        "name": "yellow",
+        "class": "bg-yellow-600"
+    },
+    {
+        "name": "blue",
+        "class": "bg-blue-600"
+    },
+    {
+        "name": "purple",
+        "class": "bg-purple-600"
+    },
+    {
+        "name": "green",
+        "class": "bg-green-600"
+    }
+]
