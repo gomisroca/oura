@@ -20,9 +20,38 @@ export default function FormPayment(props) {
 
         setCheck(true);
 
-        axios.post('http://localhost:4030/clothes/update', cart).then(() => {
-            localStorage.removeItem('oura_cart');
-        });
+        axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/update`, cart)
+        .then(res => {
+            // if we receive an OK...
+            
+            // TODO
+            const access_token = localStorage.getItem('oura_access_token');
+            axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/purchase`, data, 
+                { headers: { 'Authentication': `Bearer ${access_token}`} }
+            )
+            .then(res => {
+                // if we receive an OK...
+                localStorage.removeItem('oura_cart');
+            })
+            .catch(error => {
+                if(error.response){
+                    console.log(error.response)
+                } else if(error.request){
+                    console.log(error.request)
+                } else{
+                    console.log(error.message)
+                }
+            })
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
         
     }
 
@@ -31,7 +60,7 @@ export default function FormPayment(props) {
             {check ? 
             <CheckoutList check={check} />
             :
-            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-black/30 mt-5 md:mt-16'>
+            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700 mt-5 md:mt-16'>
                 <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
                     <div className='p-5 flex flex-row'>
                         <TextField
@@ -57,7 +86,11 @@ export default function FormPayment(props) {
                         />
                     </div>
                     <div className='grid w-[200px] m-auto'>
-                        <button className='font-semibold border-2 p-2 border-black/20 hover:border-black/40 rounded hover:bg-gradient-to-br hover:from-white hover:to-gray-300' type="submit">Submit</button>
+                        <button 
+                        className='font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        type="submit">
+                            Submit
+                        </button>
                     </div>
                 </form>
             </div>
