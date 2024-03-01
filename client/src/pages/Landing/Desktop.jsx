@@ -1,12 +1,13 @@
 import LandingImg from '../../assets/landing.jpg';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function DesktopLayout() {
+    const navigate = useNavigate();
     const genderLinks = ["Man", "Woman"];
     const sportLinks = ["Running", "Hiking", "Cycling", "Fitness"];
     
     return (
-        <div className='flex text-white'>
+        <div className='flex text-zinc-200'>
             <img
             src={LandingImg}
             alt="OURA Landing"
@@ -19,26 +20,34 @@ function DesktopLayout() {
                     SPRING COLLECTION
                 </span>
                 <div className='flex flex-row'>
-                    <button className='border-2 border-white border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-black/30 font-semibold hover:bg-black/60 hover:text-zinc-300'>
-                        <Link to="/male/season">MAN</Link>
+                    <button 
+                    className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
+                    onClick={() => navigate(`/male/season`)}>
+                        MAN
                     </button>
-                    <button className='border-2 border-white border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-black/30 font-semibold hover:bg-black/60 hover:text-zinc-300'>
-                        <Link to="/female/season">WOMAN</Link>
+                    <button 
+                    className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
+                    onClick={() => navigate(`/female/season`)}>
+                        WOMAN
                     </button>
                 </div>
             </div>
             <div className='absolute self-center text-end right-1 lg:text-[1rem] 2xl:text-[2rem] hidden lg:block'>
                 {genderLinks.map(link => (
-                <div key={link} className="ml-2 pl-2 hover:bg-white/5">
-                <Link className='hover:text-zinc-300' to={`/${link.toLowerCase()}`}>{link.toUpperCase()}</Link>
+                <div 
+                key={link} 
+                className="ml-2 pl-6 hover:bg-zinc-800/60 hover:text-zinc-300 cursor-pointer"
+                onClick={() => navigate(`/${link.toLowerCase()}`)}>
+                    {link.toUpperCase()}
                 </div>
                 ))}
-
-                <br />
-
+                <div className='border-zinc-400 border my-4'></div>
                 {sportLinks.map(link => (
-                <div key={link} className="ml-2 pl-2 hover:bg-white/5">
-                    <Link className='hover:text-zinc-300' to={`/${link.toLowerCase()}`}>{link.toUpperCase()}</Link>
+                <div 
+                key={link}
+                className="ml-2 pl-6 hover:bg-zinc-800/60 hover:text-zinc-300 cursor-pointer"
+                onClick={() => navigate(`/${link.toLowerCase()}`)}>
+                    {link.toUpperCase()}
                 </div>
                 ))}
             </div>

@@ -13,20 +13,21 @@ export default function Sizes(props) {
     }
     
     return(
-        <div className='justify-center flex flex-col'>
+        <div className='justify-center flex flex-col text-zinc-700'>
             <div className={'justify-center flex flex-row'}>
                 <div className='flex justify-center'>
                     {item.sizes.XS && item.sizes.XS != 0 ?
                     <span 
                     onClick={() => sizeSelection(item, 'XS')} 
                     className={
-                    activeSize == 'XS' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'XS' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         XS
                     </span>
                     : 
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         XS
                     </span> 
                     }
@@ -34,13 +35,14 @@ export default function Sizes(props) {
                     <span 
                     onClick={() => sizeSelection(item, 'S')} 
                     className={
-                    activeSize == 'S' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'S' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         S
                     </span>
                     : 
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         S
                     </span> 
                     }
@@ -48,13 +50,14 @@ export default function Sizes(props) {
                     <span 
                     onClick={() => sizeSelection(item, 'M')}
                     className={
-                    activeSize == 'M' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'M' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         M
                     </span>
                     : 
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         M
                     </span> 
                     }
@@ -64,13 +67,14 @@ export default function Sizes(props) {
                     <span 
                     onClick={() => sizeSelection(item, 'L')} 
                     className={
-                    activeSize == 'L' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'L' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         L
                     </span>
                     : 
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         L
                     </span> 
                     }
@@ -78,13 +82,14 @@ export default function Sizes(props) {
                     <span 
                     onClick={() => sizeSelection(item, 'XL')}
                     className={
-                    activeSize == 'XL' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'XL' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         XL 
                     </span>
                     :
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         XL
                     </span>  
                     }
@@ -92,13 +97,14 @@ export default function Sizes(props) {
                     <span 
                     onClick={() => sizeSelection(item, 'XXL')} 
                     className={
-                    activeSize == 'XXL' ? 'w-[40px] text-center rounded border-black/20  bg-gray-300/70 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '
+                    activeSize == 'XXL' ? 
+                    'w-[40px] text-center rounded border-zinc-400 bg-zinc-200 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
                     :
-                    'w-[40px] text-center border-white rounded hover:border-black/20 border-2 p-1 m-1 cursor-pointer hover:bg-gray-300 '}>
+                    'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
                         2XL
                     </span>
                     : 
-                    <span className='w-[40px] text-center border-white rounded border-2 p-1 m-1 opacity-30'>
+                    <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
                         2XL
                     </span> 
                     }

@@ -6,14 +6,12 @@ import CheckoutList from './CheckoutList';
 export default function FormAddress(props) {
     const { register, handleSubmit } = useForm();
     const onSubmit = data => {
-        console.log(data)
         props.func(true)
     };
 
     return (
         <div>
-            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-black/20 mt-5 md:mt-16'>
-                
+            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700 mt-5 md:mt-16'>
                 <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
                     <div className='p-5 flex flex-row'>
                         <TextField
@@ -66,7 +64,11 @@ export default function FormAddress(props) {
                         />
                     </div>
                     <div className='grid w-[200px] m-auto'>
-                        <button className='font-semibold border-2 p-2 border-black/20 hover:border-black/40 rounded hover:bg-gradient-to-br hover:from-white hover:to-gray-300' type="submit">Submit</button>
+                        <button 
+                        className='font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        type="submit">
+                            Submit
+                        </button>
                     </div>
                 </form>
             </div>

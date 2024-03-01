@@ -17,9 +17,9 @@ export default function AddToCart(props) {
         let cart = localStorage.getItem('oura_cart');
 
         if(cart == null){
-          cart = [];
+            cart = [];
         } else{
-          cart = JSON.parse(cart);
+            cart = JSON.parse(cart);
         }
         cart.push(item);
         localStorage.setItem('oura_cart', JSON.stringify(cart));
@@ -34,34 +34,34 @@ export default function AddToCart(props) {
 
     const action = (
         <React.Fragment>
-          <IconButton
+            <IconButton
             size="small"
             aria-label="close"
             color="inherit"
             onClick={handleClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
         </React.Fragment>
     );
 
     return(
-        <div className={'flex flex-row mx-auto justify-end'}>
-           <Tooltip 
-              TransitionComponent={Fade}
-              TransitionProps={{ timeout: 600 }}
-              title="Add to Cart">
+        <div className='flex flex-row mx-auto justify-end text-zinc-700'>
+            <Tooltip 
+            TransitionComponent={Fade}
+            TransitionProps={{ timeout: 600 }}
+            title="Add to Cart">
                 <IconButton className='hover:stroke-black/20' aria-label="Add to Cart">
-                  <ShoppingCartTwoToneIcon  onClick={() => addToCart(item)} fontSize='large' />
+                    <ShoppingCartTwoToneIcon  onClick={() => addToCart(item)} fontSize='large' />
                 </IconButton>
             </Tooltip>
             <Snackbar
-                anchorOrigin={{ vertical:'bottom', horizontal:'center' }}
-                open={open}
-                autoHideDuration={5000}
-                onClose={handleClose}
-                message={'Added ' + item.title + ' to Cart'}
-                action={action}
+            anchorOrigin={{ vertical:'bottom', horizontal:'center' }}
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            message={'Added ' + item.title + ' to Cart'}
+            action={action}
             />
         </div>
     )

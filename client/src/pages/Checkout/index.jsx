@@ -12,7 +12,9 @@ export default function Checkout() {
 
 
     return (
-        check ? <FormPayment />
-        :  <FormAddress func={proceed} />
+        check ? 
+        <FormPayment />
+        :  
+        <FormAddress func={proceed} />
     )
 }

@@ -51,7 +51,7 @@ export default function Colors(props) {
     );
 
     return(
-        <div className={'flex flex-row mx-auto justify-center'}>
+        <div className='flex flex-row mx-auto justify-center text-zinc-700'>
             {sizes ? 
                 sizes.map((color) => (
                     color.amount > 0 ?
@@ -62,12 +62,12 @@ export default function Colors(props) {
                     title={color.colorName.toUpperCase()}>
                         <span
                         onClick={() => addToCart(item, color.colorName)}
-                        className={`rounded cursor-pointer w-[35px] h-[25px] border-2 border-black/20 text-black text-center hover:border-black/50 my-2 mx-[10px] ${color.colorClass}`} 
+                        className={`rounded cursor-pointer w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[10px] ${color.colorClass}`} 
                         ></span>
                     </Tooltip>
                     : <span
                     key={color._id} 
-                    className={`rounded w-[35px] h-[25px] border-2 border-black/20 text-black text-center hover:border-black/30 my-2 mx-[2px] ${color.colorClass} opacity-30`} 
+                    className={`rounded w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[2px] ${color.colorClass} opacity-30`} 
                     ></span>
                 ))
                 : undefined
