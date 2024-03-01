@@ -4,13 +4,13 @@ if (process.env.NODE_ENV === 'development') {
 }
 const DATABASE_URL  = process.env.DATABASE_URL;
 const express = require('express')
-const app = express ()
+const app = express()
 const mongoose = require('mongoose')
-const cors = require ('cors')
+const cors = require('cors')
 
 var corsOptions = {
     credentials: true,
-    origin: ['http://127.0.0.1:4000', 'http://localhost:4000']
+    origin: process.env.CLIENT_URL
 }
 
 app.use(cors(corsOptions)) 
@@ -19,8 +19,8 @@ app.use(cors(corsOptions))
 mongoose.set('strictQuery', false);
 mongoose.connect(DATABASE_URL)
 const db = mongoose.connection
-db.on('error', (error) => console.log('db error'))
-db.once('open', (success) => console.log('db loaded'))
+db.on('error', (error) => console.log('DB Error: ' + error))
+db.once('open', (success) => console.log('DB On'))
 
 app.use(express.json())
 
@@ -32,11 +32,7 @@ app.use('/categories', categoriesRouter);
 const userRouter = require('./routes/user');
 app.use('/user', userRouter);
 
-app.get('/', async (req, res) => {
-    res.json('hi')
-})
-app.listen(4030, () => console.log('OURA Server Running'));
-
+app.listen(4030, () => console.log('API Server On'));
 
 module.exports = { 
     db: mongoose.connection 
