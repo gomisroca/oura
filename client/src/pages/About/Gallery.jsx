@@ -1,25 +1,27 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import dummy from '../../assets/dummy.png';
 
 export default function Gallery(props) {
-    const [data, setData] = React.useState(null);
-    React.useEffect(() => {
+    const [data, setData] = useState(null);
+    
+    useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/' + props.type)
         .then((response) => {
-        let res = response.data.slice(0,10);
-        setData(res);
-        })
+            let res = response.data.slice(0,10);
+            setData(res);
+            })
         .catch(error => {
-        if(error.response){
-            console.log(error.response)
-        } else if(error.request){
-            console.log(error.request)
-        } else{
-            console.log(error.message)
-        }
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
         })
     }, []);
+
     if (!data) return null;
     
     return (
