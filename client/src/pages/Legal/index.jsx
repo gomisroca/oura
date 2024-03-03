@@ -3,7 +3,7 @@
 function Legal() {
   return (
     <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-        <div className="w-2/3 mx-auto px-4 mt-2 text-justify">
+        <div className="w-2/3 mx-auto px-4 my-4 text-justify">
             <div className="text-xl">
                 Lorem ipsum
             </div>
