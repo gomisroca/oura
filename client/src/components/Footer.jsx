@@ -10,10 +10,6 @@ export default function Footer() {
             url: 'about'
         },
         {
-            name: 'Work with Us',
-            url: 'work'
-        },
-        {
             name: 'Legal Disclosure',
             url: 'legal'
         }
