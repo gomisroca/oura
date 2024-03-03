@@ -2,12 +2,25 @@ const express = require('express')
 const router = express.Router()
 const clothesModel = require('../models/clothes')
 const Clothes = require('../data/clothes.json')
-const auth = require('../middleware/auth')
 
 router.get('/catalog', async(req, res) => {
     try{
         const allClothes = await clothesModel.find()
-        res.json(allClothes)
+        if(allClothes){
+            res.json(allClothes);
+        } else{
+            axios.get(`${process.env.API_URL}/clothes/fetch`)
+            .then(() => {
+                if (res.status === 200) {
+                    res.json(res.data);
+                }
+            })
+            .catch(error => {
+                if(error.response){
+                    console.log(error.response)
+                }
+            })
+        }
     }catch(err){
         res.status(500).json({message: err.message})
     }   
@@ -55,36 +68,28 @@ router.get('/fetch', async(req, res) => {
                 newProduct.save();
             }
         })
-        res.json('Fetched Clothes')
+        const refreshedClothes = await clothesModel.find()
+        res.status(200).json(refreshedClothes)
     }catch(err){
         res.status(500).json({message: err.message})
     }   
 })
 
 router.post('/update', async(req,res) => {
-    for(let i = 0; i < req.body.length; i++){
-        const product = await clothesModel.findOne({id: req.body[i].id});
-        if(req.body[i].chosenColor){
-            let color = product.sizes[req.body[i].chosenSize].find(color => color.colorName == req.body[i].chosenColor);
-            color.amount -= 1;
-        }
-        product.sales += 1;
-        product.save();
-    }
     try{
+        for(let i = 0; i < req.body.length; i++){
+            const product = await clothesModel.findOne({id: req.body[i].id});
+            if(req.body[i].chosenColor){
+                let color = product.sizes[req.body[i].chosenSize].find(color => color.colorName == req.body[i].chosenColor);
+                color.amount -= 1;
+            }
+            product.sales += 1;
+            product.save();
+        }
         res.json('Clothes Updated')
     }catch(err){
         res.status(500).json({message: err.message})
     }  
-})
-
-router.get('/cat/:category', async(req, res) => {
-    try{
-        const clothes = await Clothes.find()
-        res.json(clothes)
-    }catch(err){
-        res.status(500).json({message: err.message})
-    }   
 })
 
 router.get('/item/:id', async(req, res) => {

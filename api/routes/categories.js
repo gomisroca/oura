@@ -5,8 +5,22 @@ const Categories = require('../data/categories.json')
 
 router.get('/catalog', async(req, res) => {
     try{
-        const allCategories = await categoriesModel.find()
-        res.json(allCategories)
+        const allCategories = await categoriesModel.find();
+        if(allCategories){
+            res.json(allCategories);
+        } else{
+            axios.get(`${process.env.API_URL}/categories/fetch`)
+            .then(() => {
+                if (res.status === 200) {
+                    res.json(res.data);
+                }
+            })
+            .catch(error => {
+                if(error.response){
+                    console.log(error.response);
+                }
+            })
+        }
     }catch(err){
         res.status(500).json({message: err.message})
     }   
@@ -22,8 +36,9 @@ router.get('/fetch', async(req, res) => {
                 classes: category.classes
             });
             newCategories.save();
-        })
-        res.json('Fetched Categories')
+        });
+        const allCategories = await categoriesModel.find();
+        res.status(200).json(allCategories);
     }catch(err){
         res.status(500).json({message: err.message})
     }   
