@@ -1,6 +1,4 @@
-import MenuItem from '@mui/material/MenuItem';
 import * as React from 'react';
-import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from "react-router-dom";
 import { MenuList } from '@mui/material';
 import CheckoutConfirmation from './CheckoutConfirmation';
@@ -30,45 +28,44 @@ export default function CheckoutList(props) {
             {check ? 
                 <CheckoutConfirmation />
                 :
-                <MenuList
-                    id="cart-menu"
-                >
+                <MenuList id="cart-menu">
                     {cart[0] == null ? 
-                        <MenuItem className='cursor-default'>
-                            <ListItemText 
-                            className='cursor-default'>
-                                There is nothing in your cart yet
-                            </ListItemText>
-                        </MenuItem> 
-                    : ''}
-                    {cart.map((item) => (
-                    <div
-                    className='flex flex-row text-start items-center'
-                    key={item.cartID}>
                         <div 
-                        className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-200 items-center'
-                        onClick={() => navigate('/' + item.categories[0] + '/' + item.type + '/' + item.id)}
-                        >
-                            <div className='w-[50px]'>
-                                <img
-                                className='max-w-[50px] max-h-[50px]'
-                                src={`${item.image}`}
-                                srcSet={`${item.image}`}
-                                alt={item.title}
-                                loading="lazy"
-                                />
+                        className='p-2 flex justify-center'>
+                            There is nothing in your cart yet.
+                        </div>
+                    : 
+                    <div>
+                        {cart.map((item) => (
+                        <div
+                        className='flex flex-row text-start items-center'
+                        key={item.cartID}>
+                            <div 
+                            className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-200 items-center'
+                            onClick={() => navigate('/' + item.categories[0] + '/' + item.type + '/' + item.id)}
+                            >
+                                <div className='w-[50px]'>
+                                    <img
+                                    className='max-w-[50px] max-h-[50px]'
+                                    src={`${item.image}`}
+                                    srcSet={`${item.image}`}
+                                    alt={item.title}
+                                    loading="lazy"
+                                    />
+                                </div>
+                                <div className='text-justify self-center px-5'>
+                                    <span>{item.title}</span>
+                                    <br />
+                                    <span className='text-zinc-800'>{item.sale ? item.sale : item.price}€</span>
+                                </div>
                             </div>
-                            <ListItemText className='text-justify self-center px-5'>
-                                <span>{item.title}</span>
-                                <br />
-                                <span className='text-zinc-800'>{item.sale ? item.sale : item.price}€</span>
-                            </ListItemText>
+                        </div>
+                        ))}
+                        <div className='border-t-2 border-zinc-400 flex justify-end p-3 items-center cursor-default'>
+                            <span className='mx-5 text-sm'>TOTAL <span className='text-lg'>{totalCartPrice}€</span></span>
                         </div>
                     </div>
-                    ))}
-                    <div className='border-t-2 border-zinc-400 flex justify-end p-3 items-center cursor-default'>
-                        <span className='mx-5 text-sm'>TOTAL <span className='text-lg'>{totalCartPrice}€</span></span>
-                    </div>
+                    }
                 </MenuList>
             }
         </div>
