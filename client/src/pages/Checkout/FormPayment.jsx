@@ -18,7 +18,6 @@ export default function FormPayment(props) {
             cart = JSON.parse(cart);
         }
 
-        setCheck(true);
 
         axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/update`, cart)
         .then(res => {
@@ -32,6 +31,7 @@ export default function FormPayment(props) {
             .then(res => {
                 // if we receive an OK...
                 localStorage.removeItem('oura_cart');
+                setCheck(true);
             })
             .catch(error => {
                 if(error.response){

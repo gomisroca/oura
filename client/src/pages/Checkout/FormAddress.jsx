@@ -3,10 +3,12 @@ import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CheckoutList from './CheckoutList';
 
-export default function FormAddress(props) {
+export default function FormAddress({ canProceed }) {
     const { register, handleSubmit } = useForm();
+    
     const onSubmit = data => {
-        props.func(true)
+        console.log(data)
+        canProceed(true)
     };
 
     return (

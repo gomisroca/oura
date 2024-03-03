@@ -1,20 +1,18 @@
-import * as React from 'react';
-import CheckoutConfirmation from './CheckoutConfirmation';
+import { useState } from 'react';
+
 import FormAddress from './FormAddress';
 import FormPayment from './FormPayment';
 
 export default function Checkout() {
-
-    const [check, setCheck] = React.useState(false);
-    const proceed = (check) => {
-        setCheck(check)
+    const [addressPassed, setAddressPassed] = useState(false);
+    const handleCanProceed = (check) => {
+        setAddressPassed(check)
     }
 
-
     return (
-        check ? 
+        addressPassed ? 
         <FormPayment />
         :  
-        <FormAddress func={proceed} />
+        <FormAddress canProceed={handleCanProceed} />
     )
 }
