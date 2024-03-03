@@ -84,7 +84,7 @@ export default function Cart() {
                         key={item.cartID}>
                             <div 
                             className='p-2 w-full flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
-                            onClick={() => navigate('/' + item.genre + '/' + item.class + '/' + item.type + '/' + item.id)}>
+                            onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
                                 <div className='w-[50px]'>
                                     <img
                                     className='max-w-[50px] max-h-[50px]'

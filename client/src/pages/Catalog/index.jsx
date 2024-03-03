@@ -128,7 +128,7 @@ export default function Catalog() {
                     <div 
                     key={item.id}
                     className='cursor-pointer transition duration-200 h-[275px] md:h-[350px] w-[175px] md:w-[225px] flex relative flex-col bg-zinc-200 hover:bg-zinc-300 border-zinc-400 hover:border-zinc-500 text-zinc-700 hover:text-zinc-800 border-2' 
-                    onClick={() => navigate('/' + item.genre + '/' + item.class + '/' + item.type + '/' + item.id)}>
+                    onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
                         <div className="h-2/3 md:h-3/4 overflow-y-hidden bg-white items-center flex">
                             <img
                             src={`${item.image}`}
