@@ -48,7 +48,7 @@ export default function CategoryMenu({ category }) {
     return (
         <>
         <div
-        className='hover:bg-zinc-300 px-2 cursor-pointer ml-2'
+        className='hover:bg-zinc-300 px-2 cursor-pointer ml-2 z-50'
         aria-controls={openMainMenu ? 'main-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={openMainMenu ? 'true' : undefined}

@@ -81,7 +81,7 @@ export default function Catalog() {
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='grid h-[100px] md:h-[400px] w-screen'>
+            <div className='grid sm:h-[100px] md:h-[400px] w-screen'>
                 {banner ? 
                 <img
                 className= 'w-screen brightness-75'
@@ -122,8 +122,8 @@ export default function Catalog() {
             <Filter products={products} updateProducts={handleUpdateProducts} />
 
             {sizeFilteredProduct ?
-            <div className='mx-auto p-5 mb-5 '>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+            <div className='mx-auto p-1 sm:p-5 mb-5'>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1 sm:gap-2">
                     {sizeFilteredProduct.sort(({sales:a}, {sales:b}) => b-a).map((item) => (
                     <div 
                     key={item.id}
@@ -131,6 +131,7 @@ export default function Catalog() {
                     onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
                         <div className="h-2/3 md:h-3/4 overflow-y-hidden bg-white items-center flex">
                             <img
+                            className="mx-auto"
                             src={`${item.image}`}
                             srcSet={`${item.image}`}
                             alt={item.title}

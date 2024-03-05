@@ -80,10 +80,10 @@ export default function Cart() {
                     <div>
                         {cart.map((item) => (
                         <div
-                        className='w-screen md:w-[500px] h-[120px] flex flex-row text-start items-center'
+                        className='w-[95vw] md:w-[500px] flex flex-row text-start items-center cursor-pointer border-t border-b border-zinc-400'
                         key={item.cartID}>
                             <div 
-                            className='p-2 w-full flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
+                            className='h-[120px] py-2 px-4 w-full flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
                             onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
                                 <div className='w-[50px]'>
                                     <img
@@ -96,25 +96,19 @@ export default function Cart() {
                                 <div className='text-left self-center px-5'>
                                     <span className='font-bold'>{item.title}</span>
                                     <br />
-                                    {item.chosenSize ? 
-                                        <div>
-                                        <span className='text-sm'>
-                                            Size: <span className='font-bold'>{item.chosenSize.toUpperCase()}</span>
-                                        </span>
-                                        <br />
-                                        <span className='text-sm'>
-                                            Color: <span className='font-bold'>{item.chosenColor.toUpperCase()}</span>
-                                        </span>
-                                        <br />
-                                        </div>
-                                    : null}
-                                    <span className='font-bold'>
-                                        {item.sale ? item.sale : item.price }€
-                                    </span>
+                                    <div className='flex gap-x-2 text-sm items-center'>
+                                        <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
+                                        {item.chosenSize ?
+                                        <span>{item.chosenSize.toUpperCase()}</span>
+                                        : null }
+                                        {item.chosenColor ?
+                                        <span>{item.chosenColor.toUpperCase()}</span>
+                                        : null}
+                                    </div>
                                 </div>
                             </div>
                             <div 
-                            className='flex cursor-pointer hover:bg-zinc-300 h-full items-center justify-items-center'
+                            className='flex cursor-pointer hover:bg-red-300 h-[120px] items-center justify-items-center'
                             onClick={() => handleItemRemove(item.cartID)}>
                                 <ListItemIcon>
                                     <ClearIcon className='m-auto' />

@@ -25,12 +25,12 @@ export default function Gallery(props) {
     if (!data) return null;
     
     return (
-        <div className="flex flex-col p-5 first:mt-0 border-b-2 border-zinc-400 last:border-b-0 text-zinc-700">
+        <div className="flex flex-col md:p-5 first:mt-0 border-b-2 border-zinc-400 last:border-b-0 text-zinc-700">
             <span 
             className="text-xl uppercase font-bold underline underline-offset-4 decoration-zinc-400 self-center">
                 {props.title}
             </span>
-            <ul className="columns-2 mt-3 self-center">
+            <ul className="grid md:grid-cols-2 mt-3 self-center">
             {data.map(data => (
                 <li key={data.id}>
                 {data.url ?
@@ -47,7 +47,7 @@ export default function Gallery(props) {
                     </div>
                 : 
                     <div 
-                    className="cursor-default w-[500px] h-[150px] px-4 mb-2 py-2 text-justify border-2 border-zinc-400 hover:border-zinc-500">
+                    className="cursor-default w-[90vw] sm:w-[500px] sm:h-[150px] px-4 mb-2 py-2 border-2 border-zinc-400 hover:border-zinc-500">
                         <div className="text-xl">
                             {data.title}
                         </div>

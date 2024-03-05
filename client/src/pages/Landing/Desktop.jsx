@@ -7,11 +7,14 @@ function DesktopLayout() {
     const sportLinks = ["Running", "Hiking", "Cycling", "Fitness"];
     
     return (
-        <div className='flex text-zinc-200'>
-            <img
-            src={LandingImg}
-            alt="OURA Landing"
-            />
+        <div className='flex text-zinc-200 overflow-hidden justify-center items-center'>
+            <div className='flex overflow-y-hidden h-full justify-center items-center'>
+                <img
+                className='h-[100vh] max-w-[unset]'
+                src={LandingImg}
+                alt="OURA Landing"
+                />
+            </div>
             <div className='absolute bottom-2/4 right-4 text-center w-full text-[4rem] md:text-[5rem] 2xl:text-[10rem] font-semibold opacity-30'>
                 OURA
             </div>

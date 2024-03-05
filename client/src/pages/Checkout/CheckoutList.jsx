@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
-import { MenuList } from '@mui/material';
+
 import CheckoutConfirmation from './CheckoutConfirmation';
 
 export default function CheckoutList(props) {
@@ -28,7 +28,7 @@ export default function CheckoutList(props) {
             {check ? 
                 <CheckoutConfirmation />
                 :
-                <MenuList id="cart-menu">
+                <div>
                     {cart[0] == null ? 
                         <div 
                         className='p-2 flex justify-center'>
@@ -41,7 +41,7 @@ export default function CheckoutList(props) {
                         className='flex flex-row text-start items-center'
                         key={item.cartID}>
                             <div 
-                            className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-200 items-center'
+                            className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-300 items-center'
                             onClick={() => navigate('/' + item.categories[0] + '/' + item.type + '/' + item.id)}
                             >
                                 <div className='w-[50px]'>
@@ -56,7 +56,15 @@ export default function CheckoutList(props) {
                                 <div className='text-justify self-center px-5'>
                                     <span>{item.title}</span>
                                     <br />
-                                    <span className='text-zinc-800'>{item.sale ? item.sale : item.price}€</span>
+                                    <div className='flex gap-x-2 text-sm items-center'>
+                                        <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
+                                        {item.chosenSize ?
+                                        <span>{item.chosenSize.toUpperCase()}</span>
+                                        : null }
+                                        {item.chosenColor ?
+                                        <span>{item.chosenColor.toUpperCase()}</span>
+                                        : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +74,7 @@ export default function CheckoutList(props) {
                         </div>
                     </div>
                     }
-                </MenuList>
+                </div>
             }
         </div>
     )

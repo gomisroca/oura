@@ -11,7 +11,7 @@ function About() {
                 alt="About Us Image"
                 />
             </div>
-            <div className="bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 z-50 flex flex-col justify-evenly mx-auto mt-4 px-2 mb-8">
+            <div className="bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 z-[1] flex flex-col justify-evenly mx-auto my-4 px-2">
                 <Gallery title={'Our Values'} type={'posts'} />
                 <Gallery title={'Our Team'} type={'users'}/>
                 <Gallery title={'Our Partners'} type={'photos'} />
