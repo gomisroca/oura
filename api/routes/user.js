@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router()
+
 const User = require('../models/user')
 const Order = require('../models/order')
+const Clothes = require('../models/clothes')
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const verifyToken = require('../middleware/auth');
@@ -85,14 +88,41 @@ router.get("/info", verifyToken, async (req, res) => {
 
 router.post("/purchase", verifyToken, async (req, res) => {
     try{        
-        const order = await Order.create({
-           user: "1",
-           products: ["1","24235", "12489124-1248124bcew-1293neh"]
+        let product_ids = [];
+        for (const item of req.body){
+           product_ids.push(item.id);
+        }
+
+        await Order.create({
+            user: req.user.id,
+            products: product_ids
         });
-        console.log(order)
+
+        res.sendStatus(200);
     } catch (err) {
         console.log(err);
     }
 });
+
+router.get("/orders", verifyToken, async (req, res) => {
+    try {
+        console.log('hi')
+        const allOrders = await Order.find();
+        const allClothes = await Clothes.find();
+
+        const matchingOrders = allOrders.find(order => order.user === req.user.id);
+        const matchingProducts = [];
+
+        for (const product of matchingOrders.products) {
+            let matchingClothes = allClothes.find(x => x.id == product);
+            matchingProducts.push(JSON.stringify(matchingClothes))
+        }
+
+        matchingOrders.products = matchingProducts
+        res.json([matchingOrders])
+    } catch (err) {
+        console.log(err);
+    }
+})
 
 module.exports = router;
