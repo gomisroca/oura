@@ -86,7 +86,7 @@ router.post('/update', async(req,res) => {
             product.sales += 1;
             product.save();
         }
-        res.json('Clothes Updated')
+        res.sendStatus(200)
     }catch(err){
         res.status(500).json({message: err.message})
     }  

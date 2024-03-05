@@ -6,14 +6,16 @@ import CheckoutList from './CheckoutList';
 export default function FormAddress({ canProceed }) {
     const { register, handleSubmit } = useForm();
     
-    const onSubmit = data => {
-        console.log(data)
+    const onSubmit = () => {
         canProceed(true)
     };
 
     return (
         <div>
-            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700 mt-5 md:mt-16'>
+            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700'>
+                <div className='text-sm text-red-600 my-2'>
+                    This is a mock website. None of the data filled in these forms is stored or used in any way.
+                </div>
                 <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
                     <div className='p-5 flex flex-row'>
                         <TextField

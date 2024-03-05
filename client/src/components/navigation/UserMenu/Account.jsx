@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,6 +12,7 @@ import { useUser } from '../../../contexts/UserContext';
 
 export default function Account() {
     const { user, userLogout } = useUser();
+    const navigate = useNavigate();
 
     // Menu Handling
     const [menuEl, setMenuEl] = React.useState(null);
@@ -97,7 +99,7 @@ export default function Account() {
                     <hr/>
                     <span 
                     className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-zinc-300' 
-                    onClick={handleMenuRedirect}>
+                    onClick={() => navigate(`/order-history`)}>
                         Orders
                     </span>
                     <hr/>
