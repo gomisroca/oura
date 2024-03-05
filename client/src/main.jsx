@@ -13,6 +13,7 @@ import Catalog from './pages/Catalog';
 import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Legal from './pages/Legal';
+import OrderHistory from './pages/OrderHistory';
 
 const router = createBrowserRouter([
     {
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
         {
             path: "/legal",
             element: <Legal />,
+            errorElement: <Error />,
+        },
+        {
+            path: "/order-history",
+            element: <OrderHistory />,
             errorElement: <Error />,
         },
         {
