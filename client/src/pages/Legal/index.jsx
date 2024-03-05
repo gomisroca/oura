@@ -1,6 +1,4 @@
-
-
-function Legal() {
+export default function Legal() {
   return (
     <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
         <div className="sm:w-2/3 mx-auto px-4 my-4 text-justify">
@@ -30,5 +28,3 @@ function Legal() {
     </div>
   )
 }
-
-export default Legal

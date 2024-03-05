@@ -18,7 +18,6 @@ export function UserProvider({ children }) {
         try {
             await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/user/info`)
             .then(res => {
-                console.log(res.data)
                 let userData = {
                     first_name: res.data.first_name,
                     last_name: res.data.last_name,
