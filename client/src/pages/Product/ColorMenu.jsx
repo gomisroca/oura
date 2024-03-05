@@ -1,18 +1,21 @@
+import {Fragment, useEffect, useState} from 'react';
+
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import * as React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
 
-export default function Colors(props) {
-    const [open, setOpen] = React.useState(false);  
+export default function ColorMenu({ item, activeSize }) {
+    const [open, setOpen] = useState(false);  
+    const [sizes, setSizes] = useState(null);
 
-    let item = props.item; 
-    let sizes;
-    if(item.chosenSize){
-        sizes = item.sizes[item.chosenSize];
-    }
+    useEffect(() => {
+        if(activeSize){
+            setSizes(item.sizes[activeSize]);
+        }
+    }, [item, activeSize])
+  
     
     const addToCart = (item, color) => {
         setOpen(true);
@@ -38,7 +41,7 @@ export default function Colors(props) {
     };
 
     const action = (
-        <React.Fragment>
+        <Fragment>
           <IconButton
             size="small"
             aria-label="close"
@@ -47,7 +50,7 @@ export default function Colors(props) {
           >
             <CloseIcon fontSize="small" />
           </IconButton>
-        </React.Fragment>
+        </Fragment>
     );
 
     return(
@@ -70,7 +73,10 @@ export default function Colors(props) {
                     className={`rounded w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[2px] ${color.colorClass} opacity-30`} 
                     ></span>
                 ))
-                : undefined
+                : 
+                <span
+                className={`w-[35px] h-[25px] my-2 mx-[10px]`} 
+                ></span>
             }
             <Snackbar
                 anchorOrigin={{ vertical:'bottom', horizontal:'center' }}
