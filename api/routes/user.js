@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
         });
         
         let access_token = jwt.sign(
-            { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name },
+            { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name, admin: user.admin  },
             process.env.TOKEN_KEY
         );
     
@@ -58,13 +58,13 @@ router.post("/login", async (req, res) => {
                 let access_token;
                 if (keepAlive == true) {
                     access_token = jwt.sign(
-                        { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name },
+                        { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name, admin: user.admin  },
                         process.env.TOKEN_KEY
                     );
                     
                 } else {
                     access_token = jwt.sign(
-                        { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name },
+                        { user_id: user._id, email, first_name: user.first_name, last_name: user.last_name, admin: user.admin },
                         process.env.TOKEN_KEY,
                         {
                             expiresIn: "1h",
