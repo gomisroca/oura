@@ -14,6 +14,8 @@ import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Legal from './pages/Legal';
 import OrderHistory from './pages/OrderHistory';
+import AdminProtectedRoute from './pages/Admin/AdminProtectedRoute';
+import Admin from './pages/Admin';
 
 const router = createBrowserRouter([
     {
@@ -40,17 +42,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/:genre",
-            element: <Catalog />,
-            errorElement: <Error />,
-        },
-        {
-            path: "/:genre/:category",
-            element: <Catalog />,
-            errorElement: <Error />,
-        },
-        {
-            path: "/:genre/:category/:type",
+            path: "/:genre/:category?/:type?",
             element: <Catalog />,
             errorElement: <Error />,
         },
@@ -63,6 +55,17 @@ const router = createBrowserRouter([
             path: "/checkout",
             element: <Checkout />,
             errorElement: <Error />,
+        },
+        {
+            path: "/admin", 
+            element: <AdminProtectedRoute />,
+            errorElement: <Error />,
+            children:[
+                {
+                    path: "",
+                    element: <Admin />
+                },
+            ]
         },
         ]
     },
