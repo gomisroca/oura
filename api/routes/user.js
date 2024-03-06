@@ -122,6 +122,38 @@ router.get("/orders", verifyToken, async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-})
+});
+
+router.post("/update", verifyToken, async (req, res) => {
+    try{
+        const data = req.body;
+        const user = await User.findOne({ email: req.user.email });
+
+        if(data.first_name.toLowerCase() !== user.first_name.toLowerCase()){
+            user.first_name = data.first_name;
+        }
+        if(data.last_name !== user.last_name.toLowerCase()){
+            user.last_name = data.last_name;
+        }
+        if(data.email.toLowerCase() !== user.email.toLowerCase()){
+            user.email = data.email.toLowerCase();
+        }
+        if(data.oldpassword && data.newpasword && (await bcrypt.compare(data.oldpassword, user.password))){
+            encryptedPassword = await bcrypt.hash(data.newpassword, 10);
+            user.password = encryptedPassword;
+        }
+        user.save();
+        access_token = jwt.sign(
+            { user_id: user._id, email: user.email, first_name: user.first_name, last_name: user.last_name, admin: user.admin },
+            process.env.TOKEN_KEY,
+            {
+                expiresIn: "1h",
+            }
+        );
+        res.status(200).json(access_token);
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 module.exports = router;

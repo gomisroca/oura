@@ -95,6 +95,18 @@ export function UserProvider({ children }) {
         }
     }
 
+    const updateToken = (token) => {
+        try{
+            const expiry = new Date();
+            expiry.setHours(expiry.getHours() + 1);
+
+            removeCookie('oura__access_token__', { path: '/' });
+            setCookie('oura__access_token__', token, { path: '/', expires: expiry });
+            setAccessToken(token);
+        }catch(err){
+            return err
+        }
+    }
     const userLogout = async() => {
         if (accessToken){
             try {
@@ -116,7 +128,7 @@ export function UserProvider({ children }) {
       }, [accessToken]);
 
     return (
-        <UserContext.Provider value={({ user, userRegister, userLogin, userLogout, getUserInfo })}>
+        <UserContext.Provider value={({ user, userRegister, userLogin, userLogout, getUserInfo, updateToken })}>
             {children}
         </UserContext.Provider>
     )

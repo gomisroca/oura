@@ -9,6 +9,7 @@ import Drawer from '@mui/material/Drawer';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import { useUser } from '../../../contexts/UserContext';
+import UserSettings from './UserSettings';
 
 export default function Account() {
     const { user, userLogout } = useUser();
@@ -26,27 +27,39 @@ export default function Account() {
         setMenuEl(null);
         setRegisterDrawer(false);
         setLoginDrawer(false);
+        setSettingsDrawer(false);
     };
     const handleMenuRedirect = () => {
         setMenuEl(null);
         setRegisterDrawer(false);
         setLoginDrawer(false);
+        setSettingsDrawer(false);
     };
 
     //Drawer Handling
     const [loginDrawer, setLoginDrawer] = React.useState(false);
     const [registerDrawer, setRegisterDrawer] = React.useState(false);
+    const [settingsDrawer, setSettingsDrawer] = React.useState(false);
 
     const handleLoginToggle = () => {
         setMenuEl(null);
         setRegisterDrawer(false);
+        setSettingsDrawer(false);
         setLoginDrawer(!loginDrawer);
     }
 
     const handleRegisterToggle = () =>{
         setMenuEl(null);
         setLoginDrawer(false);
+        setSettingsDrawer(false);
         setRegisterDrawer(!registerDrawer);
+    }
+
+    const handleSettingsToggle = () => {
+        setMenuEl(null);
+        setLoginDrawer(false);
+        setRegisterDrawer(false);
+        setSettingsDrawer(!settingsDrawer);
     }
 
     return (
@@ -93,14 +106,14 @@ export default function Account() {
                 <div className='text-zinc-700'>
                     <span 
                     className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-zinc-300' 
-                    onClick={handleMenuRedirect}>
-                        Account
+                    onClick={handleSettingsToggle}>
+                        Settings
                     </span>
                     <hr/>
                     <span 
                     className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-zinc-300' 
                     onClick={() => navigate(`/order-history`)}>
-                        Orders
+                        Your Orders
                     </span>
                     <hr/>
                     {user.admin ?
@@ -151,6 +164,14 @@ export default function Account() {
             sx={{zIndex: 9999}}
             >
                 <RegisterForm loginToggle={handleLoginToggle} registerToggle={handleRegisterToggle} />
+            </Drawer>
+            <Drawer
+            anchor='right'
+            open={settingsDrawer}
+            onClose={handleSettingsToggle}
+            sx={{zIndex: 9999}}
+            >
+                <UserSettings settingsToggle={handleSettingsToggle} />
             </Drawer>
         </>
     )
