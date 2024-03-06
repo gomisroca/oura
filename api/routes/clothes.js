@@ -405,18 +405,20 @@ async(req,res) => {
               }
             ]
         }
-
+        
         const newProduct = new clothesModel({
             id: product_id,
             title: product.title,
             price: product.price,
-            sale: product.sale,
             description: product.description,
             genre: product.genre,
             class: product.class,
             type: product.type,
             image: media[0]
         });
+        if(product.sale){
+            newProduct.sale = product.sale;
+        }
         if(product.class !== 'accessory'){
             newProduct.sizes = sizes;
         }

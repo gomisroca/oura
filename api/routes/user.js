@@ -106,7 +106,6 @@ router.post("/purchase", verifyToken, async (req, res) => {
 
 router.get("/orders", verifyToken, async (req, res) => {
     try {
-        console.log('hi')
         const allOrders = await Order.find();
         const allClothes = await Clothes.find();
 
