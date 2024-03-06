@@ -7,6 +7,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
+const bodyParser = require('body-parser');
 
 var corsOptions = {
     credentials: true,
@@ -22,7 +23,11 @@ const db = mongoose.connection
 db.on('error', (error) => console.log('DB Error: ' + error))
 db.once('open', (success) => console.log('DB On'))
 
-app.use(express.json())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+app.use('/public', express.static('public'));
 
 // Routers
 const clothesRouter = require('./routes/clothes');

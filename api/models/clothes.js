@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const { v4: uuidv4 } = require('uuid');
 
 const colorSchema = new Schema({
   amount: Number,
@@ -17,7 +18,7 @@ const sizeSchema = new Schema({
 })
 
 const clothesSchema = new Schema({
-  id: Number,
+  id: { type: String, default: uuidv4() },
   title: String,
   price: Number,
   sale: Number,
@@ -28,7 +29,7 @@ const clothesSchema = new Schema({
   seasonal: { type: Boolean, default: false },
   image: String,
   sizes: sizeSchema,
-  sales: Number
+  sales: { type: Number, default: 0 },
 });
 
 
