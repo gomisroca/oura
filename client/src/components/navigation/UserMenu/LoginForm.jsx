@@ -56,7 +56,7 @@ export default function LoginForm({ loginToggle, registerToggle }) {
                             className='text-sm uppercase'>
                                 Stay Logged In?
                             </span>
-                            <Switch name="keepAlive"type="checkbox" />
+                            <Switch name="keepAlive" type="checkbox" />
                         </div>
                     </div>
                     <div className='grid w-[200px] m-auto'>

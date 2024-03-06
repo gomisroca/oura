@@ -103,6 +103,17 @@ export default function Account() {
                         Orders
                     </span>
                     <hr/>
+                    {user.admin ?
+                    <div>
+                        <hr/>
+                        <span 
+                        className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-green-500' 
+                        onClick={() => navigate(`/admin`)}>
+                            Upload Product
+                        </span>
+                        <hr/>
+                    </div>
+                    : null}
                     <span 
                     className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-red-500' 
                     onClick={() => { userLogout(); handleMenuClose(); }}>

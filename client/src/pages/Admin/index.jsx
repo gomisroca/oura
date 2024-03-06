@@ -7,6 +7,7 @@ export default function Admin() {
     const [genres, setGenres] = useState();
     const [classes, setClasses] = useState();
     const [types, setTypes] = useState();
+    const [sale, setSale] = useState(false);
 
 
     const fetchCatalog = () => {
@@ -57,7 +58,9 @@ export default function Admin() {
         };
         formData.append('title', form.title.value);
         formData.append('price', form.price.value);
-        formData.append('sale', form.sale.value);
+        if(form.sale){
+            formData.append('sale', form.sale.value);
+        }
         formData.append('description', form.description.value);
         formData.append('genre', form.genre.value);
         formData.append('class', form.class.value);
@@ -77,8 +80,14 @@ export default function Admin() {
     }
 
     return (
-    <>
-        <form method="post" onSubmit={handleSubmit} className="flex-col grid gap-y-4 px-4 mt-10 text-zinc-700 bg-zinc-200">
+    <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        {successPrompt ?
+        <div className='font-semibold text-center mt-2 mb-4'>Product was published.</div>
+        :
+        <form 
+        method="post" 
+        onSubmit={handleSubmit} 
+        className="flex-col grid gap-y-4 p-4">
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Name
@@ -98,9 +107,16 @@ export default function Admin() {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
+            <div>
+                <label className="uppercase font-bold mr-4">
+                    On Sale?
+                </label> 
+                <input type="checkbox" onChange={() => setSale(!sale)}></input>
+            </div>
+            {sale ?
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
-                    Sale
+                    Sale Price
                 </label>
                 <input 
                 name="sale"
@@ -108,6 +124,7 @@ export default function Admin() {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
+            : null}
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Description
@@ -159,17 +176,16 @@ export default function Admin() {
                 </select>
             </div>   
             <div className="flex flex-row">
-                <label className="uppercase font-bold mb-2">
+                <label className="uppercase font-bold mr-4">
                     Seasonal?
                 </label>
                 <input 
                 type="checkbox" 
                 name="seasonal"
-                className="transition duration-200 m-auto p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 defaultChecked={false} 
                 />
             </div>
-           
             <div className="flex flex-col ">
                 <label className="uppercase font-bold mb-2">
                     Image
@@ -179,16 +195,13 @@ export default function Admin() {
                 onChange={uploadMedia}
                 className="block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" />
             </div>
-            <hr className="border border-neutral-800"/>
             <button 
             type="submit" 
             className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
                 Submit
             </button>
         </form>
-        {successPrompt ?
-            <div className='font-semibold text-center mt-2 mb-4'>Your post was published.</div>
-        : null }
-    </>
+        }
+    </div>
     )
 }
