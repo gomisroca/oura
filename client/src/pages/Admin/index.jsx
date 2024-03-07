@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Autocomplete from '@mui/material/Autocomplete';
+import { TextField } from "@mui/material";
 
 export default function Admin() {
     const [media, setMedia] = useState();
@@ -28,7 +30,6 @@ export default function Admin() {
                     typeArray.push(product.type.toLowerCase())
                 }
             }
-
             setGenres(genreArray);
             setClasses(classArray);
             setTypes(typeArray);
@@ -137,43 +138,43 @@ export default function Admin() {
                 <label className="uppercase font-bold mb-2">
                     Gender
                 </label>
-                <select 
+                {genres ?
+                <Autocomplete
+                id="genre"
                 name="genre"
-                className="block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500">
-                    {genres ?
-                        genres.map(genre => (
-                            <option value={genre}>{genre.toUpperCase()}</option>
-                        ))
-                    : null}
-                </select>
+                freeSolo
+                options={genres.map(genre => genre.toUpperCase())}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                : null }
             </div>            
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Class
                 </label>
-                <select 
+                {classes ?
+                <Autocomplete
+                id="class"
                 name="class"
-                className="block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500">
-                    {classes ?
-                        classes.map(pclass => (
-                            <option value={pclass}>{pclass.toUpperCase()}</option>
-                        ))
-                    : null}
-                </select>
+                freeSolo
+                options={classes.map(x => x.toUpperCase())}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                : null }
             </div>
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Type
                 </label>
-                <select 
+                {types ?
+                <Autocomplete
+                id="type"
                 name="type"
-                className="block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500">
-                    {types ?
-                        types.map(type => (
-                            <option value={type}>{type.toUpperCase()}</option>
-                        ))
-                    : null}
-                </select>
+                freeSolo
+                options={types.map(type => type.toUpperCase())}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                : null }
             </div>   
             <div className="flex flex-row">
                 <label className="uppercase font-bold mr-4">
