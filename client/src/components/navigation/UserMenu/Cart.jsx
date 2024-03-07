@@ -48,16 +48,16 @@ export default function Cart() {
 
     return (
         <>
-            <IconButton
-            className='hover:stroke-zinc-400'
+            <div
+            className='hover:stroke-zinc-400 text-[1rem] md:text-[1.5rem] items-center flex cursor-pointer transition duration-200'
             id="cart-button"
             aria-controls={openCart ? 'cart-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={openCart ? 'true' : undefined}
             onClick={handleCart}
             aria-label={`Cart`}>
-                <ShoppingCartTwoToneIcon />
-            </IconButton>
+                <ShoppingCartTwoToneIcon fontSize='inherit' />
+            </div>
 
             <Menu
             id="cart-menu"

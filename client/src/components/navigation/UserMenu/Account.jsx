@@ -66,7 +66,7 @@ export default function Account() {
         <>
             {user ?
                 <div
-                    className='hover:zinc-300 text-zinc-700 hover:text-zinc-800 px-2 cursor-pointer ml-2'
+                    className='hover:zinc-300 text-zinc-700 hover:text-zinc-800 text-[0.9rem]  md:text-[1rem] md:px-2 cursor-pointer ml-2'
                     id="user-button"
                     aria-controls={openMenu ? 'user-menu' : undefined}
                     aria-haspopup="true"

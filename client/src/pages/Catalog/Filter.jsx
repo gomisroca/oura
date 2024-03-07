@@ -41,7 +41,7 @@ export default function Filter({ products, updateProducts }) {
    
 
     return (
-        <div className='bg-zinc-200 w-fit border-b border-zinc-400 '>
+        <div className='bg-zinc-200 w-fit border-b border-zinc-400 z-50 m-auto'>
             <span className='border-r border-zinc-400 px-4 py-2 cursor-default'>Size</span>
             <select
             className='bg-zinc-200 hover:bg-zinc-300 px-4 py-2 cursor-pointer font-semibold'
