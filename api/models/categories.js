@@ -9,7 +9,6 @@ const classSchema = new Schema({
 const categoriesSchema = new Schema({
     genre: String,
     header: String,
-    url: String,
     classes: [classSchema],
 });
 

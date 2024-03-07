@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const clothesModel = require('../models/clothes')
 const Clothes = require('../data/clothes.json')
+const categoriesModel = require('../models/categories')
 
 const multer  = require('multer');
 const fs = require('fs-extra');
@@ -411,9 +412,9 @@ async(req,res) => {
             title: product.title,
             price: product.price,
             description: product.description,
-            genre: product.genre,
-            class: product.class,
-            type: product.type,
+            genre: product.genre.toLowerCase(),
+            class: product.class.toLowerCase(),
+            type: product.type.toLowerCase(),
             image: media[0]
         });
         if(product.sale){
@@ -426,6 +427,50 @@ async(req,res) => {
             newProduct.seasonal = product.seasonal;
         }
         newProduct.save();
+
+        
+        const category = await categoriesModel.findOne({ genre: product.genre.toLowerCase() });
+
+        if (category){
+            let categoryClass = category.classes.find(e => e.name.toLowerCase() == product.class.toLowerCase());
+            if (!categoryClass){
+                let newClasses = [];
+                let newTypes = new Array(product.type.toLowerCase());
+                let newClass = {
+                    name: product.class.toLowerCase(),
+                    types: newTypes
+                }
+                if(newClasses.filter(e => e.name == newClass.name).length == 0){
+                    console.log(1.1)
+                    console.log(newClass)
+                    newClasses.push(newClass)
+                }
+                category.classes.push(...newClasses);
+                newClasses = [];
+            } else{
+                if (categoryClass.types.filter(e => e == product.type.toLowerCase()).length == 0) {
+                    categoryClass.types.push(product.type.toLowerCase())
+                }
+            }
+            category.save();
+        } else{
+            let newTypes = new Array(product.type.toLowerCase());   
+
+            let newClass = {
+                name: product.class.toLowerCase(),
+                types: newTypes
+            };
+            let newClassArray = new Array(newClass);
+
+            let newCategory = new categoriesModel({
+                genre: product.genre.toLowerCase(),
+                header: "../../assets/sale.jpg",
+                classes: newClassArray
+            });
+
+            newCategory.save();
+        }
+
 
         res.status(201).json(newProduct)
     }catch(err){
