@@ -31,12 +31,12 @@ function DesktopLayout() {
                 <div className='flex flex-row'>
                     <button 
                     className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
-                    onClick={() => navigate(`/male/season`)}>
+                    onClick={() => navigate(`/man/season`)}>
                         MAN
                     </button>
                     <button 
                     className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
-                    onClick={() => navigate(`/female/season`)}>
+                    onClick={() => navigate(`/woman/season`)}>
                         WOMAN
                     </button>
                 </div>

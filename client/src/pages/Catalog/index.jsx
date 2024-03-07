@@ -41,7 +41,12 @@ export default function Catalog() {
     }
     
     const filterCatalog = (catalog) => {
-        let productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'neutral'));
+        let productArray;
+        if (genre !== 'season'){
+            productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'neutral'));
+        } else{
+            productArray = catalog.filter(x => (x.seasonal == true ));
+        }
         if(category == 'season'){
             productArray = productArray.filter(x => x.seasonal == true);
         } else if (category != undefined) {
