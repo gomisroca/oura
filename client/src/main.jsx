@@ -16,6 +16,7 @@ import Legal from './pages/Legal';
 import OrderHistory from './pages/OrderHistory';
 import AdminProtectedRoute from './pages/Admin/AdminProtectedRoute';
 import Admin from './pages/Admin';
+import CatalogFilteredRoute from './pages/Catalog/CatalogFilteredRoute';
 
 const router = createBrowserRouter([
     {
@@ -43,8 +44,14 @@ const router = createBrowserRouter([
         },
         {
             path: "/:genre/:category?/:type?",
-            element: <Catalog />,
+            element: <CatalogFilteredRoute />,
             errorElement: <Error />,
+            children:[
+                {
+                    path: "",
+                    element: <Catalog />
+                },
+            ]
         },
         {
             path: "/:genre/:category/:type/:product",
