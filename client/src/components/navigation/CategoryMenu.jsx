@@ -8,19 +8,11 @@ export default function CategoryMenu({ category }) {
 
     const [categoryData, setCategoryData] = useState([]);
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
-        .then((res) => {
-            setCategoryData((res.data).find(x => x.genre == category).classes);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        if (category){
+            let parsedCat = JSON.parse(category);
+            console.log(parsedCat)
+            setCategoryData(parsedCat);
+        }
     }, [category]);
 
     // Main Menus
@@ -48,12 +40,14 @@ export default function CategoryMenu({ category }) {
     return (
         <>
         <div
-        className='hover:bg-zinc-300 px-2 cursor-pointer ml-2 z-50'
+        className='hover:bg-zinc-300 px-2 cursor-pointer ml-2 z-50 flex items-center'
         aria-controls={openMainMenu ? 'main-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={openMainMenu ? 'true' : undefined}
         onClick={handleMainMenu}>
-            <span className="uppercase">{category}</span>
+            {categoryData? 
+            <span className="uppercase text-[0.75rem] md:text-[1rem]">{categoryData.genre}</span>
+            : null }
         </div>
         <Menu
         PaperProps={{ sx: { borderRadius: 0 } }}
@@ -64,19 +58,20 @@ export default function CategoryMenu({ category }) {
             <div className="flex flex-col">
                 <div 
                 className="p-2 border-b-2 border-green-500/20 bg-green-200 hover:bg-green-300 cursor-pointer" 
-                onClick={() => navigate(`${category}/season`)}>
+                onClick={() => navigate(`${categoryData.genre}/season`)}>
                     <span className="uppercase text-sm">
                         Season
                     </span>
                 </div>
                 <div 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
-                onClick={() => navigate(`${category}`)}>
+                onClick={() => navigate(`${categoryData.genre}`)}>
                     <span className="uppercase text-sm">
                         All
                     </span>
                 </div>
-                {categoryData.map(subcategory => (
+                {categoryData && categoryData.classes ? 
+                categoryData.classes.map(subcategory => (
                 <div key={subcategory.id}>
                     <div   
                     className='hover:bg-zinc-300 cursor-pointer p-2 border-b-2 border-zinc-400'
@@ -106,21 +101,22 @@ export default function CategoryMenu({ category }) {
                         <div className="flex flex-col">
                             <div 
                             className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                            onClick={() => navigate(`${category}/${subcategory.name}`)}>
+                            onClick={() => navigate(`${categoryData.genre}/${subcategory.name}`)}>
                                 <span className="uppercase text-sm">All</span>
                             </div>
                             {subcategory.types.map((type, index) => (
                                 <div 
                                 key={index} 
                                 className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                                onClick={() => navigate(`${category}/${subcategory.name}/${type}`)}>
+                                onClick={() => navigate(`${categoryData.genre}/${subcategory.name}/${type}`)}>
                                     <span className="uppercase text-sm">{type}</span>
                                 </div>
                             ))}
                         </div>
                     </Menu>
                 </div>
-                ))}
+                ))
+                : null}
             </div>
         </Menu>
         </>

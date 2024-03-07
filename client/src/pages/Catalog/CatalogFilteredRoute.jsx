@@ -11,25 +11,29 @@ export default function CatalogFilteredRoute() {
     const [canPass, setCanPass] = useState(false);
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
         .then((res) => {
+            const categories = res.data;
             let genreArray = [];
             let classArray = [];
             let typeArray = [];
 
-            for(const product of res.data){
-                if (!genreArray.includes(product.genre.toLowerCase())){
-                    genreArray.push(product.genre.toLowerCase())
+            for(const category of categories){
+                if (!genreArray.includes(category.genre.toLowerCase())){
+                    genreArray.push(category.genre.toLowerCase())
                 }
-                if (!classArray.includes(product.class.toLowerCase())){
-                    classArray.push(product.class.toLowerCase())
-                }
-                if (!typeArray.includes(product.type.toLowerCase())){
-                    typeArray.push(product.type.toLowerCase())
+                for(const categoryClass of category.classes){
+                    if (!classArray.includes(categoryClass.name.toLowerCase())){
+                        classArray.push(categoryClass.name.toLowerCase())
+                    }
+                    for(const classType of categoryClass.types){
+                        if (!typeArray.includes(classType.toLowerCase())){
+                            typeArray.push(classType.toLowerCase())
+                        }
+                    }
                 }
             }
 
-            genreArray.push('season');
             classArray.push('season');
             if(type && category && genre && typeArray.includes(type) && classArray.includes(category) && genreArray.includes(genre)){
                 setCanPass(true)

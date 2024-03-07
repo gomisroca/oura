@@ -1,7 +1,7 @@
 import LandingImg from '../../assets/landing.jpg';
 import { useNavigate } from "react-router-dom";
 
-function MobileLayout() {
+function MobileLayout({ categories }) {
     const navigate = useNavigate();
     
     return (
@@ -20,12 +20,21 @@ function MobileLayout() {
             <div className='absolute bottom-2/4 text-center w-full text-[6rem] md:text-[5rem] font-semibold'>
                 OURA
             </div>
-            <div className='absolute self-center mt-16 w-full grid justify-items-center'>
-                <button 
-                className='border-2 border-zinc-400 border-solid px-2 py-1 md:px-5 md:py-2 text-[1.5rem] md:text-[3rem] font-semibold bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300'
-                onClick={() => navigate('/season')}>
+            <div className='absolute self-center mt-[150px] w-full grid justify-items-center'>
+                <span className='px-2 py-1 md:px-5 md:py-2 text-[1.5rem] md:text-[3rem] font-semibold'>
                     SPRING COLLECTION
-                </button>
+                </span>
+                <div className='flex flex-col gap-4'>
+                    {categories ?
+                    categories.slice(0,3).map(category => (
+                        <button 
+                        className='border-2 border-zinc-200 hover:border-zinc-300 border-solid p-2 md:px-5 text-[1.5rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
+                        onClick={() => navigate(`/${category.genre}/season`)}>
+                            {category.genre.toUpperCase()}
+                        </button>
+                    ))
+                    : null}
+                </div>
             </div>
         </div>
     )
