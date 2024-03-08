@@ -1,3 +1,5 @@
+![OuraBanner](banner.jpg)
+
 ## About
 Oura is a mock clothing and sports brand website, created using a **MERN Stack** (MongoDB, ExpressJS, React, NodeJS).
 
