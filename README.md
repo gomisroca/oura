@@ -4,7 +4,7 @@
 
 
 ## About
-Oura is a mock clothing and sports brand website, created using a **MERN Stack** (MongoDB, ExpressJS, React, NodeJS).
+Oura is a mock sports clothing website, created using a **MERN Stack** (MongoDB, ExpressJS, React, NodeJS).
 
 ## Usage
 You can run the project from the main folder with **npm run dev**.
