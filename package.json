@@ -6,7 +6,7 @@
     "api": "npm run dev --prefix api",
     "client": "npm run dev --prefix client",
     "api_build": "npm run build --prefix api",
-    "client_build": "npm run build -- prefix client",
+    "client_build": "npm run build --prefix client",
     "dev": "concurrently \"npm run api\" \"npm run client\"",
     "build": "concurrently \"npm run api_build\" \"npm run client_build\""
   },
