@@ -13,7 +13,7 @@ export default function RelatedItems({ catalog, item, genre, category }) {
     const [itemData, setItemData] = useState([]);
 
     const filterCatalog = () => {
-        let itemDataArray = catalog.filter(x => (x.genre.toLowerCase() == genre.toLowerCase()  || x.genre.toLowerCase()  == 'neutral') && x.class.toLowerCase() == category.toLowerCase());
+        let itemDataArray = catalog.filter(x => (x.genre.toLowerCase() == genre.toLowerCase()  || x.genre.toLowerCase()  == 'unisex') && x.class.toLowerCase() == category.toLowerCase());
         let filter = itemDataArray.find(x => x.id == item.id);
         const index = itemDataArray.indexOf(filter);
         if (index > -1) {

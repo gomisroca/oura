@@ -43,7 +43,7 @@ export default function Catalog() {
     const filterCatalog = (catalog) => {
         let productArray;
         if (genre !== 'season'){
-            productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'neutral'));
+            productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'unisex'));
         } else{
             productArray = catalog.filter(x => (x.seasonal == true ));
         }
