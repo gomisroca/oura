@@ -3,7 +3,7 @@ import ColorMenu from './ColorMenu';
 import Size from './Size';
 
 interface Props {
-    item: CartProduct;
+    item: Product;
 }
 
 export default function SizeMenu({ item }: Props) {

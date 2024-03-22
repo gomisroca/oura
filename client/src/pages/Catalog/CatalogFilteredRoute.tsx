@@ -11,7 +11,7 @@ export default function CatalogFilteredRoute() {
     const [canPass, setCanPass] = useState<boolean>(false);
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories`)
+        axios.get<Category[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/categories`)
         .then((res) => {
             
             const dataArray = Object.entries(res.data);

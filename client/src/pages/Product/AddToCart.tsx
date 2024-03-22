@@ -21,9 +21,9 @@ export default function AddToCart({ item }: Props) {
         setOpen(true);
 
         item.cartID = (Math.random() * 9999).toString();
-        let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+        let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
         if(item.cartID){
-            cart.push(item as CartProduct);
+            cart.push(item as Product);
             localStorage.setItem('oura_cart', JSON.stringify(cart));
         }
     }

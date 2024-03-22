@@ -86,7 +86,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            let loggedIn: boolean = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/login/`, credentials)
+            let loggedIn: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/login/`, credentials)
             .then(res => {
                 const expiry = new Date();
                 if (credentials.keepAlive){
@@ -141,7 +141,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
         }
     }
 
-    useEffect(() => {
+    useEffect((): void => {
         if(accessToken){
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             getUserInfo();

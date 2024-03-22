@@ -11,15 +11,11 @@ export default function Cart() {
     const [cartEl, setCartEl] = useState<null | HTMLElement>(null);
     const openCart = Boolean(cartEl);
     
-    let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
 
     let totalCartPrice = 0;
     for (let i = 0; i < cart.length; i++) {
-        if(cart[i].sale){
-            totalCartPrice = totalCartPrice + cart[i].sale
-        } else{
-            totalCartPrice = totalCartPrice + cart[i].price
-        }
+        totalCartPrice = totalCartPrice + cart[i].price
     }
     totalCartPrice = Math.floor(totalCartPrice * 100) / 100;
 
@@ -74,6 +70,7 @@ export default function Cart() {
                     : cart ?
                     <div>
                         {cart.map((item) => (
+                        item.cartID &&
                         <div
                         className='w-[95vw] md:w-[500px] flex flex-row text-start items-center cursor-pointer border-t border-b border-zinc-400'
                         key={item.cartID}>
@@ -92,7 +89,7 @@ export default function Cart() {
                                     <span className='font-bold'>{item.name}</span>
                                     <br />
                                     <div className='flex gap-x-2 text-sm items-center'>
-                                        <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
+                                        <span className='text-zinc-800 text-base'>{item.price}€</span>
                                         {item.size ?
                                         <span>{item.size.toUpperCase()}</span>
                                         : null }
@@ -104,7 +101,7 @@ export default function Cart() {
                             </div>
                             <div 
                             className='flex cursor-pointer hover:bg-red-300 h-[120px] items-center justify-items-center'
-                            onClick={() => handleItemRemove(item.cartID)}>
+                            onClick={() => handleItemRemove(item.cartID!)}>
                                 <ListItemIcon>
                                     <ClearIcon className='m-auto' />
                                 </ListItemIcon>

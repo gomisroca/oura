@@ -8,7 +8,7 @@ import Fade from '@mui/material/Fade';
 import { SnackbarCloseReason } from '@mui/base';
 
 interface Props {
-    item: CartProduct;
+    item: Product;
     activeSize: string | null;
 }
 
@@ -24,10 +24,10 @@ export default function ColorMenu({ item, activeSize }: Props) {
     }, [item, activeSize])
   
     
-    const addToCart = (item: CartProduct, color: string) => {
+    const addToCart = (item: Product, color: string) => {
         setOpen(true);
 
-        let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+        let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
         item.cartID = (Math.random() * 9999).toString();
         item.color = color;
         cart.push(item);

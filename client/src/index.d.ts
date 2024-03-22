@@ -25,10 +25,7 @@ type Product = {
     sizes: Size[];
     onSale: boolean;
     onSeasonal: boolean;
-}
-
-interface CartProduct extends Product {
-    cartID: string;
+    cartID?: string;
     size?: string;
     color?: string;
 }
@@ -36,7 +33,7 @@ interface CartProduct extends Product {
 type Order = {
     id: string;
     products: string[];
-    timestamp: string;
+    createdAt: string;
 }
 
 type LoginFormData = {

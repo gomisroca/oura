@@ -13,7 +13,7 @@ export default function EditorProductUpload() {
 
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
+        axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
         .then((res) => {
             let genderArray: string[] = [];
             let categoryArray: string[] = [];
@@ -67,7 +67,7 @@ export default function EditorProductUpload() {
         formData.append('onSeasonal', form.onSeasonal.checked);
         console.log(formData)
 
-        await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/products/` , formData).then(res => {
+        await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/` , formData).then(res => {
             if(res.status === 201){
                 setSuccessPrompt(true);
             }

@@ -3,15 +3,11 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutList() {
     const navigate = useNavigate();
 
-    let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
     
     let totalCartPrice = 0;
     for (let i = 0; i < cart.length; i++) {
-        if(cart[i].sale){
-            totalCartPrice = totalCartPrice + cart[i].sale
-        } else{
-            totalCartPrice = totalCartPrice + cart[i].price
-        }
+        totalCartPrice = totalCartPrice + cart[i].price
     }
     totalCartPrice = Math.floor(totalCartPrice * 100) / 100;
 
@@ -45,7 +41,7 @@ export default function CheckoutList() {
                             <span>{item.name}</span>
                             <br />
                             <div className='flex gap-x-2 text-sm items-center'>
-                                <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
+                                <span className='text-zinc-800 text-base'>{item.price}€</span>
                                 {item.size ?
                                 <span>{item.size.toUpperCase()}</span>
                                 : null }

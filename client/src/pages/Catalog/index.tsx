@@ -22,7 +22,7 @@ export default function Catalog() {
     const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Product[]>();
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products/`)
+        axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/`)
         .then((res) => {
             setCatalog(res.data);
             filterCatalog(res.data);

@@ -13,11 +13,11 @@ function Product() {
     const category = useParams().category;
     const id = useParams().product;
 
-    const [product, setProduct] = useState<CartProduct>();
+    const [product, setProduct] = useState<Product>();
     const [catalog, setCatalog] = useState<Product[]>();
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
+        axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
         .then((res) => {
             setCatalog(res.data);
         })
@@ -38,7 +38,7 @@ function Product() {
 
     useEffect(() => {
         if(id){
-            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
+            axios.get<Product>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
             .then((res) => {
                 setProduct(res.data);
             })
@@ -78,10 +78,12 @@ function Product() {
                     <div className="justify-between p-2 flex text-lg font-bold border-t-2 border-zinc-400 md:mt-4 md:pt-4">
                         <div>{product.name}</div>
                         <div>
-                            {product.sale ?
+                            {product.onSale ?
                             <div className="flex gap-x-2">
-                                <span>{product.sale}€</span>
-                                <span className="line-through decoration-2 decoration-red-600/70">
+                                <span className="font-bold text-red-600">
+                                    ON SALE
+                                </span> 
+                                <span>
                                     {product.price}€
                                 </span>
                             </div>

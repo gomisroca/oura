@@ -10,7 +10,7 @@ export default function NavMenu() {
 
     const [categories, setCategories] = useState<Category[]>();
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
+        axios.get<Category[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
         .then((res) => {
             setCategories(res.data);
         })
