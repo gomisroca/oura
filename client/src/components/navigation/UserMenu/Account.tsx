@@ -74,7 +74,7 @@ export default function Account() {
                     onClick={handleMenu}
                     aria-label={`User Menu`}
                 >
-                    {user.first_name.toUpperCase()}
+                    {user.firstName.toUpperCase()}
                 </div>
             :   
                 <div
@@ -118,12 +118,12 @@ export default function Account() {
                         Your Orders
                     </span>
                     <hr/>
-                    {user.admin ?
+                    {user.role !== 'BASIC' ?
                     <div>
                         <hr/>
                         <span 
                         className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-green-500' 
-                        onClick={() => navigate(`/admin`)}>
+                        onClick={() => navigate(`/restricted/upload`)}>
                             Upload Product
                         </span>
                         <hr/>

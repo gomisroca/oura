@@ -3,7 +3,7 @@ import ColorMenu from './ColorMenu';
 import Size from './Size';
 
 interface Props {
-    item: CartClothes;
+    item: CartProduct;
 }
 
 export default function SizeMenu({ item }: Props) {
@@ -11,7 +11,7 @@ export default function SizeMenu({ item }: Props) {
     const [activeSize, setActiveSize] = useState<string | null>(null);
 
     const handleSizeSelection = (size: string) => {
-        item.chosenSize = size;
+        item.size = size;
         console.log(size)
         setActiveSize(size)
         setItemChanged(!itemChanged);

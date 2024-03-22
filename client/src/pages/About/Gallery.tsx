@@ -62,7 +62,7 @@ export default function Gallery({type, title}: Props) {
                     <div 
                     className="cursor-default w-[90vw] sm:w-[500px] sm:h-[150px] px-4 mb-2 py-2 border-2 border-zinc-400 hover:border-zinc-500">
                         <div className="text-xl">
-                            {data.title}
+                            {data.name}
                         </div>
                         <div className="mx-1">
                             {data.body}

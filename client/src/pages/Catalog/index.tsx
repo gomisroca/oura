@@ -13,16 +13,16 @@ import Filter from './Filter';
 export default function Catalog() {
     const navigate = useNavigate();
 
-    const genre = useParams().genre;
+    const gender = useParams().gender;
     const category = useParams().category;
-    const type = useParams().type;
+    const subcategory = useParams().subcategory;
 
-    const [catalog, setCatalog] = useState<Clothes[]>();
-    const [products, setProducts] = useState<Clothes[]>();
-    const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Clothes[]>();
+    const [catalog, setCatalog] = useState<Product[]>();
+    const [products, setProducts] = useState<Product[]>();
+    const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Product[]>();
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products/`)
         .then((res) => {
             setCatalog(res.data);
             filterCatalog(res.data);
@@ -38,20 +38,20 @@ export default function Catalog() {
         })
     }
     
-    const filterCatalog = (catalog: Clothes[]) => {
-        let productArray: Clothes[];
-        if (genre !== 'season'){
-            productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'neutral'));
+    const filterCatalog = (catalog: Product[]) => {
+        let productArray: Product[];
+        if (gender !== 'season'){
+            productArray = catalog.filter(x => (x.gender.toLowerCase() == gender || x.gender == 'neutral'));
         } else{
-            productArray = catalog.filter(x => (x.seasonal == true));
+            productArray = catalog.filter(x => (x.onSeasonal == true));
         }
         if(category == 'season'){
-            productArray = productArray.filter(x => x.seasonal == true);
+            productArray = productArray.filter(x => x.onSeasonal == true);
         } else if (category != undefined) {
-            productArray = productArray.filter(x => x.class == category);
+            productArray = productArray.filter(x => x.category == category);
         }
-        if(type != undefined){
-            productArray = productArray.filter(x => x.type == type);
+        if(subcategory != undefined){
+            productArray = productArray.filter(x => x.subcategory == subcategory);
         }
         setProducts(productArray);
         setSizeFilteredProducts(productArray);
@@ -63,14 +63,14 @@ export default function Catalog() {
         } else{
             fetchCatalog();
         }
-    }, [genre, category, type])
+    }, [gender, category, subcategory])
 
-    const handleUpdateProducts = (data: Clothes[]) => {
+    const handleUpdateProducts = (data: Product[]) => {
         setSizeFilteredProducts(data);
     }
 
     let banner;
-    switch(genre){
+    switch(gender){
         case 'man':
             banner = ManImg;
             break;
@@ -97,11 +97,11 @@ export default function Catalog() {
 
                 {category ? 
                 <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
-                    {genre}
+                    {gender}
                 </div> 
                 : 
                 <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
-                    {genre}
+                    {gender}
                 </div>
                 }
 
@@ -113,9 +113,9 @@ export default function Catalog() {
                 undefined
                 }
 
-                {type ? 
+                {subcategory ? 
                 <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 self-center justify-self-center mt-[65px] md:mt-[230px]'>
-                    {type}
+                    {subcategory}
                 </div> 
                 : 
                 undefined
@@ -132,25 +132,25 @@ export default function Catalog() {
                     <div 
                     key={item.id}
                     className='cursor-pointer transition duration-200 h-[275px] md:h-[350px] w-[175px] md:w-[225px] flex relative flex-col bg-zinc-200 hover:bg-zinc-300 border-zinc-400 hover:border-zinc-500 text-zinc-700 hover:text-zinc-800 border-2' 
-                    onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
+                    onClick={() => navigate('/' + item.gender.toLowerCase() + '/' + item.category + '/' + item.subcategory + '/' + item.id)}>
                         <div className="h-2/3 md:h-3/4 overflow-y-hidden bg-white items-center flex">
                             <img
                             className="mx-auto"
                             src={`${item.image}`}
                             srcSet={`${item.image}`}
-                            alt={item.title}
+                            alt={item.name}
                             loading="lazy"
                             />
                         </div>
                         <div
                         className='mx-2 py-2 flex flex-col absolute bottom-[2px]'>
-                            <span className="font-semibold">{item.title}</span>
-                            {item.sale ?
+                            <span className="font-semibold">{item.name}</span>
+                            {item.onSale ?
                             <div className="flex flex-row gap-x-2">
-                                <span>
-                                    {item.sale}€
+                                <span className="font-bold text-red-600">
+                                    ON SALE
                                 </span> 
-                                <span className="line-through decoration-2 decoration-red-600/70">
+                                <span>
                                     {item.price}€
                                 </span>
                             </div>

@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 
-export default function AdminProtectedRoute() {
+export default function EditorProtectedRoute() {
     const navigate = useNavigate();
     const { user } = useUser();
-    if (user && user.admin){
+    if (user && user.role !== 'BASIC'){
         return (
             <>
             <div className="w-full relative flex items-center justify-center">

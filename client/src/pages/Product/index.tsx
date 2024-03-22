@@ -9,15 +9,15 @@ import AddToCart from "./AddToCart";
 import RelatedItems from "./RelatedItems";
 
 function Product() {
-    const genre = useParams().genre;
+    const gender = useParams().gender;
     const category = useParams().category;
     const id = useParams().product;
 
-    const [product, setProduct] = useState<CartClothes>();
-    const [catalog, setCatalog] = useState<Clothes[]>();
+    const [product, setProduct] = useState<CartProduct>();
+    const [catalog, setCatalog] = useState<Product[]>();
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
         .then((res) => {
             setCatalog(res.data);
         })
@@ -38,7 +38,7 @@ function Product() {
 
     useEffect(() => {
         if(id){
-            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/item/${id}`)
+            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
             .then((res) => {
                 setProduct(res.data);
             })
@@ -63,7 +63,7 @@ function Product() {
                     className='mx-auto'
                     src={`${product.image}`}
                     srcSet={`${product.image}`}
-                    alt={product.title}
+                    alt={product.name}
                     loading="lazy"
                     />
                 </div>
@@ -76,7 +76,7 @@ function Product() {
                         }
                     </div>
                     <div className="justify-between p-2 flex text-lg font-bold border-t-2 border-zinc-400 md:mt-4 md:pt-4">
-                        <div>{product.title}</div>
+                        <div>{product.name}</div>
                         <div>
                             {product.sale ?
                             <div className="flex gap-x-2">
@@ -96,8 +96,8 @@ function Product() {
                 </div>
             </div>
             : <Skeleton variant="rectangular" />}
-            {catalog && product && genre && category &&
-            <RelatedItems catalog={catalog} item={product} genre={genre} category={category} />}
+            {catalog && product && gender && category &&
+            <RelatedItems catalog={catalog} item={product} gender={gender} category={category} />}
         </div>
     )
 }

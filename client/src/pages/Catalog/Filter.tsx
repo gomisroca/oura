@@ -1,8 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 
 interface Props {
-    products: Clothes[];
-    updateProducts: (products: Clothes[]) => void;
+    products: Product[];
+    updateProducts: (products: Product[]) => void;
 }
 
 export default function Filter({ products, updateProducts }: Props) {

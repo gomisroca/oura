@@ -3,36 +3,36 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
 
-export default function Admin() {
+export default function EditorProductUpload() {
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
-    const [genres, setGenres] = useState<string[]>();
-    const [classes, setClasses] = useState<string[]>();
-    const [types, setTypes] = useState<string[]>();
+    const [genders, setGenders] = useState<string[]>();
+    const [categories, setCategories] = useState<string[]>();
+    const [subcategories, setSubcategories] = useState<string[]>();
     const [sale, setSale] = useState<boolean>(false);
 
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
         .then((res) => {
-            let genreArray: string[] = [];
-            let classArray: string[] = [];
-            let typeArray: string[] = [];
+            let genderArray: string[] = [];
+            let categoryArray: string[] = [];
+            let subcategoryArray: string[] = [];
 
             for(const product of res.data){
-                if (!genreArray.includes(product.genre.toLowerCase())){
-                    genreArray.push(product.genre.toLowerCase())
+                if (!genderArray.includes(product.gender.toLowerCase())){
+                    genderArray.push(product.gender.toLowerCase())
                 }
-                if (!classArray.includes(product.class.toLowerCase())){
-                    classArray.push(product.class.toLowerCase())
+                if (!categoryArray.includes(product.category.toLowerCase())){
+                    categoryArray.push(product.category.toLowerCase())
                 }
-                if (!typeArray.includes(product.type.toLowerCase())){
-                    typeArray.push(product.type.toLowerCase())
+                if (!subcategoryArray.includes(product.subcategory.toLowerCase())){
+                    subcategoryArray.push(product.subcategory.toLowerCase())
                 }
             }
-            setGenres(genreArray);
-            setClasses(classArray);
-            setTypes(typeArray);
+            setGenders(genderArray);
+            setCategories(categoryArray);
+            setSubcategories(subcategoryArray);
         })
         .catch(error => {
             if(error.response){
@@ -56,19 +56,18 @@ export default function Admin() {
         if(media){
             Array.from(media).forEach(file => formData.append('media', file))
         }
-        formData.append('product_name', form.product_name.value);
+        formData.append('name', form.p_name.value);
         formData.append('price', form.price.value);
-        if(form.sale){
-            formData.append('sale', form.sale.value);
-        }
         formData.append('description', form.description.value);
-        formData.append('genre', form.genre.value);
-        formData.append('class', form.class.value);
-        formData.append('type', form.type.value);
-        formData.append('seasonal', form.seasonal.checked)
+        formData.append('addSizes', form.addSizes.checked);
+        formData.append('stock', form.stock.value);
+        formData.append('gender', form.gender.value);
+        formData.append('category', form.category.value);
+        formData.append('subcategory', form.subcategory.value);
+        formData.append('onSeasonal', form.onSeasonal.checked);
         console.log(formData)
 
-        await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/` , formData).then(res => {
+        await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/products/` , formData).then(res => {
             if(res.status === 201){
                 setSuccessPrompt(true);
             }
@@ -95,7 +94,7 @@ export default function Admin() {
                     Name
                 </label>
                 <input 
-                name="product_name" 
+                name="p_name" 
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
@@ -109,24 +108,6 @@ export default function Admin() {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div>
-                <label className="uppercase font-bold mr-4">
-                    On Sale?
-                </label> 
-                <input type="checkbox" onChange={() => setSale(!sale)}></input>
-            </div>
-            {sale ?
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
-                    Sale Price
-                </label>
-                <input 
-                name="sale"
-                step="0.01"
-                type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-            </div>
-            : null}
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Description
@@ -135,41 +116,61 @@ export default function Admin() {
                 name="description"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
+            <div className="flex flex-row">
+                <label className="uppercase font-bold mr-4">
+                    Add Sizes?
+                </label>
+                <input 
+                type="checkbox" 
+                name="addSizes"
+                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                defaultChecked={false} 
+                />
+            </div>
+            <div className="flex flex-col">
+                <label className="uppercase font-bold mb-2">
+                    Stock
+                </label>
+                <input 
+                name="stock"
+                type="number"
+                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+            </div>
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Gender
                 </label>
-                {genres ?
+                {genders ?
                 <Autocomplete
-                id="genre"
+                id="gender"
                 freeSolo
-                options={genres.map(genre => genre.toUpperCase())}
+                options={genders.map(gender => gender.toUpperCase())}
                 renderInput={(params) => <TextField {...params} />}
                 />
                 : null }
             </div>            
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
-                    Class
+                    Category
                 </label>
-                {classes ?
+                {categories ?
                 <Autocomplete
-                id="class"
+                id="category"
                 freeSolo
-                options={classes.map(x => x.toUpperCase())}
+                options={categories.map(category => category.toUpperCase())}
                 renderInput={(params) => <TextField {...params} />}
                 />
                 : null }
             </div>
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
-                    Type
+                    Subcategory
                 </label>
-                {types ?
+                {subcategories ?
                 <Autocomplete
-                id="type"
+                id="subcategory"
                 freeSolo
-                options={types.map(type => type.toUpperCase())}
+                options={subcategories.map(subcategory => subcategory.toUpperCase())}
                 renderInput={(params) => <TextField {...params} />}
                 />
                 : null }
@@ -180,7 +181,7 @@ export default function Admin() {
                 </label>
                 <input 
                 type="checkbox" 
-                name="seasonal"
+                name="onSeasonal"
                 className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 defaultChecked={false} 
                 />

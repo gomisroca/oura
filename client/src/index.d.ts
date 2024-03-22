@@ -1,19 +1,10 @@
 type Category = {
-    classes: {
-        id: string;
-        name: string;
-        types: string[];
-    }[];
-    genre: string;
-    header: string;
-    url: string;
+    [category: string]: string[];
 }
 
 type Color = {
     amount: number;
     name: string;
-    class: string;
-    [key: string]: string[];
 }
   
 type Size = {
@@ -21,25 +12,25 @@ type Size = {
     colors: Color[];
 }
 
-type Clothes = {
+type Product = {
     id: string;
-    title: string;
-    price: number;
-    sale: number;
+    name: string;
     description: string;
-    genre: string;
-    class: string;
-    type: string;
-    seasonal: boolean;
     image: string;
-    sizes: Size[];
+    gender: string;
+    category: string;
+    subcategory: string;
+    price: number;
     sales: number;
+    sizes: Size[];
+    onSale: boolean;
+    onSeasonal: boolean;
 }
 
-interface CartClothes extends Clothes {
+interface CartProduct extends Product {
     cartID: string;
-    chosenSize?: string;
-    chosenColor?: string;
+    size?: string;
+    color?: string;
 }
 
 type Order = {
@@ -55,8 +46,8 @@ type LoginFormData = {
 }
 
 type RegisterFormData = {
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     email: string,
     password: string,
 }

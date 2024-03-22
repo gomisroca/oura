@@ -19,8 +19,8 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
         const form = event.currentTarget;
 
         let formData: RegisterFormData = {
-            "first_name": form.first_name.value,
-            "last_name": form.last_name.value,
+            "firstName": form.firstName.value,
+            "lastName": form.lastName.value,
             "email": form.email.value,
             "password": form.password.value,
         }
@@ -41,14 +41,14 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
                             sx={{margin: "8px"}}
                             required
                             label="First Name"
-                            name="first_name"
+                            name="firstName"
                             type="text"
                         />
                         <TextField
                             sx={{margin: "8px"}}
                             required
                             label="Last Name"
-                            name="last_name"
+                            name="lastName"
                             type="text"
                         />
                         <TextField

@@ -11,7 +11,7 @@ export default function Cart() {
     const [cartEl, setCartEl] = useState<null | HTMLElement>(null);
     const openCart = Boolean(cartEl);
     
-    let cart: CartClothes[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
 
     let totalCartPrice = 0;
     for (let i = 0; i < cart.length; i++) {
@@ -79,25 +79,25 @@ export default function Cart() {
                         key={item.cartID}>
                             <div 
                             className='h-[120px] py-2 px-4 w-full flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
-                            onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
+                            onClick={() => navigate('/' + item.gender.toLowerCase() + '/' + item.category + '/' + item.subcategory + '/' + item.id)}>
                                 <div className='w-[50px]'>
                                     <img
                                     className='max-w-[50px] max-h-[50px]'
                                     src={`${item.image}`}
                                     srcSet={`${item.image}`}
-                                    alt={item.title}
+                                    alt={item.name}
                                     loading="lazy" />
                                 </div>
                                 <div className='text-left self-center px-5'>
-                                    <span className='font-bold'>{item.title}</span>
+                                    <span className='font-bold'>{item.name}</span>
                                     <br />
                                     <div className='flex gap-x-2 text-sm items-center'>
                                         <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
-                                        {item.chosenSize ?
-                                        <span>{item.chosenSize.toUpperCase()}</span>
+                                        {item.size ?
+                                        <span>{item.size.toUpperCase()}</span>
                                         : null }
-                                        {item.chosenColor ?
-                                        <span>{item.chosenColor.toUpperCase()}</span>
+                                        {item.color ?
+                                        <span>{item.color.toUpperCase()}</span>
                                         : null}
                                     </div>
                                 </div>

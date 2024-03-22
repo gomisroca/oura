@@ -31,15 +31,14 @@ function DesktopLayout({ categories }: Props) {
                     SPRING COLLECTION
                 </span>
                 <div className='flex flex-row'>
-                    {categories ?
-                    categories.slice(0,3).map(category => (
+                    {categories &&
+                    Object.keys(categories).map(gender => (
                         <button 
                         className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
-                        onClick={() => navigate(`/${category.genre}/season`)}>
-                            {category.genre.toUpperCase()}
+                        onClick={() => navigate(`/${gender}/season`)}>
+                            {gender.toUpperCase()}
                         </button>
-                    ))
-                    : null}
+                    ))}
                 </div>
             </div>
         </div>

@@ -3,10 +3,11 @@ import Menu from '@mui/material/Menu';
 import { useNavigate } from "react-router-dom";
 
 interface Props {
-    category: Category
+    gender: string;
+    categories: Category;
 }
 
-export default function CategoryMenu({ category }: Props) {
+export default function CategoryMenu({ gender, categories }: Props) {
     const navigate = useNavigate();
 
     // Main Menus
@@ -39,8 +40,8 @@ export default function CategoryMenu({ category }: Props) {
         aria-haspopup="true"
         aria-expanded={openMainMenu ? 'true' : undefined}
         onClick={handleMainMenu}>
-            {category &&
-            <span className="uppercase text-[0.75rem] md:text-[1rem]">{category.genre}</span>
+            {gender &&
+            <span className="uppercase text-[0.75rem] md:text-[1rem]">{gender}</span>
             }
         </div>
         <Menu
@@ -52,37 +53,37 @@ export default function CategoryMenu({ category }: Props) {
             <div className="flex flex-col">
                 <div 
                 className="p-2 border-b-2 border-green-500/20 bg-green-200 hover:bg-green-300 cursor-pointer" 
-                onClick={() => navigate(`${category.genre}/season`)}>
+                onClick={() => navigate(`${gender}/season`)}>
                     <span className="uppercase text-sm">
                         Season
                     </span>
                 </div>
                 <div 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
-                onClick={() => navigate(`${category.genre}`)}>
+                onClick={() => navigate(`${gender}`)}>
                     <span className="uppercase text-sm">
                         All
                     </span>
                 </div>
-                {category && category.classes && 
-                category.classes.map(subcategory => (
-                <div key={subcategory.id}>
+                {categories && 
+                Object.entries(categories).map(subcategory => (
+                <div key={subcategory[0]}>
                     <div   
                     className='hover:bg-zinc-300 cursor-pointer p-2 border-b-2 border-zinc-400'
-                    aria-controls={openSubMenu ? subcategory.name : undefined}
+                    aria-controls={openSubMenu ? subcategory[0] : undefined}
                     aria-haspopup="true"
                     aria-expanded={openSubMenu ? 'true' : undefined}
-                    onClick={(event) => handleSubMenu(event, subcategory.name)}>
+                    onClick={(event) => handleSubMenu(event, subcategory[0])}>
                         <span className="uppercase text-sm">
-                            {subcategory.name}
+                            {subcategory[0]}
                         </span>
                     </div>
                     <Menu
                     PaperProps={{ sx: { borderRadius: 0 } }}
                     MenuListProps={{ sx: { py: 0 } }}
-                    id={subcategory.name}
+                    id={subcategory[0]}
                     anchorEl={subMenuEl}
-                    open={openSubMenu && subMenuKey === subcategory.name}
+                    open={openSubMenu && subMenuKey === subcategory[0]}
                     onClose={handleSubMenuClose}
                     anchorOrigin={{
                         vertical: 'center',
@@ -95,15 +96,15 @@ export default function CategoryMenu({ category }: Props) {
                         <div className="flex flex-col">
                             <div 
                             className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                            onClick={() => navigate(`${category.genre}/${subcategory.name}`)}>
+                            onClick={() => navigate(`${gender}/${subcategory[0]}`)}>
                                 <span className="uppercase text-sm">All</span>
                             </div>
-                            {subcategory.types.map((type, index) => (
+                            {subcategory[1].map((sub: string) => (
                                 <div 
-                                key={index} 
+                                key={sub} 
                                 className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                                onClick={() => navigate(`${category.genre}/${subcategory.name}/${type}`)}>
-                                    <span className="uppercase text-sm">{type}</span>
+                                onClick={() => navigate(`${gender}/${subcategory[0]}/${sub}`)}>
+                                    <span className="uppercase text-sm">{sub}</span>
                                 </div>
                             ))}
                         </div>

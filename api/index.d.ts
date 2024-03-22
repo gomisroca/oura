@@ -1,13 +1,13 @@
 import { Request } from 'express';
 
 interface RequestUser {
-    user_id: string;
+    id: string;
     email: string;
-    first_name: string;
-    last_name: string;
-    admin: boolean;
+    firstName: string;
+    lastName: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
     iat: number;
-    exp: number;
+    exp?: number;
 }
 
 export interface AuthedRequest extends Request {

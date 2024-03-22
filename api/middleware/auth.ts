@@ -1,22 +1,25 @@
 const jwt = require("jsonwebtoken");
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { NextFunction, RequestHandler, Response } from 'express';
+import { AuthedRequest } from '../index';
 
-interface TestRequest extends Request {
-    user?: any;
-}
-
-const verifyToken: RequestHandler = (req: TestRequest, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(400).send("A token is required for authentication");
-    } else {
-        try {
-            const decodedUserData = jwt.verify(token, process.env.TOKEN_KEY);
-            req.user = decodedUserData;
-            return next();
-        } catch (err) {
-            return res.status(401).send("Invalid Token");
+const verifyToken: RequestHandler = (req: AuthedRequest, res: Response, next: NextFunction) => {
+    let authHeader: string | undefined = req.headers.authorization;
+    let token: string;
+    if (authHeader && authHeader.startsWith("Bearer ")){
+        token = authHeader.substring(7, authHeader.length);
+        if (!token) {
+            return res.status(400).send("A token is required for authentication");
+        } else {
+            try {
+                const decodedUserData = jwt.verify(token, process.env.TOKEN_KEY);
+                req.user = decodedUserData;
+                return next();
+            } catch (err) {
+                return res.status(401).send("Invalid Token");
+            }
         }
+    } else{
+        return res.status(401).send("Invalid Token");
     }
 };
 

@@ -12,7 +12,7 @@ export default function Checkout() {
         setAddressPassed(proceed)
     }
 
-    let cart: CartClothes[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
 
     if(user){
         return (

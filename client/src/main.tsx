@@ -14,8 +14,8 @@ import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Legal from './pages/Legal';
 import OrderHistory from './pages/OrderHistory';
-import AdminProtectedRoute from './pages/Admin/AdminProtectedRoute';
-import Admin from './pages/Admin';
+import EditorProtectedRoute from './pages/Editor/EditorProtectedRoute';
+import EditorProductUpload from './pages/Editor/EditorProductUpload';
 import CatalogFilteredRoute from './pages/Catalog/CatalogFilteredRoute';
 
 const router = createBrowserRouter([
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/:genre/:category?/:type?",
+            path: "/:gender/:category?/:subcategory?",
             element: <CatalogFilteredRoute />,
             errorElement: <Error />,
             children:[
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
             ]
         },
         {
-            path: "/:genre/:category/:type/:product",
+            path: "/:gender/:category/:subcategory/:product",
             element: <Product />,
             errorElement: <Error />,
         },
@@ -64,13 +64,13 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/admin", 
-            element: <AdminProtectedRoute />,
+            path: "/restricted", 
+            element: <EditorProtectedRoute />,
             errorElement: <Error />,
             children:[
                 {
-                    path: "",
-                    element: <Admin />
+                    path: "upload",
+                    element: <EditorProductUpload />
                 },
             ]
         },

@@ -8,11 +8,11 @@ import axios from "axios";
 export default function NavMenu() {
     const navigate = useNavigate();
 
-    const [categoryData, setCategoryData] = useState<Category[]>();
+    const [categories, setCategories] = useState<Category[]>();
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
         .then((res) => {
-            setCategoryData(res.data);
+            setCategories(res.data);
         })
         .catch(error => {
             if(error.response){
@@ -36,11 +36,10 @@ export default function NavMenu() {
                 OURA
             </div>
             <div className="my-auto flex flex-row items-center">
-                {categoryData &&
-                categoryData.slice(0,3).map(category => (
-                    <CategoryMenu category={category} />
-                ))
-                }
+                {categories &&
+                Object.entries(categories).map(([gender, categories]) => (
+                    <CategoryMenu gender={gender} categories={categories} />
+                ))}
             </div>
             <div className="absolute right-0 self-center">
                 <UserMenu />

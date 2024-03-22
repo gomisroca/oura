@@ -4,42 +4,45 @@ import { Outlet, useParams } from "react-router-dom";
 import Error from "../Error";
 
 export default function CatalogFilteredRoute() {
-    const genre = useParams().genre;
+    const gender = useParams().gender;
     const category = useParams().category;
-    const type = useParams().type;
+    const subcategory = useParams().subcategory;
 
     const [canPass, setCanPass] = useState<boolean>(false);
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories`)
         .then((res) => {
-            const categories = res.data;
-            let genreArray: string[] = [];
-            let classArray: string[] = [];
-            let typeArray: string[] = [];
+            
+            const dataArray = Object.entries(res.data);
 
-            for(const category of categories){
-                if (!genreArray.includes(category.genre.toLowerCase())){
-                    genreArray.push(category.genre.toLowerCase())
+            let genderArray: string[] = [];
+            let categoryArray: string[] = [];
+            let subcategoryArray: string[] = [];
+
+            for(const [gender, categories] of dataArray){
+                if (!genderArray.includes(gender.toLowerCase())){
+                    genderArray.push(gender.toLowerCase());
                 }
-                for(const categoryClass of category.classes){
-                    if (!classArray.includes(categoryClass.name.toLowerCase())){
-                        classArray.push(categoryClass.name.toLowerCase())
+                const categoriesArray = Object.entries(categories as Record<string, any>);
+                for(const [category, subcategories] of categoriesArray){
+                    if (!categoryArray.includes(category.toLowerCase())){
+                        categoryArray.push(category.toLowerCase());
                     }
-                    for(const classType of categoryClass.types){
-                        if (!typeArray.includes(classType.toLowerCase())){
-                            typeArray.push(classType.toLowerCase())
+                    for(const subcategory of subcategories){
+                        if (!subcategoryArray.includes(subcategory.toLowerCase())){
+                            subcategoryArray.push(subcategory.toLowerCase())
                         }
                     }
                 }
             }
 
-            classArray.push('season');
-            if(type && category && genre && typeArray.includes(type) && classArray.includes(category) && genreArray.includes(genre)){
+            categoryArray.push('season');
+            if(subcategory && category && gender && subcategoryArray.includes(subcategory) && categoryArray.includes(category) && genderArray.includes(gender)){
                 setCanPass(true)
-            }else if(!type && category && genre && classArray.includes(category) && genreArray.includes(genre)){
+            }else if(!subcategory && category && gender && categoryArray.includes(category) && genderArray.includes(gender)){
                 setCanPass(true)
-            }else if(!type && !category && genre && genreArray.includes(genre)){
+            }else if(!subcategory && !category && gender && genderArray.includes(gender)){
                 setCanPass(true)
             }
             else{
@@ -58,7 +61,7 @@ export default function CatalogFilteredRoute() {
     }
     useEffect(() => {
         fetchCatalog();
-    }, [genre, category, type])
+    }, [gender, category, subcategory])
 
     if(canPass){
         return (

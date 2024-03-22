@@ -8,7 +8,7 @@ import Fade from '@mui/material/Fade';
 import { SnackbarCloseReason } from '@mui/base';
 
 interface Props {
-    item: CartClothes;
+    item: CartProduct;
     activeSize: string | null;
 }
 
@@ -24,12 +24,12 @@ export default function ColorMenu({ item, activeSize }: Props) {
     }, [item, activeSize])
   
     
-    const addToCart = (item: CartClothes, color: string) => {
+    const addToCart = (item: CartProduct, color: string) => {
         setOpen(true);
 
-        let cart: CartClothes[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+        let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
         item.cartID = (Math.random() * 9999).toString();
-        item.chosenColor = color;
+        item.color = color;
         cart.push(item);
         localStorage.setItem('oura_cart', JSON.stringify(cart));
     }
@@ -86,7 +86,7 @@ export default function ColorMenu({ item, activeSize }: Props) {
                 open={open}
                 autoHideDuration={5000}
                 onClose={e => handleClose}
-                message={'Added ' + item.title + ' to Cart'}
+                message={'Added ' + item.name + ' to Cart'}
                 action={action}
             />
         </div>

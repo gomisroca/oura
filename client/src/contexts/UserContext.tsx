@@ -3,10 +3,10 @@ import { createContext, useState, useEffect, useContext, PropsWithChildren } fro
 import { Cookies, useCookies } from 'react-cookie';
 
 interface UserData {
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    admin: boolean;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
 }
 
 interface UserContext {
@@ -33,13 +33,13 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const getUserInfo = async(): Promise<unknown | void> => {
         try {
-            await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/user/info`)
+            await axios.get<UserData>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/info`)
             .then(res => {
                 let userData: UserData = {
-                    first_name: res.data.first_name,
-                    last_name: res.data.last_name,
+                    firstName: res.data.firstName,
+                    lastName: res.data.lastName,
                     email: res.data.email,
-                    admin: res.data.admin
+                    role: res.data.role
                 }
                 setUser(userData);
             })
@@ -56,7 +56,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {
         try{
-            let registered = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/register/`, credentials)
+            let registered: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/register/`, credentials)
             .then(res => {
                 if (res.status === 201) {
                     removeCookie('oura__access_token__', { path: '/' });
@@ -86,7 +86,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            let loggedIn = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/login/`, credentials)
+            let loggedIn: boolean = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/login/`, credentials)
             .then(res => {
                 const expiry = new Date();
                 if (credentials.keepAlive){
@@ -143,7 +143,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     useEffect(() => {
         if(accessToken){
-            axios.defaults.headers.common['Authorization'] = `${accessToken}`;
+            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             getUserInfo();
         }
       }, [accessToken]);

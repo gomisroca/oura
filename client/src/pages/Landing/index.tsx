@@ -6,13 +6,12 @@ import axios from "axios";
 
 function Landing() {
     const isMobile = useIsMobile();
-    const [categories, setCategoryData] = useState();
+    const [categories, setCategories] = useState<Category[]>();
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
+        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories`)
         .then((res) => {
-            console.log(res.data)
-            setCategoryData(res.data);
+            setCategories(res.data);
         })
         .catch(error => {
             if(error.response){

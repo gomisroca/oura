@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade';
 import { useState } from 'react';
 import { SnackbarCloseReason } from '@mui/base';
 
-interface item extends Clothes {
+interface item extends Product {
     cartID?: string;
 }
 interface Props {
@@ -21,9 +21,9 @@ export default function AddToCart({ item }: Props) {
         setOpen(true);
 
         item.cartID = (Math.random() * 9999).toString();
-        let cart: CartClothes[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+        let cart: CartProduct[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
         if(item.cartID){
-            cart.push(item as CartClothes);
+            cart.push(item as CartProduct);
             localStorage.setItem('oura_cart', JSON.stringify(cart));
         }
     }
@@ -64,7 +64,7 @@ export default function AddToCart({ item }: Props) {
             open={open}
             autoHideDuration={5000}
             onClose={e => handleClose}
-            message={'Added ' + item.title + ' to Cart'}
+            message={'Added ' + item.name + ' to Cart'}
             action={action}
             />
         </div>

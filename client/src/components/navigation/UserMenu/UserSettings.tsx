@@ -7,8 +7,8 @@ interface Props {
 }
 
 interface FormData {
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     email: string,
     old_password?: string,
     new_password?: string,
@@ -17,8 +17,8 @@ interface FormData {
 export default function UserSettings({ onSettingsToggle }: Props) {
     const { user, updateToken } = useUser();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
-    const [first_name, setFirstName] = useState<string | undefined>(user?.first_name);
-    const [last_name, setLastName] = useState<string | undefined>(user?.last_name);
+    const [firstName, setFirstName] = useState<string | undefined>(user?.firstName);
+    const [lastName, setLastName] = useState<string | undefined>(user?.lastName);
     const [email, setEmail] = useState<string | undefined>(user?.email);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -26,8 +26,8 @@ export default function UserSettings({ onSettingsToggle }: Props) {
         const form = event.currentTarget;
 
         let data: FormData = {
-            first_name: form.first_name.value,
-            last_name: form.last_name.value,
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
             email: form.email.value
         }
         if(form.old_password.value && form.new_password.value){
@@ -57,9 +57,9 @@ export default function UserSettings({ onSettingsToggle }: Props) {
                         First Name
                     </label>
                     <input 
-                    name="first_name" 
+                    name="firstName" 
                     type="text"
-                    value={first_name}
+                    value={firstName}
                     onChange={(e) => { setFirstName(e.target.value) }}
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
                 </div>
@@ -68,9 +68,9 @@ export default function UserSettings({ onSettingsToggle }: Props) {
                         Last Name
                     </label>
                     <input 
-                    name="last_name" 
+                    name="lastName" 
                     type="text"
-                    value={last_name}
+                    value={lastName}
                     onChange={(e) => { setLastName(e.target.value) }}
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
                 </div>

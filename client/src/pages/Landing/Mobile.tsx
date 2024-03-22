@@ -29,15 +29,14 @@ function MobileLayout({ categories }: Props) {
                     SPRING COLLECTION
                 </span>
                 <div className='flex flex-col gap-4'>
-                    {categories ?
-                    categories.slice(0,3).map(category => (
+                    {categories &&
+                    Object.keys(categories).map(gender => (
                         <button 
                         className='border-2 border-zinc-200 hover:border-zinc-300 border-solid p-2 md:px-5 text-[1.5rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
-                        onClick={() => navigate(`/${category.genre}/season`)}>
-                            {category.genre.toUpperCase()}
+                        onClick={() => navigate(`/${gender}/season`)}>
+                            {gender.toUpperCase()}
                         </button>
-                    ))
-                    : null}
+                    ))}
                 </div>
             </div>
         </div>
