@@ -16,7 +16,7 @@ export default function FormPayment() {
         axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/update`, cart)
         .then(res => {
             if(res.status === 200){
-                axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/purchase`, cart)
+                axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/purchase`, cart)
                 .then(res => {
                     if(res.status === 200){
                         setOrderConfirmed(true);

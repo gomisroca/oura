@@ -8,7 +8,7 @@ export default function OrderHistory() {
 
     const fetchOrders = () => {
         try{
-            axios.get<Order[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/orders`)
+            axios.get<Order[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/orders`)
             .then(res => {
                 console.log(res.data)
                 setOrders(res.data)

@@ -33,7 +33,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const getUserInfo = async(): Promise<unknown | void> => {
         try {
-            await axios.get<UserData>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/info`)
+            await axios.get<UserData>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/info`)
             .then(res => {
                 let userData: UserData = {
                     firstName: res.data.firstName,
@@ -56,7 +56,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {
         try{
-            let registered: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/register/`, credentials)
+            let registered: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/register/`, credentials)
             .then(res => {
                 if (res.status === 201) {
                     removeCookie('oura__access_token__', { path: '/' });
@@ -86,7 +86,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            let loggedIn: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/login/`, credentials)
+            let loggedIn: boolean = await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login/`, credentials)
             .then(res => {
                 const expiry = new Date();
                 if (credentials.keepAlive){

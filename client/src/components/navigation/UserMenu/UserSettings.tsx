@@ -35,7 +35,7 @@ export default function UserSettings({ onSettingsToggle }: Props) {
             data.new_password = form.new_password.value;
         }
 
-        await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/user/update`, data).then(res => {
+        await axios.post<string>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/update`, data).then(res => {
             if(res.status === 200){
                 setSuccessPrompt(true);
                 updateToken(res.data)
