@@ -56,3 +56,20 @@ type User = {
     email: string;
     role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
 }
+
+interface HomepageSettings {
+    id: string;
+    categories: string[];
+    image: string;
+}
+
+interface CategorySettings {
+    id: string;
+    category: string;
+    image: string;
+}
+
+interface NavigationSettings {
+    id: string;
+    categories: string[];
+}
