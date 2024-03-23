@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 
-export default function EditorProtectedRoute() {
+export default function ProtectedRouteCheck() {
     const navigate = useNavigate();
     const { user } = useUser();
     if (user && user.role !== 'BASIC'){

@@ -14,9 +14,18 @@ import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Legal from './pages/Legal';
 import OrderHistory from './pages/OrderHistory';
-import EditorProtectedRoute from './pages/Editor/EditorProtectedRoute';
-import EditorProductUpload from './pages/Editor/EditorProductUpload';
+import ProtectedRouteCheck from './pages/Editor/ProtectedRouteCheck';
+import ProductUpload from './pages/Editor/ProductUpload';
 import CatalogFilteredRoute from './pages/Catalog/CatalogFilteredRoute';
+import EditorDashboard from './pages/Editor/EditorDashboard';
+import ProductUpdate from './pages/Editor/ProductUpdate';
+import ProductList from './pages/Editor/ProductList';
+import UserUpload from './pages/Editor/UserUpload';
+import UserEditList from './pages/Editor/UserEditList';
+import UserEdit from './pages/Editor/UserEdit';
+import CategoriesSettings from './pages/Editor/CategoriesSettings';
+import NavigationSettings from './pages/Editor/NavigationSettings';
+import HomepageSettings from './pages/Editor/HomepageSettings';
 
 const router = createBrowserRouter([
     {
@@ -64,13 +73,49 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/restricted", 
-            element: <EditorProtectedRoute />,
+            path: "/editor", 
+            element: <ProtectedRouteCheck />,
             errorElement: <Error />,
             children:[
                 {
-                    path: "upload",
-                    element: <EditorProductUpload />
+                    path: "",
+                    element: <EditorDashboard />
+                },
+                {
+                    path: "products",
+                    element: <ProductList />
+                },
+                {
+                    path: "products/upload",
+                    element: <ProductUpload />
+                },
+                {
+                    path: "products/:id",
+                    element: <ProductUpdate />
+                },
+                {
+                    path: "users",
+                    element: <UserEditList />
+                },
+                {
+                    path: "users/upload",
+                    element: <UserUpload />
+                },
+                {
+                    path: "users/:id",
+                    element: <UserEdit />
+                },
+                {
+                    path: "categories",
+                    element: <CategoriesSettings />
+                },
+                {
+                    path: "navigation",
+                    element: <NavigationSettings />
+                },
+                {
+                    path: "homepage",
+                    element: <HomepageSettings />
                 },
             ]
         },

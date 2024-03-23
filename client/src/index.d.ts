@@ -8,7 +8,7 @@ type Color = {
 }
   
 type Size = {
-    size: 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+    size: string;
     colors: Color[];
 }
 
@@ -47,4 +47,12 @@ type RegisterFormData = {
     lastName: string,
     email: string,
     password: string,
+}
+
+type User = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
 }

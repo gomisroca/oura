@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
 
-export default function EditorProductUpload() {
+export default function ProductUpload() {
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [genders, setGenders] = useState<string[]>();
