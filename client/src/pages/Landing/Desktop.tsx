@@ -2,10 +2,10 @@ import LandingImg from '../../assets/landing.jpg';
 import { useNavigate } from "react-router-dom";
 
 interface Props {
-    categories: Category[];
+    settings: HomepageSettings;
 }
 
-function DesktopLayout({ categories }: Props) {
+function DesktopLayout({ settings }: Props) {
     const navigate = useNavigate();
 
     return (
@@ -13,7 +13,7 @@ function DesktopLayout({ categories }: Props) {
             <div className='flex overflow-y-hidden h-full justify-center items-center'>
                 <img
                 className='h-[100vh] max-w-[unset]'
-                src={LandingImg}
+                src={settings.image}
                 alt="OURA Landing"
                 />
             </div>
@@ -31,8 +31,8 @@ function DesktopLayout({ categories }: Props) {
                     SPRING COLLECTION
                 </span>
                 <div className='flex flex-row'>
-                    {categories &&
-                    Object.keys(categories).map(gender => (
+                    {settings.categories &&
+                    settings.categories.map(gender => (
                         <button 
                         className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
                         onClick={() => navigate(`/${gender}/season`)}>
