@@ -122,9 +122,9 @@ export default function Account() {
                     <div>
                         <hr/>
                         <span 
-                        className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-green-500' 
-                        onClick={() => navigate(`/restricted/upload`)}>
-                            Upload Product
+                        className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-violet-300' 
+                        onClick={() => navigate(`/editor`)}>
+                            🔒 Dashboard
                         </span>
                         <hr/>
                     </div>
