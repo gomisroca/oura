@@ -25,7 +25,9 @@ const productsRouter = require('./routes/products');
 app.use('/products', productsRouter);
 const categoriesRouter = require('./routes/categories');
 app.use('/categories', categoriesRouter);
-const userRouter = require('./routes/user');
-app.use('/user', userRouter);
+const usersRouter = require('./routes/users');
+app.use('/users', usersRouter);
+const settingsRouter = require('./routes/settings');
+app.use('/settings', settingsRouter);
 
 app.listen(4030, () => console.log('API Server On'));

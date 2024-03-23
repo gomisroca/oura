@@ -13,3 +13,11 @@ interface RequestUser {
 export interface AuthedRequest extends Request {
     user?: RequestUser;
 }
+
+type ProductWithSizes = Prisma.ProductGetPayload<{
+    include: { sizes: { include: { colors: true } } }
+}>
+
+type SizeWithColors = Prisma.ProductSizeGetPayload<{
+    include: { colors: true }
+}>
