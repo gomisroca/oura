@@ -3,10 +3,10 @@ const router = express.Router()
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const verifyToken = require('../middleware/auth');
+const { verifyBasicToken, verifyAdminToken } = require('../middleware/auth');
 
-import { AuthedRequest } from '../index';
-import { PrismaClient, User } from '@prisma/client'
+import { AuthedRequest, ProductWithSizes } from '../index';
+import { Order, PrismaClient, ProductSize, SizeColor, User } from '@prisma/client'
 const prisma = new PrismaClient();
 
 interface RegisterInputs {
@@ -29,6 +29,17 @@ interface UpdateInputs{
     old_password?: string;
     new_password?: string;
 }
+
+router.get("/", verifyAdminToken, async (req: AuthedRequest, res: Response) => {
+    try{
+        const users: User[] = await prisma.user.findMany({});
+        res.status(200).json(users);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        await prisma.$disconnect();
+    }
+});
 
 router.post("/register", async (req: Request, res: Response) => {
     try {
@@ -127,7 +138,7 @@ router.post("/login", async (req: Request, res: Response) => {
                 }
                 res.status(200).json(access_token);
             } else {
-                res.status(400).send("INVALID_CREDENTIALS");
+                res.status(403).send("INVALID_CREDENTIALS");
             }
         }
     } catch (err) {
@@ -137,63 +148,149 @@ router.post("/login", async (req: Request, res: Response) => {
     }
 });
 
-router.get("/info", verifyToken, async (req: AuthedRequest, res: Response) => {
+router.get("/info", verifyBasicToken, async (req: AuthedRequest, res: Response) => {
     if(req.user){
         res.status(200).json(req.user);
     } else {
-        res.status(401).json('INVALID_CREDENTIALS')
+        res.status(403).json('INVALID_CREDENTIALS')
     }
 });
 
-// router.post("/purchase", verifyToken, async (req: AuthedRequest, res: Response) => {
-//     try{        
-//         let product_ids = [];
-//         for (const item of req.body){
-//            product_ids.push(item.id);
-//         }
+async function createOrder(userId: string) {
+    try {
+      // Create order with no products initially
+      const order: Order = await prisma.order.create({
+        data: {
+          userId: userId,
+        },
+      });
+  
+      return order.id;
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
+}
 
-//         await Order.create({
-//             user: req.user?.id,
-//             products: product_ids
-//         });
+async function addProductToOrder(orderId: string, productId: string) {
+    try {
+        // Add product to the order
+        const orderProduct = await prisma.orderProduct.create({
+            data: {
+                orderId: orderId,
+                productId: productId
+            },
+        });
+        console.log('Product added to order:', orderProduct);
+    } catch (error) {
+        console.error('Error adding product to order:', error);
+    }
+}
 
-//         res.sendStatus(200);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// });
+router.post("/purchase", verifyBasicToken, async (req: AuthedRequest, res: Response) => {
+    try{
+        const orderId: string | undefined = await createOrder(req.user!.id);
+        for (const item of req.body){
+           const product: ProductWithSizes | null = await prisma.product.findUnique({ 
+                where: {
+                    id: item.id,
+                },
+                include: {
+                    sizes: {
+                        include: {
+                            colors: true,
+                        }
+                    } 
+                }
+            });
 
-// router.get("/orders", verifyToken, async (req: AuthedRequest, res: Response) => {
-//     try {
-//         const allOrders = await Order.find();
-//         const allClothes = await Clothes.find();
+            if(product && orderId){
+                if(item.color && product.sizes){
+                    const chosenSize = product.sizes.find((size: ProductSize) => size.size == item.size);
+                    const chosenColor = (chosenSize?.colors.find((color: SizeColor) => color.name == item.color))
+                    if(chosenColor){
+                        await prisma.sizeColor.update({
+                            where: {
+                                id: chosenColor.id,
+                            },
+                            data:{
+                                amount: {
+                                    decrement: 1
+                                }
+                            }
+                        })
+                    }
+                }
+                
+                await prisma.product.update({ 
+                    where: {
+                        id: item.id,
+                    },
+                    data: {
+                        sales: {
+                            increment: 1
+                        }
+                    },
+                });
+                
+                await addProductToOrder(orderId, product.id);
+            } else{
+                res.status(404).json('PRODUCT_404')
+            }
+        }
 
-//         const matchingOrders = allOrders.find((order: any) => order.user === req.user?.id);
-//         const matchingProducts = [];
+        res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
+    }
+});
 
-//         for (const product of matchingOrders.products) {
-//             let matchingClothes = allClothes.find((item: any)=> item.id == product);
-//             matchingProducts.push(JSON.stringify(matchingClothes))
-//         }
+router.get("/orders", verifyBasicToken, async (req: AuthedRequest, res: Response) => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                userId: req.user!.id
+            }
+        })
 
-//         matchingOrders.products = matchingProducts
-//         res.json([matchingOrders])
-//     } catch (err) {
-//         console.log(err);
-//     }
-// });
+        res.json(orders)
+    } catch (err) {
+        console.log(err);
+    }
+});
 
-router.post("/update", verifyToken, async (req: AuthedRequest, res: Response) => {
+router.get("/:id", verifyAdminToken, async (req: AuthedRequest, res: Response) => {
+    try{
+        const user: User | null = await prisma.user.findUnique({
+            where: {
+                id: req.params.id
+            }
+        });
+        if (user){
+            res.status(200).json(user);
+        } else{
+            res.status(404).json('USER_404')
+        }
+    } catch (err) {
+        console.log(err);
+    } finally {
+        await prisma.$disconnect();
+    }
+});
+
+router.post("/:id", verifyBasicToken, async (req: AuthedRequest, res: Response) => {
     try{
         const { firstName, lastName, email, old_password, new_password }: UpdateInputs = req.body;
 
         const user: User | null = await prisma.user.findUnique({ 
             where: {
-                email: email.toLowerCase(),
+                id: req.params.id
             },
         })
-
+        
         if(user){
+            if(req.user!.id !== user.id && req.user!.role !== 'ADMIN'){
+                return res.status(403).json({ message: 'INVALID_CREDENTIALS'});
+            }
             if(firstName.toLowerCase() !== user.firstName.toLowerCase()){
                 user.firstName = firstName;
             }
@@ -235,13 +332,39 @@ router.post("/update", verifyToken, async (req: AuthedRequest, res: Response) =>
             );
             res.status(200).json(access_token);
         } else{
-            res.status(401).json('INVALID_CREDENTIALS')
+            res.status(403).json('INVALID_CREDENTIALS')
         }
     } catch (err) {
         console.log(err);
     } finally {
         await prisma.$disconnect();
     }
+});
+
+router.delete('/:id', verifyBasicToken, async(req: AuthedRequest, res: Response) => {
+    try{
+        const user: User | null = await prisma.user.findUnique({ 
+            where: {
+                id: req.params.id,
+            },
+        })
+        
+        if(user){
+            if(req.user!.id !== user.id && req.user!.role !== 'ADMIN'){
+                return res.status(403).json({ message: 'INVALID_CREDENTIALS'});
+            }
+            await prisma.user.delete({ 
+                where: {
+                    id: req.params.id,
+                }
+            });
+            res.sendStatus(200);
+        }
+    } catch(err: unknown){
+        res.status(500).json({message: err})
+    } finally {
+        await prisma.$disconnect();
+    }  
 });
 
 module.exports = router;
