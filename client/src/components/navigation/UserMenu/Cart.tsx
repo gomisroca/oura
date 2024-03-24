@@ -88,14 +88,14 @@ export default function Cart() {
                                 <div className='text-left self-center px-5'>
                                     <span className='font-bold'>{item.name}</span>
                                     <br />
-                                    <div className='flex gap-x-2 text-sm items-center'>
+                                    <div className='flex gap-x-2 items-center'>
                                         <span className='text-zinc-800 text-base'>{item.price}€</span>
-                                        {item.size ?
-                                        <span>{item.size.toUpperCase()}</span>
-                                        : null }
-                                        {item.color ?
-                                        <span>{item.color.toUpperCase()}</span>
-                                        : null}
+                                        {item.size &&
+                                        <span>{item.size.toUpperCase()}</span>}
+                                        {item.color &&
+                                        <span 
+                                        className={`rounded w-[25px] h-[15px] border-2 border-zinc-400 text-center bg-${item.color}-400`}>
+                                        </span>}
                                     </div>
                                 </div>
                             </div>

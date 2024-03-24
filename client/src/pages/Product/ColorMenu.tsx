@@ -14,12 +14,13 @@ interface Props {
 
 export default function ColorMenu({ item, activeSize }: Props) {
     const [open, setOpen] = useState<boolean>(false);  
-    const [sizes, setSizes] = useState<Size>();
+    const [size, setSize] = useState<Size>();
 
     useEffect(() => {
         if(activeSize){
             let size: Size | undefined = item.sizes.find(s => s.size === activeSize);
-            setSizes(size);
+            console.log(size)
+            setSize(size);
         }
     }, [item, activeSize])
   
@@ -57,23 +58,23 @@ export default function ColorMenu({ item, activeSize }: Props) {
 
     return(
         <div className='flex flex-row mx-auto justify-center text-zinc-700'>
-            {sizes ? 
-                Object.values(sizes).map((color: any) => (
+            {size ? 
+                size.colors.map((color: Color) => (
                     color.amount > 0 ?
                     <Tooltip 
-                    key={color._id} 
+                    key={color.id} 
                     TransitionComponent={Fade}
                     TransitionProps={{ timeout: 600 }}
                     title={color.name.toUpperCase()}>
                         <span
                         onClick={() => addToCart(item, color.name)}
-                        className={`rounded cursor-pointer w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[10px] ${color.class}`} 
+                        className={`rounded cursor-pointer w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[10px] bg-${color.name}-400`} 
                         ></span>
                     </Tooltip>
                     : 
                     <span
-                    key={color._id} 
-                    className={`rounded w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[2px] ${color.class} opacity-30`} 
+                    key={color.id} 
+                    className={`rounded w-[35px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 my-2 mx-[2px] bg-${color.name}-400 opacity-30`} 
                     ></span>
                 ))
                 : 
