@@ -1,13 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-interface CategorySettings {
-    id: string;
-    category: string;
-    image: string;
-}
+import { useNavigate } from "react-router-dom";
 
 export default function CategoriesSettings() {
+    const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>();
     const [settings, setSettings] = useState<CategorySettings[]>();
 
@@ -15,6 +11,7 @@ export default function CategoriesSettings() {
         await axios.get<Category[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
         .then((res) => {
             setCategories(res.data);
+            console.log(res.data)
         })
         .catch(error => {
             if(error.response){
@@ -53,7 +50,10 @@ export default function CategoriesSettings() {
         <div className="mt-5">
             {categories &&
             Object.entries(categories).map(([gender, categories]) => (
-                <div key={gender} className="p-2 border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 cursor-pointer">
+                <div 
+                onClick={() => navigate(gender)}
+                key={gender} 
+                className="p-2 border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 cursor-pointer">
                     <div className="uppercase text-sm py-2">Gender: {gender}</div>
                     {Object.entries(categories).map(category => (
                         <div 

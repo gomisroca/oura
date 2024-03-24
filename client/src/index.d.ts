@@ -1,8 +1,9 @@
 type Category = {
-    [category: string]: string[];
+    [category: string]: any;
 }
 
 type Color = {
+    id: string;
     amount: number;
     name: string;
 }
@@ -61,6 +62,8 @@ interface HomepageSettings {
     id: string;
     categories: string[];
     image: string;
+    sale: boolean;
+    saleText: string;
 }
 
 interface CategorySettings {

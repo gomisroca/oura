@@ -26,6 +26,7 @@ import UserEdit from './pages/Editor/UserEdit';
 import CategoriesSettings from './pages/Editor/CategoriesSettings';
 import NavigationSettings from './pages/Editor/NavigationSettings';
 import HomepageSettings from './pages/Editor/HomepageSettings';
+import CategoryEdit from './pages/Editor/CategoryEdit';
 
 const router = createBrowserRouter([
     {
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
                 {
                     path: "categories",
                     element: <CategoriesSettings />
+                },
+                {
+                    path: "categories/:category",
+                    element: <CategoryEdit />
                 },
                 {
                     path: "navigation",

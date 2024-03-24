@@ -26,18 +26,18 @@ router.get('/', async(req: Request, res: Response) => {
 
         const result: Record<string, GenderData> = allCategories.reduce((acc: Record<string, GenderData>, curr) => {
             const { gender, category, subcategory } = curr;
-            if (!acc[gender]) {
-                acc[gender] = {};
+            if (!acc[gender.toLowerCase()]) {
+                acc[gender.toLowerCase()] = {};
             }
-            if (!acc[gender][category]) {
-                acc[gender][category] = [];
+            if (!acc[gender.toLowerCase()][category.toLowerCase()]) {
+                acc[gender.toLowerCase()][category.toLowerCase()] = [];
             }
-            if (!acc[gender][category].includes(subcategory)) {
-                acc[gender][category].push(subcategory);
+            if (!acc[gender.toLowerCase()][category.toLowerCase()].includes(subcategory.toLowerCase())) {
+                acc[gender.toLowerCase()][category.toLowerCase()].push(subcategory.toLowerCase());
             }
             return acc;
         }, {});
-          
+        
         res.json(result);
     }catch(err: unknown){
         res.status(500).json({message: err})

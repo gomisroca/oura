@@ -53,14 +53,14 @@ export default function CategoryMenu({ gender, categories }: Props) {
             <div className="flex flex-col">
                 <div 
                 className="p-2 border-b-2 border-green-500/20 bg-green-200 hover:bg-green-300 cursor-pointer" 
-                onClick={() => navigate(`${gender}/season`)}>
+                onClick={() => navigate(`${gender.toLowerCase()}/season`)}>
                     <span className="uppercase text-sm">
                         Season
                     </span>
                 </div>
                 <div 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
-                onClick={() => navigate(`${gender}`)}>
+                onClick={() => navigate(`${gender.toLowerCase()}`)}>
                     <span className="uppercase text-sm">
                         All
                     </span>
@@ -96,14 +96,14 @@ export default function CategoryMenu({ gender, categories }: Props) {
                         <div className="flex flex-col">
                             <div 
                             className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                            onClick={() => navigate(`${gender}/${subcategory[0]}`)}>
+                            onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}`)}>
                                 <span className="uppercase text-sm">All</span>
                             </div>
                             {subcategory[1].map((sub: string) => (
                                 <div 
                                 key={sub} 
                                 className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                                onClick={() => navigate(`${gender}/${subcategory[0]}/${sub}`)}>
+                                onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}/${sub.toLowerCase()}`)}>
                                     <span className="uppercase text-sm">{sub}</span>
                                 </div>
                             ))}

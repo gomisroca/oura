@@ -20,6 +20,24 @@ export default function Catalog() {
     const [catalog, setCatalog] = useState<Product[]>();
     const [products, setProducts] = useState<Product[]>();
     const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Product[]>();
+    const [settings, setSettings] = useState<CategorySettings>();
+
+    const fetchCategorySettings = async() => {
+        await axios.get<CategorySettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/categories/${gender?.toUpperCase()}`)
+        .then((res) => {
+            console.log(res.data)
+            setSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
 
     const fetchCatalog = () => {
         axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/`)
@@ -58,6 +76,9 @@ export default function Catalog() {
     }
 
     useEffect(() => {
+        if(gender && !settings){
+            fetchCategorySettings();
+        }
         if (catalog) {
             filterCatalog(catalog);
         } else{
@@ -69,26 +90,13 @@ export default function Catalog() {
         setSizeFilteredProducts(data);
     }
 
-    let banner;
-    switch(gender){
-        case 'man':
-            banner = ManImg;
-            break;
-        case 'woman':
-            banner = WomanImg;
-            break;
-        default:
-            banner = OutdoorsImg;
-            break;
-    }
-
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
             <div className='grid sm:h-[100px] md:h-[400px] w-screen'>
-                {banner ? 
+                {settings && settings.image ? 
                 <img
                 className= 'w-screen brightness-75'
-                src={banner}
+                src={settings.image}
                 alt="Sale Image"
                 />
                 : 
