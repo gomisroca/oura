@@ -88,7 +88,7 @@ async(req: Request, res: Response) => {
         }
 
         if(settings){
-            if(files.media.length > 0){  
+            if(files.media && files.media.length > 0){  
                 const regex = /\/([^\/]+)$/;
                 const match = settings.image.match(regex);
                 if (match) {
@@ -153,31 +153,32 @@ async(req: Request, res: Response) => {
         // we get categories as a string, so we make them into an array
         const categories: string[] = req.body.categories.split(',')
         categories.forEach((category: string) => (
-            category.toLowerCase()
+            category = category.toLowerCase()
         ))
-        
+
         // image upload
         const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
         const url = req.protocol + '://' + req.get('host');
         const files = req.files as {[fieldname: string]: Express.Multer.File[]};
 
         let media: string[] = [];
-        for (let i = 0; i < files['media'].length; i++) {
-            let result: any = (files['media'][i].filename).match(imageReg);
-            const uuid = uuidv4();
-            media.push(url + '/public/homepage/' + uuid + result[0]);
-            fs.move('./public/temp/' + files['media'][i].filename, './public/homepage/' + uuid + result[0], 
-            function (err: unknown) {
-                if (err) {
-                    return console.error(err);
-                }
-            });
+        if(files.media && files.media.length > 0){ 
+            for (let i = 0; i < files['media'].length; i++) {
+                let result: any = (files['media'][i].filename).match(imageReg);
+                const uuid = uuidv4();
+                media.push(url + '/public/homepage/' + uuid + result[0]);
+                fs.move('./public/temp/' + files['media'][i].filename, './public/homepage/' + uuid + result[0], 
+                function (err: unknown) {
+                    if (err) {
+                        return console.error(err);
+                    }
+                });
+            }
         }
-
         const settings: HomepageSettings[] = await prisma.homepageSettings.findMany({});
         // if settings exist and we uploaded a new pic, we remove the old one, otherwise we just update the categories
         if(settings[0]){
-            if(files.media.length > 0){  
+            if(files.media && files.media.length > 0){  
                 const regex = /\/([^\/]+)$/;
                 const match = settings[0].image.match(regex);
                 if (match) {
