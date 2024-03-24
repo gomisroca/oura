@@ -1,9 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 export default function UserEditList() {
     const navigate = useNavigate();
+    const { user } = useUser();
+    if (user && user.role !== 'ADMIN'){
+        navigate('/')
+    }
     const [users, setUsers] = useState<User[]>();
 
     useEffect(() => {

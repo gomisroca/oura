@@ -1,8 +1,16 @@
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 export default function NavigationSettings() {
+    const navigate = useNavigate();
+    const { user } = useUser();
+    if (user && user?.role == 'BASIC' || user?.role == 'EDITOR'){
+        navigate('/')
+    }
+    
     const [settings, setSettings] = useState<NavigationSettings>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>();
@@ -49,7 +57,7 @@ export default function NavigationSettings() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/navigation` , value).then(res => {
+        await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/navigation`, value).then(res => {
             if(res.status === 201){
                 setSuccessPrompt(true);
             }

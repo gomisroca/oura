@@ -1,14 +1,23 @@
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 export default function HomepageSettings() {
+    const navigate = useNavigate();
+    const { user } = useUser();
+    if (user && user?.role == 'BASIC' || user?.role == 'EDITOR'){
+        navigate('/')
+    }
+    
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [settings, setSettings] = useState<HomepageSettings>();
     const [categories, setCategories] = useState<Category[]>();
     const [value, setValue] = useState<any>([]);
     const [sale, setSale] = useState<boolean>(false);
+    const [saleText, setSaleText] = useState<string>();
 
     const fetchCategories = async() => {
         await axios.get<Category[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
@@ -31,6 +40,8 @@ export default function HomepageSettings() {
         await axios.get<HomepageSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage`)
         .then((res) => {
             setSettings(res.data);
+            setSale(res.data.sale);
+            setSaleText(res.data.saleText);
             setValue(res.data.categories);
         })
         .catch(error => {
@@ -57,8 +68,8 @@ export default function HomepageSettings() {
             Array.from(media).forEach(file => formData.append('media', file))
         }
         formData.append('categories', value);
-        formData.append('sale', form.sale.checked);
-        formData.append('saleText', form.saleText.value);
+        formData.append('sale', sale.toString()!);
+        formData.append('saleText', saleText!);
         console.log(formData)
 
         await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage` , formData).then(res => {
@@ -104,13 +115,11 @@ export default function HomepageSettings() {
                     Sale/Season?
                 </label>
                 <input 
-                onChange={() => {
-                    setSale(!sale);
-                }}
+                checked={sale || false}
+                onChange={(e) => { setSale(e.target.checked) }}
                 type="checkbox" 
                 name="sale"
                 className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
-                defaultChecked={false} 
                 />
             </div>
             {sale &&
@@ -119,6 +128,8 @@ export default function HomepageSettings() {
                     Sale Text
                 </label>
                 <input 
+                value={saleText || ''}
+                onChange={(e) => { setSaleText(e.target.value) }}
                 name="saleText" 
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 

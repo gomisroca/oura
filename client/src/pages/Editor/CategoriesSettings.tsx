@@ -1,9 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 export default function CategoriesSettings() {
     const navigate = useNavigate();
+    const { user } = useUser();
+    if (user && user?.role == 'BASIC' || user?.role == 'EDITOR'){
+        navigate('/')
+    }
+    
     const [categories, setCategories] = useState<Category[]>();
     const [settings, setSettings] = useState<CategorySettings[]>();
 

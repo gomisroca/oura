@@ -1,8 +1,15 @@
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
-export default function CategoryEdit() {
+export default function CategoryEdit() {    
+    const navigate = useNavigate();
+    const { user } = useUser();
+    if (user && user?.role == 'BASIC' || user?.role == 'EDITOR'){
+        navigate('/')
+    }
+    
     const category = useParams().category;
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
