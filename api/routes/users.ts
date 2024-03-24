@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const { verifyBasicToken, verifyAdminToken } = require('../middleware/auth');
 
 import { AuthedRequest, ProductWithSizes } from '../index';
-import { Order, PrismaClient, ProductSize, SizeColor, User } from '@prisma/client'
+import { Order, PrismaClient, ProductSize, Role, SizeColor, User } from '@prisma/client'
 const prisma = new PrismaClient();
 
 interface RegisterInputs {
@@ -26,7 +26,7 @@ interface UpdateInputs{
     firstName: string; 
     lastName: string; 
     email: string; 
-    old_password?: string;
+    role: Role;
     new_password?: string;
 }
 
@@ -70,6 +70,18 @@ router.post("/register", async (req: Request, res: Response) => {
                 password: encryptedPassword 
             }
         });
+
+        if(req.body.role){
+            await prisma.user.update({ 
+                where: {
+                    id: user.id,
+                },
+                data: { 
+                    role: req.body.role 
+                }
+            });
+        }
+        
         console.log(user)
         let access_token: string = jwt.sign(
             { 
@@ -279,8 +291,8 @@ router.get("/:id", verifyAdminToken, async (req: AuthedRequest, res: Response) =
 
 router.post("/:id", verifyBasicToken, async (req: AuthedRequest, res: Response) => {
     try{
-        const { firstName, lastName, email, old_password, new_password }: UpdateInputs = req.body;
-
+        const { firstName, lastName, email, role, new_password }: UpdateInputs = req.body;
+        console.log(req.body)
         const user: User | null = await prisma.user.findUnique({ 
             where: {
                 id: req.params.id
@@ -299,15 +311,13 @@ router.post("/:id", verifyBasicToken, async (req: AuthedRequest, res: Response) 
             }
             if(email.toLowerCase() !== user.email.toLowerCase()){
                 user.email = email.toLowerCase();
+            } 
+            if(role !== user.role){
+                user.role = role as Role;
             }
-            if(old_password && new_password){
-                let isPassValid: boolean = await bcrypt.compare(old_password, user.password);
-                if(isPassValid){
-                    let encryptedPassword: string = await bcrypt.hash(new_password, 10);
-                    user.password = encryptedPassword;
-                } else {
-                    return res.status(401).json(`INVALID_INPUT`)
-                }
+            if(new_password){
+                let encryptedPassword: string = await bcrypt.hash(new_password, 10);
+                user.password = encryptedPassword;
             }
 
             const updatedUser: User = await prisma.user.update({ 
