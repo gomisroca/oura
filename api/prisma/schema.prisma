@@ -85,6 +85,8 @@ model CategorySettings {
 model HomepageSettings {
   id         String   @id @default(uuid())
   categories String[]
+  sale       Boolean
+  saleText   String
   image      String
 }
 

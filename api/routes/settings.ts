@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-import { HomepageSettings, PrismaClient } from '@prisma/client';
+import { CategorySettings, HomepageSettings, NavbarSettings, PrismaClient } from '@prisma/client';
 import multer, { FileFilterCallback } from 'multer';
 const prisma = new PrismaClient();
 const fs = require('fs-extra');
@@ -36,7 +36,89 @@ let upload = multer({
 router.get('/categories', async(req: Request, res: Response) => {
     try{
        const categorySettings = await prisma.categorySettings.findMany({});
-       res.json(200).json(categorySettings);
+       res.status(200).json(categorySettings);
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }   
+})
+// Get Single Category Settings
+router.get('/categories/:category', async(req: Request, res: Response) => {
+    try{
+        const categorySettings: CategorySettings | null = await prisma.categorySettings.findFirst({
+            where: {
+                category: req.params.category
+            }
+        });
+        if(categorySettings){
+            res.status(200).json(categorySettings);
+        } else{
+            res.status(404).json('SETTINGS_404');
+        }
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }   
+})
+
+// Update or Create Single Category Settings
+router.post('/categories/:category', 
+upload.fields([{ name: 'media', maxCount: 1 }]),
+async(req: Request, res: Response) => {
+    try{
+        const settings: CategorySettings | null = await prisma.categorySettings.findFirst({
+            where: {
+                category: req.params.category
+            }
+        });
+
+        const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+        const url = req.protocol + '://' + req.get('host');
+        const files = req.files as {[fieldname: string]: Express.Multer.File[]};
+
+        let media: string[] = [];
+        for (let i = 0; i < files['media'].length; i++) {
+            let result: any = (files['media'][i].filename).match(imageReg);
+            const uuid = uuidv4();
+            media.push(url + '/public/' + req.params.category.toLowerCase() + '/' + uuid + result[0]);
+            fs.move('./public/temp/' + files['media'][i].filename, './public/' + req.params.category.toLowerCase() + '/' + uuid + result[0], 
+            function (err: unknown) {
+                if (err) {
+                    return console.error(err);
+                }
+            });
+        }
+
+        if(settings){
+            if(files.media.length > 0){  
+                const regex = /\/([^\/]+)$/;
+                const match = settings.image.match(regex);
+                if (match) {
+                    const imagePath = match[1];
+                    const imageUrl ='./public/' + req.params.category.toLowerCase() + '/' + imagePath;
+                    fs.unlink(imageUrl, (err: any) => {
+                        if(err){
+                            console.error(err.message);
+                            return;
+                        }
+                    });
+                }
+            }
+            await prisma.categorySettings.update({
+                where: {
+                    id: settings.id
+                },
+                data: {
+                    image: media[0],
+                }
+            })
+        } else{
+            await prisma.categorySettings.create({
+                data: {
+                    category: req.params.category,
+                    image: media[0],
+                }
+            })
+        }
+        res.sendStatus(201);
     }catch(err: unknown){
         res.status(500).json({message: err})
     }   
@@ -70,7 +152,10 @@ async(req: Request, res: Response) => {
     try{
         // we get categories as a string, so we make them into an array
         const categories: string[] = req.body.categories.split(',')
-
+        categories.forEach((category: string) => (
+            category.toLowerCase()
+        ))
+        
         // image upload
         const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
         const url = req.protocol + '://' + req.get('host');
@@ -112,6 +197,8 @@ async(req: Request, res: Response) => {
                 },
                 data:{
                     categories: categories,
+                    sale: req.body.sale === 'true',
+                    saleText: req.body.saleText,
                     image: media[0],
                 }
             })
@@ -120,6 +207,8 @@ async(req: Request, res: Response) => {
             await prisma.homepageSettings.create({
                 data: {
                     categories: categories,
+                    sale: req.body.sale === 'true',
+                    saleText: req.body.saleText,
                     image: media[0],
                 }
             })
@@ -133,8 +222,12 @@ async(req: Request, res: Response) => {
 // Get Navbar Settings
 router.get('/navigation', async(req: Request, res: Response) => {
     try{
-        const navigationSettings = await prisma.navbarSettings.findMany({});
-        res.json(200).json(navigationSettings);
+        const settings: NavbarSettings[] = await prisma.navbarSettings.findMany({});
+        if(settings[0]){
+            res.status(200).json(settings[0]);
+        } else{
+            res.status(404).json('SETTINGS_404');
+        }
     }catch(err: unknown){
         res.status(500).json({message: err})
     }
@@ -142,7 +235,25 @@ router.get('/navigation', async(req: Request, res: Response) => {
 // Set Navbar Settings
 router.post('/navigation', async(req: Request, res: Response) => {
     try{
-
+        const categories: string[] = req.body;
+        const settings: NavbarSettings[] = await prisma.navbarSettings.findMany({});
+        if(settings[0]){
+            await prisma.navbarSettings.update({
+                where: {
+                    id: settings[0].id
+                },
+                data:{
+                    categories: categories,
+                }
+            })
+        } else{
+            await prisma.navbarSettings.create({
+                data: {
+                    categories: categories,
+                }
+            })
+        }
+        res.sendStatus(201);
     }catch(err: unknown){
         res.status(500).json({message: err})
     }   
