@@ -9,8 +9,7 @@ export default function ProductUpload() {
     const [genders, setGenders] = useState<string[]>();
     const [categories, setCategories] = useState<string[]>();
     const [subcategories, setSubcategories] = useState<string[]>();
-    const [sale, setSale] = useState<boolean>(false);
-
+    const [addSizes, setAddSizes] = useState<boolean>(false);
 
     const fetchCatalog = () => {
         axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
@@ -60,11 +59,14 @@ export default function ProductUpload() {
         formData.append('price', form.price.value);
         formData.append('description', form.description.value);
         formData.append('addSizes', form.addSizes.checked);
+        if(addSizes){
+            formData.append('sizes', form.sizes.value);
+            formData.append('colors', form.colors.value);
+        }
         formData.append('stock', form.stock.value);
         formData.append('gender', form.gender.value);
         formData.append('category', form.category.value);
         formData.append('subcategory', form.subcategory.value);
-        formData.append('onSeasonal', form.onSeasonal.checked);
         console.log(formData)
 
         await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/` , formData).then(res => {
@@ -121,15 +123,39 @@ export default function ProductUpload() {
                     Add Sizes?
                 </label>
                 <input 
+                onChange={(e) => { setAddSizes(e.target.checked) }}
                 type="checkbox" 
                 name="addSizes"
                 className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 defaultChecked={false} 
                 />
             </div>
+            {addSizes &&
+            <div className="flex flex-col">
+                <div className="flex flex-col">
+                    <label className="uppercase font-bold mb-2">
+                        Sizes 
+                    </label>
+                    <input
+                    name="sizes"
+                    type="text"
+                    id="sizes"
+                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                </div>
+                <div className="flex flex-col">
+                    <label className="uppercase font-bold mb-2">
+                        Colors
+                    </label>
+                    <input
+                    name="colors"
+                    type="text"
+                    id="colors"
+                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                </div>
+            </div>}
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
-                    Stock
+                    Total Stock
                 </label>
                 <input 
                 name="stock"
@@ -175,17 +201,6 @@ export default function ProductUpload() {
                 />
                 : null }
             </div>   
-            <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
-                    Seasonal?
-                </label>
-                <input 
-                type="checkbox" 
-                name="onSeasonal"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
-                defaultChecked={false} 
-                />
-            </div>
             <div className="flex flex-col ">
                 <label className="uppercase font-bold mb-2">
                     Image

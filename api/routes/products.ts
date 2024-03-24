@@ -44,8 +44,8 @@ interface ProductInputs {
     category: string;
     subcategory: string;
     addSizes: string;
-    sizes?: string[];
-    colors?: string[];
+    sizes?: string;
+    colors?: string;
 }
 
 interface PartialSizeColor{
@@ -105,9 +105,18 @@ upload.fields([{ name: 'media', maxCount: 1 }]),
 async(req: AuthedRequest, res: Response) => {
     try{
         if(req.user?.role !== 'BASIC'){
-            const {name, description, price, stock, gender, category, subcategory, addSizes, sizes, colors}: ProductInputs = req.body;
+            let {name, description, price, stock, gender, category, subcategory, addSizes, sizes, colors}: ProductInputs = req.body;
             const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
             const url = req.protocol + '://' + req.get('host');
+
+            let colorStock: number;
+            let splitSizes: string[] = [];
+            let splitColors: string[] = [];
+            if(addSizes == 'true'){
+                splitSizes = sizes!.split(',');
+                splitColors = colors!.split(',');
+                colorStock = Number(stock) / (colors!.length * sizes!.length);
+            }
 
             // We add the basic data for the product
             const product: Product = await prisma.product.create({ 
@@ -115,6 +124,7 @@ async(req: AuthedRequest, res: Response) => {
                     name: name,
                     price: Number(price),
                     description: description,
+                    totalStock: Number(stock),
                     gender: gender.toLowerCase(),
                     category: category.toLowerCase(),
                     subcategory: subcategory.toLowerCase()
@@ -122,8 +132,8 @@ async(req: AuthedRequest, res: Response) => {
             });
 
             // If product has sizes, we add the sizes it has and their colors with the given stock
-            if(addSizes === 'true' && sizes && colors){
-                const sizeObjects: PartialSize[] = sizes.map(size => ({ size }));
+            if(addSizes === 'true' && splitSizes.length > 0 && splitColors.length > 0){
+                const sizeObjects: PartialSize[] = splitSizes.map(size => ({ size }));
                 const productWithSize: ProductWithSizes = await prisma.product.update({ 
                     where: {
                         id: product.id,
@@ -143,9 +153,9 @@ async(req: AuthedRequest, res: Response) => {
                         }
                     }
                 })
-                const colorInputs: PartialSizeColor[] = colors.map((name) => ({
+                const colorInputs: PartialSizeColor[] = splitColors.map((name) => ({
                     name,
-                    amount: Number(stock),
+                    amount: colorStock,
                 }));
                 for(const size of productWithSize.sizes){
                     await prisma.productSize.update({ 
@@ -317,6 +327,7 @@ async(req: Request, res: Response) => {
                     subcategory: updatedProduct.subcategory.toLowerCase(),
                     price: Number(updatedProduct.price),
                     sales: Number(updatedProduct.sales),
+                    totalStock: Number(updatedProduct.stock),
                     onSale: updatedProduct.onSale === 'true',
                     onSeasonal: updatedProduct.onSeasonal === 'true'
                 },

@@ -47,6 +47,7 @@ model Product {
   subcategory String
   price       Int
   sales       Int            @default(0)
+  totalStock  Int            @default(0)
   sizes       ProductSize[]
   onSale      Boolean        @default(false)
   onSeasonal  Boolean        @default(false)

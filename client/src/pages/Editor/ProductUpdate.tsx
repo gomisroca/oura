@@ -97,8 +97,8 @@ export default function ProductUpdate() {
         if(addSizes){
             formData.append('sizes', sizes!);
             formData.append('colors', colors!);
-            formData.append('stock', stock!);
         }
+        formData.append('stock', stock!);
         formData.append('gender', gender!);
         formData.append('category', category!);
         formData.append('subcategory', subcategory!);
@@ -223,29 +223,29 @@ export default function ProductUpdate() {
                     : null }
                 </div>
                 <div className="flex flex-col">
-                    <div className="flex flex-col gap-2 my-2">
-                        <span className="uppercase text-sm">Current Stock</span>
-                        <div  className="flex flex-row gap-2">
-                        {colorData && colorData.map(x => (
-                        <div key={x.id} className="flex flex-row rounded-full px-2 bg-zinc-300 items-center text-black">
-                            <span className="px-2">{x.size}</span>
-                            <span className={`border-l px-2 border-zinc-400 bg-${x.name}-400 py-1`}>{x.name.toUpperCase()}</span>
-                            <span className="border-l px-2 border-zinc-400">{x.amount}</span>
-                        </div>
-                        ))}
-                        </div>
+                    <span className="uppercase text-sm">Current Stock</span>
+                    <div  className="flex flex-row gap-2">
+                    {colorData && colorData.map(x => (
+                    <div key={x.id} className="flex flex-row rounded-full px-2 bg-zinc-300 items-center text-black">
+                        <span className="px-2">{x.size}</span>
+                        <span className={`border-l px-2 border-zinc-400 bg-${x.name}-400 py-1`}>{x.name.toUpperCase()}</span>
+                        <span className="border-l px-2 border-zinc-400">{x.amount}</span>
                     </div>
-                    <label className="uppercase font-bold mb-2">
-                        Total Stock
-                    </label>
-                    <input 
-                    value={stock || 0}
-                    name="stock"
-                    onChange={(e) => { setStock(e.target.value) }}
-                    type="number"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    ))}
+                    </div>
                 </div>
             </div>}
+            <div className="flex flex-col">
+                <label className="uppercase font-bold mb-2">
+                    Total Stock
+                </label>
+                <input 
+                value={stock || 0}
+                name="stock"
+                onChange={(e) => { setStock(e.target.value) }}
+                type="number"
+                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+            </div>
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Gender

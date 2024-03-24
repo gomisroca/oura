@@ -240,6 +240,9 @@ router.post("/purchase", verifyBasicToken, async (req: AuthedRequest, res: Respo
                     data: {
                         sales: {
                             increment: 1
+                        },
+                        totalStock:{
+                            decrement: 1
                         }
                     },
                 });
