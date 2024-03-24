@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Menu from '@mui/material/Menu';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface Props {
     gender: string;
@@ -9,7 +10,28 @@ interface Props {
 
 export default function CategoryMenu({ gender, categories }: Props) {
     const navigate = useNavigate();
+    const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>();
 
+    const fetchHomepageSettings = async() => {
+        await axios.get<HomepageSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage`)
+        .then((res) => {
+            setHomepageSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
+
+    useEffect(() => {
+        fetchHomepageSettings();
+    }, []);
+    
     // Main Menus
     const [mainMenuEl, setMainMenuEl] = useState<null | HTMLElement>(null);
     const openMainMenu = Boolean(mainMenuEl);
@@ -51,13 +73,14 @@ export default function CategoryMenu({ gender, categories }: Props) {
         open={openMainMenu}
         onClose={handleMainMenuClose}>
             <div className="flex flex-col">
+                {homepageSettings?.sale &&
                 <div 
-                className="p-2 border-b-2 border-green-500/20 bg-green-200 hover:bg-green-300 cursor-pointer" 
+                className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 text-red-600 font-bolder cursor-pointer" 
                 onClick={() => navigate(`${gender.toLowerCase()}/season`)}>
-                    <span className="uppercase text-sm">
-                        Season
+                    <span className="uppercase text-lg">
+                        {homepageSettings.saleText}
                     </span>
-                </div>
+                </div>}
                 <div 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
                 onClick={() => navigate(`${gender.toLowerCase()}`)}>

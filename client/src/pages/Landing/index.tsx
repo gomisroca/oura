@@ -12,7 +12,6 @@ function Landing() {
         await axios.get<HomepageSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage`)
         .then((res) => {
             setSettings(res.data);
-            console.log(res.data)
         })
         .catch(error => {
             if(error.response){
