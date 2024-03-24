@@ -1,4 +1,3 @@
-import LandingImg from '../../assets/landing.jpg';
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -27,15 +26,16 @@ function DesktopLayout({ settings }: Props) {
                 OURA
             </div>
             <div className='absolute self-center mt-16 w-full grid justify-items-center'>
+                {settings.sale &&
                 <span className='px-2 py-1 md:px-5 md:py-2 text-[1rem] md:text-[3rem] font-semibold'>
-                    SPRING COLLECTION
-                </span>
+                    {settings.saleText.toUpperCase()}
+                </span>}
                 <div className='flex flex-row'>
                     {settings.categories &&
                     settings.categories.map(gender => (
                         <button 
                         className='border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
-                        onClick={() => navigate(`/${gender}/season`)}>
+                        onClick={() => navigate(`/${gender.toLowerCase()}/season`)}>
                             {gender.toUpperCase()}
                         </button>
                     ))}

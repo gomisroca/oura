@@ -8,6 +8,7 @@ export default function HomepageSettings() {
     const [settings, setSettings] = useState<HomepageSettings>();
     const [categories, setCategories] = useState<Category[]>();
     const [value, setValue] = useState<any>([]);
+    const [sale, setSale] = useState<boolean>(false);
 
     const fetchCategories = async() => {
         await axios.get<Category[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/`)
@@ -56,6 +57,8 @@ export default function HomepageSettings() {
             Array.from(media).forEach(file => formData.append('media', file))
         }
         formData.append('categories', value);
+        formData.append('sale', form.sale.checked);
+        formData.append('saleText', form.saleText.value);
         console.log(formData)
 
         await axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage` , formData).then(res => {
@@ -82,7 +85,7 @@ export default function HomepageSettings() {
         className="flex-col grid gap-y-4 p-4">
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
-                    Gender
+                    Categories Displayed
                 </label>
                 {categories &&
                 <Autocomplete
@@ -92,11 +95,34 @@ export default function HomepageSettings() {
                 onChange={(event, newValue) => {
                     setValue(newValue);
                 }}
-                freeSolo
                 options={Object.keys(categories).map(gender => gender.toUpperCase())}
                 renderInput={(params) => <TextField {...params} />}
                 />}
             </div>
+            <div className="flex flex-row">
+                <label className="uppercase font-bold mr-4">
+                    Sale/Season?
+                </label>
+                <input 
+                onChange={() => {
+                    setSale(!sale);
+                }}
+                type="checkbox" 
+                name="sale"
+                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                defaultChecked={false} 
+                />
+            </div>
+            {sale &&
+            <div className="flex flex-col">
+                <label className="uppercase font-bold mb-2">
+                    Sale Text
+                </label>
+                <input 
+                name="saleText" 
+                type="text"
+                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+            </div>}
             <div className="flex flex-col">
                 <label className="uppercase font-bold mb-2">
                     Background Image
@@ -114,7 +140,7 @@ export default function HomepageSettings() {
             <button 
             type="submit" 
             className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
-                Submit
+                Update
             </button>
         </form>
         }
