@@ -23,7 +23,7 @@ export default function EditorDashboard() {
                         </div>
                     </div>
                 </div>}
-                {user?.role == 'SUPER' || user?.role == 'ADMIN' &&
+                {(user?.role == 'SUPER' || user?.role == 'ADMIN') &&
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Display Settings</span>
                     <div className="flex gap-2">

@@ -6,7 +6,7 @@ import { useUser } from "../../contexts/UserContext";
 export default function CategoryEdit() {    
     const navigate = useNavigate();
     const { user } = useUser();
-    if (user && user?.role == 'BASIC' || user?.role == 'EDITOR'){
+    if (user && (user?.role == 'BASIC' || user?.role == 'EDITOR')){
         navigate('/')
     }
     
