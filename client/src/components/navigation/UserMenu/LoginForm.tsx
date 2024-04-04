@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
 import { useUser } from '../../../contexts/UserContext';
-import DummyPic from '../../../assets/dummy.png';
+import HorizontalBannerPlaceholder from '../../../assets/ph_hbanner.png';
 import FailurePrompt from './FailurePrompt';
 
 interface Props {
@@ -76,10 +76,10 @@ export default function LoginForm({ onLoginToggle, onRegisterToggle }: Props) {
                     </span>
                 </div>
                 <hr/>
-                <div className='p-5 h-[500px] flex'>
+                <div className='p-5 flex max-w-[300px] items-center justify-center'>
                     <img 
-                    src={DummyPic} 
-                    className="h-full self-center"
+                    src={HorizontalBannerPlaceholder} 
+                    className="max-h-[500px]"
                     />
                 </div>
             </div>

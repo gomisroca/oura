@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
-import Skeleton from '@mui/material/Skeleton';
-
-import ManImg from '../../assets/categories/man.jpg';
-import WomanImg from '../../assets/categories/woman.jpg';
-import OutdoorsImg from '../../assets/categories/outdoors.jpg';
+import VerticalBannerPlaceholder from '../../assets/ph_vbanner.png';
+import ItemPlaceholder from '../../assets/ph_item.png';
 
 import Filter from './Filter';
 
@@ -23,7 +20,7 @@ export default function Catalog() {
     const [settings, setSettings] = useState<CategorySettings>();
 
     const fetchCategorySettings = async() => {
-        await axios.get<CategorySettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/categories/${gender?.toUpperCase()}`)
+        await axios.get<CategorySettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/categories/${gender}`)
         .then((res) => {
             console.log(res.data)
             setSettings(res.data);
@@ -59,7 +56,7 @@ export default function Catalog() {
     const filterCatalog = (catalog: Product[]) => {
         let productArray: Product[];
         if (gender !== 'season'){
-            productArray = catalog.filter(x => (x.gender.toLowerCase() == gender || x.gender == 'neutral'));
+            productArray = catalog.filter(x => (x.gender.toLowerCase() == gender));
         } else{
             productArray = catalog.filter(x => (x.onSeasonal == true));
         }
@@ -76,7 +73,7 @@ export default function Catalog() {
     }
 
     useEffect(() => {
-        if(gender && !settings){
+        if(gender){
             fetchCategorySettings();
         }
         if (catalog) {
@@ -93,16 +90,11 @@ export default function Catalog() {
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
             <div className='grid sm:h-[100px] md:h-[400px] w-screen'>
-                {settings && settings.image ? 
                 <img
                 className= 'w-screen brightness-75'
-                src={settings.image}
+                src={settings?.image ? settings.image : VerticalBannerPlaceholder}
                 alt="Sale Image"
                 />
-                : 
-                <Skeleton variant="rectangular" />
-                }
-
                 {category ? 
                 <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
                     {gender}
@@ -144,8 +136,8 @@ export default function Catalog() {
                         <div className="h-2/3 md:h-3/4 overflow-y-hidden bg-white items-center flex">
                             <img
                             className="mx-auto"
-                            src={`${item.image}`}
-                            srcSet={`${item.image}`}
+                            src={`${item.image ? item.image : ItemPlaceholder}`}
+                            srcSet={`${item.image ? item.image : ItemPlaceholder}`}
                             alt={item.name}
                             loading="lazy"
                             />

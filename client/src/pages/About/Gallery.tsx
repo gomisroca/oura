@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import dummy from '../../assets/dummy.png';
+import VerticalBannerPlaceholder from '../../assets/ph_vbanner.png';
+import ItemPlaceholder from '../../assets/ph_item.png';
 
 interface Props {
     type: string;
@@ -43,24 +44,24 @@ export default function Gallery({type, title}: Props) {
             className="text-xl uppercase font-bold underline underline-offset-4 decoration-zinc-400 self-center">
                 {title}
             </span>
-            <ul className="grid md:grid-cols-2 mt-3 self-center">
+            <ul className="grid md:grid-cols-2 gap-2 mt-3 self-center">
             {data.map(data => (
                 <li key={data.id}>
                 {data.url ?
                     <img 
-                    className="w-[400px] h-[100px] mb-2 border-2 border-zinc-400 hover:border-zinc-500" 
-                    src={data.url} />
+                    className="w-[400px] h-[100px] border-2 border-zinc-400 hover:border-zinc-500" 
+                    src={VerticalBannerPlaceholder} />
                 : data.name ?
                     <div 
-                    className="cursor-default flex mb-2 text-justify text-lg border-2 border-zinc-400 hover:border-zinc-500">
+                    className="cursor-default flex text-justify text-lg border-2 border-zinc-400 hover:border-zinc-500">
                         <img
                         className="w-[75px] h-[100px]"
-                        src={dummy}/>
+                        src={ItemPlaceholder}/>
                         <span className="px-3 self-center">{data.name}</span>
                     </div>
                 : 
                     <div 
-                    className="cursor-default w-[90vw] sm:w-[500px] sm:h-[150px] px-4 mb-2 py-2 border-2 border-zinc-400 hover:border-zinc-500">
+                    className="cursor-default w-[90vw] sm:w-[500px] sm:h-[150px] px-4 py-2 border-2 border-zinc-400 hover:border-zinc-500">
                         <div className="text-xl">
                             {data.name}
                         </div>

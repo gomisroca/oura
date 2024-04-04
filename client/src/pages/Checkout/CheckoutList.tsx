@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import CartPlaceholder from '../../assets/ph_cart.png';
 
 export default function CheckoutList() {
     const navigate = useNavigate();
@@ -31,8 +32,8 @@ export default function CheckoutList() {
                         <div className='w-[50px]'>
                             <img
                             className='max-w-[50px] max-h-[50px]'
-                            src={`${item.image}`}
-                            srcSet={`${item.image}`}
+                            src={`${item.image ? item.image : CartPlaceholder}`}
+                            srcSet={`${item.image ? item.image : CartPlaceholder}`}
                             alt={item.name}
                             loading="lazy"
                             />

@@ -4,6 +4,7 @@ import ShoppingCartTwoToneIcon from '@mui/icons-material/ShoppingCartTwoTone';
 import ClearIcon from '@mui/icons-material/Clear';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
+import CartPlaceholder from '../../../assets/ph_cart.png';
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -80,8 +81,8 @@ export default function Cart() {
                                 <div className='w-[50px]'>
                                     <img
                                     className='max-w-[50px] max-h-[50px]'
-                                    src={`${item.image}`}
-                                    srcSet={`${item.image}`}
+                                    src={`${item.image ? item.image : CartPlaceholder}`}
+                                    srcSet={`${item.image ? item.image : CartPlaceholder}`}
                                     alt={item.name}
                                     loading="lazy" />
                                 </div>

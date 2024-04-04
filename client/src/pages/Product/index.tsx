@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 
 import Skeleton from '@mui/material/Skeleton';
+import FullItemPlaceholder from '../../assets/ph_fullitem.png';
 
 import SizeMenu from "./SizeMenu";
 import AddToCart from "./AddToCart";
@@ -40,6 +41,7 @@ function Product() {
         if(id){
             axios.get<Product>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
             .then((res) => {
+                console.log(res.data)
                 setProduct(res.data);
             })
             .catch(error => {
@@ -61,15 +63,15 @@ function Product() {
                 <div className="mx-auto h-[400px] sm:h-[600px] md:w-1/2 overflow-y-hidden bg-white border-2 border-zinc-400 hover:border-zinc-500 transition duration-200 items-center flex">
                     <img
                     className='mx-auto'
-                    src={`${product.image}`}
-                    srcSet={`${product.image}`}
+                    src={`${product.image ? product.image : FullItemPlaceholder}`}
+                    srcSet={`${product.image ? product.image : FullItemPlaceholder}`}
                     alt={product.name}
                     loading="lazy"
                     />
                 </div>
                 <div className="md:pl-10 md:w-1/2 mt-2 md:mt-0">
                     <div className="border-zinc-400">
-                        {product.sizes ? 
+                        {product.sizes.length > 0 ? 
                         <SizeMenu item={product} /> 
                         : 
                         <AddToCart item={product} /> 

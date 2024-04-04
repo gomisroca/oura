@@ -1,5 +1,6 @@
 import LandingImg from '../../assets/landing.jpg';
 import { useNavigate } from "react-router-dom";
+import LandingPlaceholder from '../../assets/ph_landing.png';
 
 interface Props {
     settings: HomepageSettings;
@@ -12,7 +13,7 @@ function MobileLayout({ settings }: Props) {
         <div className='flex w-screen h-screen overflow-hidden text-zinc-200'>
             <img
             className='self-center relative h-screen right-[482px] max-w-none'
-            src={settings.image}
+            src={settings.image ? settings.image  : LandingPlaceholder}
             alt="OURA Landing"
             />
             <div className='absolute bottom-2/4 right-3 text-center w-full text-[6rem] md:text-[5rem] font-semibold opacity-25'>

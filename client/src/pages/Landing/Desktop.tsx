@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import LandingPlaceholder from '../../assets/ph_landing.png';
 
 interface Props {
     settings: HomepageSettings;
@@ -12,7 +13,7 @@ function DesktopLayout({ settings }: Props) {
             <div className='flex overflow-y-hidden h-full justify-center items-center'>
                 <img
                 className='h-[100vh] max-w-[unset]'
-                src={settings.image}
+                src={settings.image ? settings.image  : LandingPlaceholder}
                 alt="OURA Landing"
                 />
             </div>

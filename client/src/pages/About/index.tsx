@@ -1,5 +1,5 @@
 import Gallery from './Gallery';
-import OutdoorsImg from '../../assets/categories/outdoors.jpg';
+import VerticalBannerPlaceholder from '../../assets/ph_vbanner.png';
 
 function About() {
     return (
@@ -7,7 +7,7 @@ function About() {
             <div className='h-[100px] md:h-[400px]'>
                 <img
                 className='w-screen brightness-75'
-                src={OutdoorsImg}
+                src={VerticalBannerPlaceholder}
                 alt="About Us Image"
                 />
             </div>
