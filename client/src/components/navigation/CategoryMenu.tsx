@@ -75,7 +75,7 @@ export default function CategoryMenu({ gender, categories }: Props) {
             <div className="flex flex-col">
                 {homepageSettings?.sale &&
                 <div 
-                className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 text-red-600 font-bolder cursor-pointer" 
+                className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 text-rose-500 font-bolder cursor-pointer" 
                 onClick={() => navigate(`${gender.toLowerCase()}/season`)}>
                     <span className="uppercase text-lg">
                         {homepageSettings.saleText}
