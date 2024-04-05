@@ -7,7 +7,7 @@ interface Props {
 
 export default function Order({ order }: Props) {
     const navigate = useNavigate();
-    const [products, setProducts] = useState<Clothes[]>();
+    const [products, setProducts] = useState<Product[]>();
     const [totalPrice, setTotalPrice] = useState<number>();
 
     const organizeOrderData = (order: Order) => {
@@ -44,19 +44,19 @@ export default function Order({ order }: Props) {
                 key={item.id}>
                     <div 
                     className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-300 items-center cursor-pointer justify-between'
-                    onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class.toLowerCase() + '/' + item.type.toLowerCase() + '/' + item.id)}
+                    onClick={() => navigate('/' + item.gender.toLowerCase() + '/' + item.category.toLowerCase() + '/' + item.subcategory.toLowerCase() + '/' + item.id)}
                     >
                         <div className='w-[50px]'>
                             <img
                             className='max-w-[50px] max-h-[150px]'
                             src={`${item.image}`}
                             srcSet={`${item.image}`}
-                            alt={item.title}
+                            alt={item.name}
                             loading="lazy"
                             />
                         </div>
                         <div className='text-justify self-center px-5'>
-                            <span>{item.title}</span>
+                            <span>{item.name}</span>
                             <br />
                             <span className='text-zinc-800 text-base'>{item.sale ? item.sale : item.price}€</span>
                         </div>

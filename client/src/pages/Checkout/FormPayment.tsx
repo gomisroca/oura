@@ -11,12 +11,12 @@ export default function FormPayment() {
     const [orderConfirmed, setOrderConfirmed] = useState<boolean>(false);
 
     const onSubmit = () => {
-        let cart: CartClothes[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');    
+        let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');    
 
-        axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/update`, cart)
+        axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/update`, cart)
         .then(res => {
             if(res.status === 200){
-                axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/user/purchase`, cart)
+                axios.post<void>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/purchase`, cart)
                 .then(res => {
                     if(res.status === 200){
                         setOrderConfirmed(true);

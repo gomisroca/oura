@@ -3,21 +3,22 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 
 import Skeleton from '@mui/material/Skeleton';
+import FullItemPlaceholder from '../../assets/ph_fullitem.png';
 
 import SizeMenu from "./SizeMenu";
 import AddToCart from "./AddToCart";
 import RelatedItems from "./RelatedItems";
 
 function Product() {
-    const genre = useParams().genre;
+    const gender = useParams().gender;
     const category = useParams().category;
     const id = useParams().product;
 
-    const [product, setProduct] = useState<CartClothes>();
-    const [catalog, setCatalog] = useState<Clothes[]>();
+    const [product, setProduct] = useState<Product>();
+    const [catalog, setCatalog] = useState<Product[]>();
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products`)
         .then((res) => {
             setCatalog(res.data);
         })
@@ -38,7 +39,7 @@ function Product() {
 
     useEffect(() => {
         if(id){
-            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/item/${id}`)
+            axios.get<Product>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
             .then((res) => {
                 setProduct(res.data);
             })
@@ -61,27 +62,29 @@ function Product() {
                 <div className="mx-auto h-[400px] sm:h-[600px] md:w-1/2 overflow-y-hidden bg-white border-2 border-zinc-400 hover:border-zinc-500 transition duration-200 items-center flex">
                     <img
                     className='mx-auto'
-                    src={`${product.image}`}
-                    srcSet={`${product.image}`}
-                    alt={product.title}
+                    src={`${product.image ? product.image : FullItemPlaceholder}`}
+                    srcSet={`${product.image ? product.image : FullItemPlaceholder}`}
+                    alt={product.name}
                     loading="lazy"
                     />
                 </div>
                 <div className="md:pl-10 md:w-1/2 mt-2 md:mt-0">
                     <div className="border-zinc-400">
-                        {product.sizes ? 
+                        {product.sizes.length > 0 ? 
                         <SizeMenu item={product} /> 
                         : 
                         <AddToCart item={product} /> 
                         }
                     </div>
                     <div className="justify-between p-2 flex text-lg font-bold border-t-2 border-zinc-400 md:mt-4 md:pt-4">
-                        <div>{product.title}</div>
+                        <div>{product.name}</div>
                         <div>
-                            {product.sale ?
+                            {product.onSale ?
                             <div className="flex gap-x-2">
-                                <span>{product.sale}€</span>
-                                <span className="line-through decoration-2 decoration-red-600/70">
+                                <span className="font-bold text-red-600">
+                                    ON SALE
+                                </span> 
+                                <span>
                                     {product.price}€
                                 </span>
                             </div>
@@ -96,8 +99,8 @@ function Product() {
                 </div>
             </div>
             : <Skeleton variant="rectangular" />}
-            {catalog && product && genre && category &&
-            <RelatedItems catalog={catalog} item={product} genre={genre} category={category} />}
+            {catalog && product && gender && category &&
+            <RelatedItems catalog={catalog} item={product} gender={gender} category={category} />}
         </div>
     )
 }

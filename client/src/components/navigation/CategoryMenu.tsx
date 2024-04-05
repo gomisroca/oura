@@ -1,14 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Menu from '@mui/material/Menu';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface Props {
-    category: Category
+    gender: string;
+    categories: Category;
 }
 
-export default function CategoryMenu({ category }: Props) {
+export default function CategoryMenu({ gender, categories }: Props) {
     const navigate = useNavigate();
+    const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>();
 
+    const fetchHomepageSettings = async() => {
+        await axios.get<HomepageSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage`)
+        .then((res) => {
+            setHomepageSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
+
+    useEffect(() => {
+        fetchHomepageSettings();
+    }, []);
+    
     // Main Menus
     const [mainMenuEl, setMainMenuEl] = useState<null | HTMLElement>(null);
     const openMainMenu = Boolean(mainMenuEl);
@@ -39,8 +62,8 @@ export default function CategoryMenu({ category }: Props) {
         aria-haspopup="true"
         aria-expanded={openMainMenu ? 'true' : undefined}
         onClick={handleMainMenu}>
-            {category &&
-            <span className="uppercase text-[0.75rem] md:text-[1rem]">{category.genre}</span>
+            {gender &&
+            <span className="uppercase text-[0.75rem] md:text-[1rem]">{gender}</span>
             }
         </div>
         <Menu
@@ -50,39 +73,40 @@ export default function CategoryMenu({ category }: Props) {
         open={openMainMenu}
         onClose={handleMainMenuClose}>
             <div className="flex flex-col">
+                {homepageSettings?.sale &&
                 <div 
-                className="p-2 border-b-2 border-green-500/20 bg-green-200 hover:bg-green-300 cursor-pointer" 
-                onClick={() => navigate(`${category.genre}/season`)}>
-                    <span className="uppercase text-sm">
-                        Season
+                className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 text-rose-500 font-bolder cursor-pointer" 
+                onClick={() => navigate(`${gender.toLowerCase()}/season`)}>
+                    <span className="uppercase text-lg">
+                        {homepageSettings.saleText}
                     </span>
-                </div>
+                </div>}
                 <div 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
-                onClick={() => navigate(`${category.genre}`)}>
+                onClick={() => navigate(`${gender.toLowerCase()}`)}>
                     <span className="uppercase text-sm">
                         All
                     </span>
                 </div>
-                {category && category.classes && 
-                category.classes.map(subcategory => (
-                <div key={subcategory.id}>
+                {categories && 
+                Object.entries(categories).map(subcategory => (
+                <div key={subcategory[0]}>
                     <div   
                     className='hover:bg-zinc-300 cursor-pointer p-2 border-b-2 border-zinc-400'
-                    aria-controls={openSubMenu ? subcategory.name : undefined}
+                    aria-controls={openSubMenu ? subcategory[0] : undefined}
                     aria-haspopup="true"
                     aria-expanded={openSubMenu ? 'true' : undefined}
-                    onClick={(event) => handleSubMenu(event, subcategory.name)}>
+                    onClick={(event) => handleSubMenu(event, subcategory[0])}>
                         <span className="uppercase text-sm">
-                            {subcategory.name}
+                            {subcategory[0]}
                         </span>
                     </div>
                     <Menu
                     PaperProps={{ sx: { borderRadius: 0 } }}
                     MenuListProps={{ sx: { py: 0 } }}
-                    id={subcategory.name}
+                    id={subcategory[0]}
                     anchorEl={subMenuEl}
-                    open={openSubMenu && subMenuKey === subcategory.name}
+                    open={openSubMenu && subMenuKey === subcategory[0]}
                     onClose={handleSubMenuClose}
                     anchorOrigin={{
                         vertical: 'center',
@@ -95,15 +119,15 @@ export default function CategoryMenu({ category }: Props) {
                         <div className="flex flex-col">
                             <div 
                             className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                            onClick={() => navigate(`${category.genre}/${subcategory.name}`)}>
+                            onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}`)}>
                                 <span className="uppercase text-sm">All</span>
                             </div>
-                            {subcategory.types.map((type, index) => (
+                            {subcategory[1].map((sub: string) => (
                                 <div 
-                                key={index} 
+                                key={sub} 
                                 className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                                onClick={() => navigate(`${category.genre}/${subcategory.name}/${type}`)}>
-                                    <span className="uppercase text-sm">{type}</span>
+                                onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}/${sub.toLowerCase()}`)}>
+                                    <span className="uppercase text-sm">{sub}</span>
                                 </div>
                             ))}
                         </div>

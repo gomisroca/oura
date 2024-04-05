@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 interface Props {
-    item: Clothes;
+    item: Product;
     size: string;
     activeSize: string | null;
     onSizeSelection: (size: string) => void;

@@ -1,51 +1,40 @@
 type Category = {
-    classes: {
-        id: string;
-        name: string;
-        types: string[];
-    }[];
-    genre: string;
-    header: string;
-    url: string;
+    [category: string]: any;
 }
 
 type Color = {
+    id: string;
     amount: number;
     name: string;
-    class: string;
-    [key: string]: string[];
 }
   
 type Size = {
-    size: 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+    size: string;
     colors: Color[];
 }
 
-type Clothes = {
+type Product = {
     id: string;
-    title: string;
-    price: number;
-    sale: number;
+    name: string;
     description: string;
-    genre: string;
-    class: string;
-    type: string;
-    seasonal: boolean;
     image: string;
-    sizes: Size[];
+    gender: string;
+    category: string;
+    subcategory: string;
+    price: number;
     sales: number;
-}
-
-interface CartClothes extends Clothes {
-    cartID: string;
-    chosenSize?: string;
-    chosenColor?: string;
+    sizes: Size[];
+    onSale: boolean;
+    onSeasonal: boolean;
+    cartID?: string;
+    size?: string;
+    color?: string;
 }
 
 type Order = {
     id: string;
     products: string[];
-    timestamp: string;
+    createdAt: string;
 }
 
 type LoginFormData = {
@@ -55,8 +44,52 @@ type LoginFormData = {
 }
 
 type RegisterFormData = {
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     email: string,
     password: string,
+}
+
+type User = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
+}
+
+interface HomepageSettings {
+    id: string;
+    categories: string[];
+    image: string;
+    sale: boolean;
+    saleText: string;
+}
+
+interface CategorySettings {
+    id: string;
+    category: string;
+    image: string;
+}
+
+interface NavigationSettings {
+    id: string;
+    categories: string[];
+}
+
+interface SidebarSettings {
+    id: string;
+    image: string;
+}
+
+interface AboutSettings {
+    id: number;
+    image: string;
+}
+
+interface CartItem {
+    cartId: string;
+    id: string;
+    size?: string;
+    color?: string;
 }

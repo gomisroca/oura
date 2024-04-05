@@ -4,19 +4,19 @@ import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
 
 interface Props {
-    catalog: Clothes[];
-    item: Clothes;
-    genre: string;
+    catalog: Product[];
+    item: Product;
+    gender: string;
     category: string;
 }
 
-export default function RelatedItems({ catalog, item, genre, category }: Props) {
+export default function RelatedItems({ catalog, item, gender, category }: Props) {
     const navigate = useNavigate();
 
-    const [itemData, setItemData] = useState<Clothes[]>();
+    const [itemData, setItemData] = useState<Product[]>();
 
     const filterCatalog = (): void => {
-        let itemDataArray = catalog.filter(x => (x.genre.toLowerCase() == genre.toLowerCase()  || x.genre.toLowerCase()  == 'neutral') && x.class.toLowerCase() == category.toLowerCase());
+        let itemDataArray = catalog.filter(x => (x.gender.toLowerCase() == gender.toLowerCase()) && x.category.toLowerCase() == category.toLowerCase());
         let filter = itemDataArray.find(x => x.id == item.id);
         if (filter){
             const index = itemDataArray.indexOf(filter);
@@ -29,10 +29,10 @@ export default function RelatedItems({ catalog, item, genre, category }: Props) 
     }
 
     useEffect(() => {
-        if(catalog && item && genre && category){
+        if(catalog && item && gender && category){
             filterCatalog()
         }
-    }, [catalog, item, genre, category]);
+    }, [catalog, item, gender, category]);
 
     return (
         <div className='mx-auto mt-3 px-2 mb-10'>
@@ -45,12 +45,12 @@ export default function RelatedItems({ catalog, item, genre, category }: Props) 
                     key={product.id}
                     TransitionComponent={Fade}
                     TransitionProps={{ timeout: 600 }}
-                    title={product.title}>
+                    title={product.name}>
                         <div
                         className="h-full flex relative flex-col cursor-pointer"
                         onClick={(e => {
                         e.preventDefault();
-                        navigate('/'+ product.genre.toLowerCase() + '/' + product.class + '/' + product.type + '/' + product.id);
+                        navigate('/'+ product.gender.toLowerCase() + '/' + product.category + '/' + product.subcategory + '/' + product.id);
                         })}>
                             <div
                             className='cursor-pointer transition duration-200 h-[275px] sm:h-[275px] md:h-[350px] w-[175px] md:w-[225px] flex relative flex-col bg-zinc-200 hover:bg-zinc-300 border-zinc-400 hover:border-zinc-500 text-zinc-700 hover:text-zinc-800 border-2'
@@ -60,19 +60,19 @@ export default function RelatedItems({ catalog, item, genre, category }: Props) 
                                     className="mx-auto"
                                     src={`${product.image}`}
                                     srcSet={`${product.image}`}
-                                    alt={product.title}
+                                    alt={product.name}
                                     loading="lazy"
                                     />
                                 </div>
                                 <div
                                 className='mx-2 py-2 flex flex-col absolute bottom-[2px]'>
-                                    <span className="font-semibold">{product.title}</span>
-                                    {product.sale ?
+                                    <span className="font-semibold">{product.name}</span>
+                                    {product.onSale ?
                                     <div className="flex flex-row gap-x-2">
-                                        <span>
-                                            {product.sale}€
+                                        <span className="font-bold text-red-600">
+                                            ON SALE
                                         </span> 
-                                        <span className="line-through decoration-2 decoration-red-600/70">
+                                        <span>
                                             {product.price}€
                                         </span>
                                     </div>

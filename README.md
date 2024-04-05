@@ -15,10 +15,10 @@ Oura is a mock sports clothing website.
 ## Usage
 You can run the project from the main folder with **npm run dev**.
 
-Admin users can upload products, and categories (shoes, shirts, etc...) are auto-generated when a product with a new category is uploaded.
+Users of role Editor or above can upload products, and categories (shoes, shirts, etc...) are auto-generated when a product with a new category is uploaded.
 
 ## Roadmap
 - [ ] Allow selection of how much stock a product has when uploaded, by size and color.
 - [ ] Allow update of products once they are uploaded.
-- [ ] User management by admin users.
-- [ ] Order management by admin users.
+- [ ] User management by super users.
+- [ ] Order management by super users.

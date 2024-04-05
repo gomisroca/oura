@@ -8,7 +8,7 @@ export default function OrderHistory() {
 
     const fetchOrders = () => {
         try{
-            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/user/orders`)
+            axios.get<Order[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/users/orders`)
             .then(res => {
                 console.log(res.data)
                 setOrders(res.data)
@@ -31,19 +31,18 @@ export default function OrderHistory() {
         fetchOrders();
     }, [])
 
-    if(orders){
-        return (
-            <div className='flex flex-col overflow-hidden h-full text-zinc-700 border-2 border-zinc-400 mt-10 w-2/3 md:w-2/3'>
-                <div className="flex flex-col gap-2">
-                    <span className="text-center py-2 text-lg uppercase">Order History</span>
-                    {orders.map(order => (
-                        <Order order={order} />
-                    ))}
-                </div>
+    return (
+        <div className='flex flex-col overflow-hidden h-full text-zinc-700 border-2 border-zinc-400 mt-10 w-2/3 md:w-2/3'>
+            <div className="flex flex-col gap-2">
+                <span className="text-center py-2 text-lg uppercase border-b border-zinc-400">Order History</span>
+                {orders && orders.length > 0 ? 
+                orders.map(order => (
+                    <Order order={order} />
+                ))
+                : 
+                <div className="pb-2 m-auto"> There is nothing here yet.</div>}
             </div>
-        )
-    } else{
-        return null;
-    }
+        </div>
+    )
 }
   

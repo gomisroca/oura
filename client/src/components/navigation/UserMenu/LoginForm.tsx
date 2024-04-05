@@ -1,9 +1,10 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
 import { useUser } from '../../../contexts/UserContext';
-import DummyPic from '../../../assets/dummy.png';
+import HorizontalBannerPlaceholder from '../../../assets/ph_hbanner.png';
 import FailurePrompt from './FailurePrompt';
+import axios from 'axios';
 
 interface Props {
     onLoginToggle: () => void;
@@ -13,6 +14,7 @@ interface Props {
 export default function LoginForm({ onLoginToggle, onRegisterToggle }: Props) {
     const { userLogin } = useUser();
     const [failurePrompt, setFailurePrompt] = useState<boolean>(false);
+    const [settings, setSettings] = useState<SidebarSettings>();
     
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -26,6 +28,26 @@ export default function LoginForm({ onLoginToggle, onRegisterToggle }: Props) {
         
         await userLogin(formData) ? onLoginToggle() : setFailurePrompt(true);
     };
+
+    const fetchSidebarSettings = async() => {
+        await axios.get<SidebarSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/sidebar`)
+        .then((res) => {
+            setSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
+
+    useEffect(() => {
+        fetchSidebarSettings();
+    }, []);
 
     return (
         <>
@@ -76,10 +98,10 @@ export default function LoginForm({ onLoginToggle, onRegisterToggle }: Props) {
                     </span>
                 </div>
                 <hr/>
-                <div className='p-5 h-[500px] flex'>
+                <div className='p-5 flex max-w-[300px] items-center justify-center'>
                     <img 
-                    src={DummyPic} 
-                    className="h-full self-center"
+                    src={settings?.image ? settings.image: HorizontalBannerPlaceholder} 
+                    className="max-h-[500px]"
                     />
                 </div>
             </div>

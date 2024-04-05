@@ -6,13 +6,12 @@ import axios from "axios";
 
 function Landing() {
     const isMobile = useIsMobile();
-    const [categories, setCategoryData] = useState();
+    const [settings, setSettings] = useState<HomepageSettings>();
 
-    useEffect(() => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/categories/catalog`)
+    const fetchHomepageSettings = async() => {
+        await axios.get<HomepageSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/homepage`)
         .then((res) => {
-            console.log(res.data)
-            setCategoryData(res.data);
+            setSettings(res.data);
         })
         .catch(error => {
             if(error.response){
@@ -23,12 +22,17 @@ function Landing() {
                 console.log(error.message)
             }
         })
+    }
+
+    useEffect(() => {
+        fetchHomepageSettings();
     }, []);
     return (
-        categories?
+        settings ?
             isMobile ? 
-            ( <MobileLayout categories={categories} /> ) 
-            : ( <DesktopLayout categories={categories} /> )
+            ( <MobileLayout settings={settings} /> ) 
+            : 
+            ( <DesktopLayout settings={settings} /> )
         : null
     )
   }

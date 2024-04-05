@@ -14,9 +14,21 @@ import Product from './pages/Product';
 import Checkout from './pages/Checkout';
 import Legal from './pages/Legal';
 import OrderHistory from './pages/OrderHistory';
-import AdminProtectedRoute from './pages/Admin/AdminProtectedRoute';
-import Admin from './pages/Admin';
+import ProtectedRouteCheck from './pages/Editor/ProtectedRouteCheck';
+import ProductUpload from './pages/Editor/ProductUpload';
 import CatalogFilteredRoute from './pages/Catalog/CatalogFilteredRoute';
+import EditorDashboard from './pages/Editor/EditorDashboard';
+import ProductUpdate from './pages/Editor/ProductUpdate';
+import ProductList from './pages/Editor/ProductList';
+import UserUpload from './pages/Editor/UserUpload';
+import UserEditList from './pages/Editor/UserEditList';
+import UserEdit from './pages/Editor/UserEdit';
+import CategoriesSettings from './pages/Editor/CategoriesSettings';
+import NavigationSettings from './pages/Editor/NavigationSettings';
+import HomepageSettings from './pages/Editor/HomepageSettings';
+import CategoryEdit from './pages/Editor/CategoryEdit';
+import SidebarSettings from './pages/Editor/SidebarSettings';
+import AboutSettings from './pages/Editor/AboutSettings';
 
 const router = createBrowserRouter([
     {
@@ -43,7 +55,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/:genre/:category?/:type?",
+            path: "/:gender/:category?/:subcategory?",
             element: <CatalogFilteredRoute />,
             errorElement: <Error />,
             children:[
@@ -54,7 +66,7 @@ const router = createBrowserRouter([
             ]
         },
         {
-            path: "/:genre/:category/:type/:product",
+            path: "/:gender/:category/:subcategory/:product",
             element: <Product />,
             errorElement: <Error />,
         },
@@ -64,13 +76,61 @@ const router = createBrowserRouter([
             errorElement: <Error />,
         },
         {
-            path: "/admin", 
-            element: <AdminProtectedRoute />,
+            path: "/editor", 
+            element: <ProtectedRouteCheck />,
             errorElement: <Error />,
             children:[
                 {
                     path: "",
-                    element: <Admin />
+                    element: <EditorDashboard />
+                },
+                {
+                    path: "products",
+                    element: <ProductList />
+                },
+                {
+                    path: "products/upload",
+                    element: <ProductUpload />
+                },
+                {
+                    path: "products/:id",
+                    element: <ProductUpdate />
+                },
+                {
+                    path: "users",
+                    element: <UserEditList />
+                },
+                {
+                    path: "users/upload",
+                    element: <UserUpload />
+                },
+                {
+                    path: "users/:id",
+                    element: <UserEdit />
+                },
+                {
+                    path: "categories",
+                    element: <CategoriesSettings />
+                },
+                {
+                    path: "categories/:category",
+                    element: <CategoryEdit />
+                },
+                {
+                    path: "navigation",
+                    element: <NavigationSettings />
+                },
+                {
+                    path: "sidebar",
+                    element: <SidebarSettings />
+                },
+                {
+                    path: "about",
+                    element: <AboutSettings />
+                },
+                {
+                    path: "homepage",
+                    element: <HomepageSettings />
                 },
             ]
         },

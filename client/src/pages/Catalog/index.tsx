@@ -2,27 +2,42 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
-import Skeleton from '@mui/material/Skeleton';
-
-import ManImg from '../../assets/categories/man.jpg';
-import WomanImg from '../../assets/categories/woman.jpg';
-import OutdoorsImg from '../../assets/categories/outdoors.jpg';
+import VerticalBannerPlaceholder from '../../assets/ph_vbanner.png';
+import ItemPlaceholder from '../../assets/ph_item.png';
 
 import Filter from './Filter';
 
 export default function Catalog() {
     const navigate = useNavigate();
 
-    const genre = useParams().genre;
+    const gender = useParams().gender;
     const category = useParams().category;
-    const type = useParams().type;
+    const subcategory = useParams().subcategory;
 
-    const [catalog, setCatalog] = useState<Clothes[]>();
-    const [products, setProducts] = useState<Clothes[]>();
-    const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Clothes[]>();
+    const [catalog, setCatalog] = useState<Product[]>();
+    const [products, setProducts] = useState<Product[]>();
+    const [sizeFilteredProduct, setSizeFilteredProducts] = useState<Product[]>();
+    const [settings, setSettings] = useState<CategorySettings>();
+
+    const fetchCategorySettings = async() => {
+        await axios.get<CategorySettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/categories/${gender}`)
+        .then((res) => {
+            console.log(res.data)
+            setSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
 
     const fetchCatalog = () => {
-        axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/clothes/catalog`)
+        axios.get<Product[]>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/`)
         .then((res) => {
             setCatalog(res.data);
             filterCatalog(res.data);
@@ -38,70 +53,55 @@ export default function Catalog() {
         })
     }
     
-    const filterCatalog = (catalog: Clothes[]) => {
-        let productArray: Clothes[];
-        if (genre !== 'season'){
-            productArray = catalog.filter(x => (x.genre.toLowerCase() == genre || x.genre == 'neutral'));
+    const filterCatalog = (catalog: Product[]) => {
+        let productArray: Product[];
+        if (gender !== 'season'){
+            productArray = catalog.filter(x => (x.gender.toLowerCase() == gender));
         } else{
-            productArray = catalog.filter(x => (x.seasonal == true));
+            productArray = catalog.filter(x => (x.onSeasonal == true));
         }
         if(category == 'season'){
-            productArray = productArray.filter(x => x.seasonal == true);
+            productArray = productArray.filter(x => x.onSeasonal == true);
         } else if (category != undefined) {
-            productArray = productArray.filter(x => x.class == category);
+            productArray = productArray.filter(x => x.category == category);
         }
-        if(type != undefined){
-            productArray = productArray.filter(x => x.type == type);
+        if(subcategory != undefined){
+            productArray = productArray.filter(x => x.subcategory == subcategory);
         }
         setProducts(productArray);
         setSizeFilteredProducts(productArray);
     }
 
     useEffect(() => {
+        if(gender){
+            fetchCategorySettings();
+        }
         if (catalog) {
             filterCatalog(catalog);
         } else{
             fetchCatalog();
         }
-    }, [genre, category, type])
+    }, [gender, category, subcategory])
 
-    const handleUpdateProducts = (data: Clothes[]) => {
+    const handleUpdateProducts = (data: Product[]) => {
         setSizeFilteredProducts(data);
-    }
-
-    let banner;
-    switch(genre){
-        case 'man':
-            banner = ManImg;
-            break;
-        case 'woman':
-            banner = WomanImg;
-            break;
-        default:
-            banner = OutdoorsImg;
-            break;
     }
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='grid sm:h-[100px] md:h-[400px] w-screen'>
-                {banner ? 
+            <div className='flex h-[150px] md:h-[400px] w-screen overflow-hidden items-center'>
                 <img
                 className= 'w-screen brightness-75'
-                src={banner}
+                src={settings?.image ? settings.image : VerticalBannerPlaceholder}
                 alt="Sale Image"
                 />
-                : 
-                <Skeleton variant="rectangular" />
-                }
-
                 {category ? 
-                <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
-                    {genre}
+                <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] ml-1 md:ml-4 text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
+                    {gender}
                 </div> 
                 : 
                 <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
-                    {genre}
+                    {gender}
                 </div>
                 }
 
@@ -113,9 +113,9 @@ export default function Catalog() {
                 undefined
                 }
 
-                {type ? 
-                <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 self-center justify-self-center mt-[65px] md:mt-[230px]'>
-                    {type}
+                {subcategory ? 
+                <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 ml-1 md:ml-3 self-center justify-self-center mt-[65px] md:mt-[230px]'>
+                    {subcategory}
                 </div> 
                 : 
                 undefined
@@ -132,25 +132,25 @@ export default function Catalog() {
                     <div 
                     key={item.id}
                     className='cursor-pointer transition duration-200 h-[275px] md:h-[350px] w-[175px] md:w-[225px] flex relative flex-col bg-zinc-200 hover:bg-zinc-300 border-zinc-400 hover:border-zinc-500 text-zinc-700 hover:text-zinc-800 border-2' 
-                    onClick={() => navigate('/' + item.genre.toLowerCase() + '/' + item.class + '/' + item.type + '/' + item.id)}>
+                    onClick={() => navigate('/' + item.gender.toLowerCase() + '/' + item.category + '/' + item.subcategory + '/' + item.id)}>
                         <div className="h-2/3 md:h-3/4 overflow-y-hidden bg-white items-center flex">
                             <img
                             className="mx-auto"
-                            src={`${item.image}`}
-                            srcSet={`${item.image}`}
-                            alt={item.title}
+                            src={`${item.image ? item.image : ItemPlaceholder}`}
+                            srcSet={`${item.image ? item.image : ItemPlaceholder}`}
+                            alt={item.name}
                             loading="lazy"
                             />
                         </div>
                         <div
                         className='mx-2 py-2 flex flex-col absolute bottom-[2px]'>
-                            <span className="font-semibold">{item.title}</span>
-                            {item.sale ?
+                            <span className="font-semibold">{item.name}</span>
+                            {item.onSale ?
                             <div className="flex flex-row gap-x-2">
-                                <span>
-                                    {item.sale}€
+                                <span className="font-bold text-red-600">
+                                    ON SALE
                                 </span> 
-                                <span className="line-through decoration-2 decoration-red-600/70">
+                                <span>
                                     {item.price}€
                                 </span>
                             </div>

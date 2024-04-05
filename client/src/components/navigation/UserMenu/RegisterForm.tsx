@@ -1,8 +1,9 @@
 import TextField from "@mui/material/TextField";
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import UserContext from "../../../contexts/UserContext";
-import DummyPic from "../../../assets/dummy.png";
+import HorizontalBannerPlaceholder from "../../../assets/ph_hbanner.png";
 import FailurePrompt from "./FailurePrompt";
+import axios from "axios";
 
 interface Props {
     onLoginToggle: () => void;
@@ -13,14 +14,15 @@ interface Props {
 export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props) {
     const { userRegister } = useContext(UserContext);
     const [failurePrompt, setFailurePrompt] = useState<boolean>(false);
+    const [settings, setSettings] = useState<SidebarSettings>();
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = event.currentTarget;
 
         let formData: RegisterFormData = {
-            "first_name": form.first_name.value,
-            "last_name": form.last_name.value,
+            "firstName": form.firstName.value,
+            "lastName": form.lastName.value,
             "email": form.email.value,
             "password": form.password.value,
         }
@@ -28,6 +30,26 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
         await userRegister(formData) ? onRegisterToggle() : setFailurePrompt(true);
     };
 
+    const fetchSidebarSettings = async() => {
+        await axios.get<SidebarSettings>(`${import.meta.env.VITE_REACT_APP_API_URL}/settings/sidebar`)
+        .then((res) => {
+            setSettings(res.data);
+        })
+        .catch(error => {
+            if(error.response){
+                console.log(error.response)
+            } else if(error.request){
+                console.log(error.request)
+            } else{
+                console.log(error.message)
+            }
+        })
+    }
+
+    useEffect(() => {
+        fetchSidebarSettings();
+    }, []);
+    
     return (
         <>
            <div className="w-[300px] text-zinc-700">
@@ -41,14 +63,14 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
                             sx={{margin: "8px"}}
                             required
                             label="First Name"
-                            name="first_name"
+                            name="firstName"
                             type="text"
                         />
                         <TextField
                             sx={{margin: "8px"}}
                             required
                             label="Last Name"
-                            name="last_name"
+                            name="lastName"
                             type="text"
                         />
                         <TextField
@@ -84,10 +106,10 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
                     </span>
                 </div>
                 <hr/>
-                <div className="p-5 h-[500px] flex">
-                    <img 
-                    src={DummyPic} 
-                    className="h-full self-center"
+                <div className='p-5 flex max-w-[300px] items-center justify-center'>
+                    <img
+                    src={settings?.image ? settings.image: HorizontalBannerPlaceholder} 
+                    className="max-h-[500px]"
                     />
                 </div>
             </div>
