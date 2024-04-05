@@ -95,3 +95,13 @@ model NavbarSettings {
   id         String   @id @default(uuid())
   categories String[]
 }
+
+model SidebarSettings {
+  id    String @id @default(uuid())
+  image String
+}
+
+model AboutSettings {
+  id    String @id @default(uuid())
+  image String
+}

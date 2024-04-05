@@ -27,6 +27,8 @@ import CategoriesSettings from './pages/Editor/CategoriesSettings';
 import NavigationSettings from './pages/Editor/NavigationSettings';
 import HomepageSettings from './pages/Editor/HomepageSettings';
 import CategoryEdit from './pages/Editor/CategoryEdit';
+import SidebarSettings from './pages/Editor/SidebarSettings';
+import AboutSettings from './pages/Editor/AboutSettings';
 
 const router = createBrowserRouter([
     {
@@ -117,6 +119,14 @@ const router = createBrowserRouter([
                 {
                     path: "navigation",
                     element: <NavigationSettings />
+                },
+                {
+                    path: "sidebar",
+                    element: <SidebarSettings />
+                },
+                {
+                    path: "about",
+                    element: <AboutSettings />
                 },
                 {
                     path: "homepage",

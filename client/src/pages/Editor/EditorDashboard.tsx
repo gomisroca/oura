@@ -26,7 +26,12 @@ export default function EditorDashboard() {
                 {(user?.role == 'SUPER' || user?.role == 'ADMIN') &&
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Display Settings</span>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                        <div 
+                        className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        onClick={() => navigate('homepage')}>
+                            Homepage
+                        </div>
                         <div 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
                         onClick={() => navigate('categories')}>
@@ -39,8 +44,13 @@ export default function EditorDashboard() {
                         </div>
                         <div 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('homepage')}>
-                            Homepage
+                        onClick={() => navigate('sidebar')}>
+                            Sidebar
+                        </div>
+                        <div 
+                        className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        onClick={() => navigate('about')}>
+                            About
                         </div>
                     </div>
                 </div>}

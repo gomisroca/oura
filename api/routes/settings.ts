@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-import { CategorySettings, HomepageSettings, NavbarSettings, PrismaClient } from '@prisma/client';
+import { AboutSettings, CategorySettings, HomepageSettings, NavbarSettings, PrismaClient, SidebarSettings } from '@prisma/client';
 import multer, { FileFilterCallback } from 'multer';
 const prisma = new PrismaClient();
 const fs = require('fs-extra');
@@ -258,6 +258,156 @@ router.post('/navigation', async(req: Request, res: Response) => {
     }catch(err: unknown){
         res.status(500).json({message: err})
     }   
+})
+
+// Get Sidebar Settings
+router.get('/sidebar', async(req: Request, res: Response) => {
+    try{
+        const settings: SidebarSettings[] = await prisma.sidebarSettings.findMany({});
+        if(settings[0]){
+            res.status(200).json(settings[0]);
+        } else{
+            res.status(404).json('SETTINGS_404');
+        }
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }   
+})
+// Set Sidebar Settings
+router.post('/sidebar',
+upload.fields([{ name: 'media', maxCount: 1 }]), 
+async(req: Request, res: Response) => {
+    try{
+        // image upload
+        const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+        const url = req.protocol + '://' + req.get('host');
+        const files = req.files as {[fieldname: string]: Express.Multer.File[]};
+
+        let media: string[] = [];
+        if(files.media && files.media.length > 0){ 
+            for (let i = 0; i < files['media'].length; i++) {
+                let result: any = (files['media'][i].filename).match(imageReg);
+                const uuid = uuidv4();
+                media.push(url + '/public/sidebar/' + uuid + result[0]);
+                fs.move('./public/temp/' + files['media'][i].filename, './public/sidebar/' + uuid + result[0], 
+                function (err: unknown) {
+                    if (err) {
+                        return console.error(err);
+                    }
+                });
+            }
+        }
+        const settings: SidebarSettings[] = await prisma.sidebarSettings.findMany({});
+        if(settings[0]){
+            if(files.media && files.media.length > 0){  
+                const regex = /\/([^\/]+)$/;
+                const match = settings[0].image.match(regex);
+                if (match) {
+                    const imagePath = match[1];
+                    const imageUrl ='./public/sidebar/' + imagePath;
+                    fs.unlink(imageUrl, (err: any) => {
+                        if(err){
+                            console.error(err.message);
+                            return;
+                        }
+                    });
+                }
+            }
+            await prisma.sidebarSettings.update({
+                where: {
+                    id: settings[0].id
+                },
+                data:{
+                    image: media[0],
+                }
+            })
+        } else{
+            // if settings doesn't exist, we simply create it
+            await prisma.sidebarSettings.create({
+                data: {
+                    image: media[0],
+                }
+            })
+        }
+        res.sendStatus(201);
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }
+})
+
+// Get About Settings
+router.get('/about', async(req: Request, res: Response) => {
+    try{
+        const settings: AboutSettings[] = await prisma.aboutSettings.findMany({});
+        if(settings[0]){
+            res.status(200).json(settings[0]);
+        } else{
+            res.status(404).json('SETTINGS_404');
+        }
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }   
+})
+// Set About Settings
+router.post('/about',
+upload.fields([{ name: 'media', maxCount: 1 }]), 
+async(req: Request, res: Response) => {
+    try{
+        // image upload
+        const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+        const url = req.protocol + '://' + req.get('host');
+        const files = req.files as {[fieldname: string]: Express.Multer.File[]};
+
+        let media: string[] = [];
+        if(files.media && files.media.length > 0){ 
+            for (let i = 0; i < files['media'].length; i++) {
+                let result: any = (files['media'][i].filename).match(imageReg);
+                const uuid = uuidv4();
+                media.push(url + '/public/about/' + uuid + result[0]);
+                fs.move('./public/temp/' + files['media'][i].filename, './public/about/' + uuid + result[0], 
+                function (err: unknown) {
+                    if (err) {
+                        return console.error(err);
+                    }
+                });
+            }
+        }
+        const settings: AboutSettings[] = await prisma.aboutSettings.findMany({});
+        if(settings[0]){
+            if(files.media && files.media.length > 0){  
+                const regex = /\/([^\/]+)$/;
+                const match = settings[0].image.match(regex);
+                if (match) {
+                    const imagePath = match[1];
+                    const imageUrl ='./public/about/' + imagePath;
+                    fs.unlink(imageUrl, (err: any) => {
+                        if(err){
+                            console.error(err.message);
+                            return;
+                        }
+                    });
+                }
+            }
+            await prisma.aboutSettings.update({
+                where: {
+                    id: settings[0].id
+                },
+                data:{
+                    image: media[0],
+                }
+            })
+        } else{
+            // if settings doesn't exist, we simply create it
+            await prisma.aboutSettings.create({
+                data: {
+                    image: media[0],
+                }
+            })
+        }
+        res.sendStatus(201);
+    }catch(err: unknown){
+        res.status(500).json({message: err})
+    }
 })
 
 module.exports = router

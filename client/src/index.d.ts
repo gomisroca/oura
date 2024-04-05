@@ -76,3 +76,20 @@ interface NavigationSettings {
     id: string;
     categories: string[];
 }
+
+interface SidebarSettings {
+    id: string;
+    image: string;
+}
+
+interface AboutSettings {
+    id: number;
+    image: string;
+}
+
+interface CartItem {
+    cartId: string;
+    id: string;
+    size?: string;
+    color?: string;
+}
