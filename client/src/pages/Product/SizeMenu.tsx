@@ -11,8 +11,6 @@ export default function SizeMenu({ item }: Props) {
     const [activeSize, setActiveSize] = useState<string | null>(null);
 
     const handleSizeSelection = (size: string) => {
-        item.size = size;
-        console.log(size)
         setActiveSize(size)
         setItemChanged(!itemChanged);
     }
@@ -20,12 +18,10 @@ export default function SizeMenu({ item }: Props) {
     return(
         <div className='justify-center flex flex-col text-zinc-700'>
             <div className='justify-center flex flex-row'>
-                <Size item={item} size={'XS'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
-                <Size item={item} size={'S'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
-                <Size item={item} size={'M'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
-                <Size item={item} size={'L'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
-                <Size item={item} size={'XL'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
-                <Size item={item} size={'2XL'} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
+                {item.sizes.map(size => (
+                    <Size item={item} size={size.size} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
+                ))}
+                
             </div>
             <div className='flex'>
                 <ColorMenu item={item} activeSize={activeSize} />
