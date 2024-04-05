@@ -67,12 +67,12 @@ export default function RelatedItems({ catalog, item, gender, category }: Props)
                                 <div
                                 className='mx-2 py-2 flex flex-col absolute bottom-[2px]'>
                                     <span className="font-semibold">{product.name}</span>
-                                    {product.sale ?
+                                    {product.onSale ?
                                     <div className="flex flex-row gap-x-2">
-                                        <span>
-                                            {product.sale}€
+                                        <span className="font-bold text-red-600">
+                                            ON SALE
                                         </span> 
-                                        <span className="line-through decoration-2 decoration-red-600/70">
+                                        <span>
                                             {product.price}€
                                         </span>
                                     </div>

@@ -89,14 +89,14 @@ export default function Catalog() {
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='grid sm:h-[100px] md:h-[400px] w-screen'>
+            <div className='flex h-[150px] md:h-[400px] w-screen overflow-hidden items-center'>
                 <img
                 className= 'w-screen brightness-75'
                 src={settings?.image ? settings.image : VerticalBannerPlaceholder}
                 alt="Sale Image"
                 />
                 {category ? 
-                <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
+                <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] ml-1 md:ml-4 text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
                     {gender}
                 </div> 
                 : 
@@ -114,7 +114,7 @@ export default function Catalog() {
                 }
 
                 {subcategory ? 
-                <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 self-center justify-self-center mt-[65px] md:mt-[230px]'>
+                <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 ml-1 md:ml-3 self-center justify-self-center mt-[65px] md:mt-[230px]'>
                     {subcategory}
                 </div> 
                 : 

@@ -41,7 +41,6 @@ function Product() {
         if(id){
             axios.get<Product>(`${import.meta.env.VITE_REACT_APP_API_URL}/products/${id}`)
             .then((res) => {
-                console.log(res.data)
                 setProduct(res.data);
             })
             .catch(error => {
