@@ -249,7 +249,6 @@ upload.fields([{ name: 'media', maxCount: 1 }]),
 async(req: Request, res: Response) => {
     try{
         const updatedProduct: PartialProduct = req.body;
-        console.log(typeof updatedProduct.addSizes)
         let sizes: string[] | undefined;
         let colors: string[] | undefined;
         let colorStock: number | undefined;
@@ -271,19 +270,16 @@ async(req: Request, res: Response) => {
                 } 
             }
         });
-        console.log(1)
         const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
         const url = req.protocol + '://' + req.get('host');
 
 
         if(product){
-            console.log(2)
             const files = req.files as {[fieldname: string]: Express.Multer.File[]};
             let media: string[] = [];
             let image = product.image;
             // If we are sending files...
             if(files.media && files.media.length > 0){
-                console.log(4)
                 // We remove the old image
                 const regex = /\/([^\/]+)$/; // Match '/' followed by one or more characters that are not '/'
                 const match = product.image.match(regex);
@@ -333,19 +329,15 @@ async(req: Request, res: Response) => {
                 },
             });
 
-            console.log(5)
             // If addSizes is unchecked, we delete any Sizes the product had
             if (updatedProduct.addSizes == 'false'){
-                console.log(6)
                 await prisma.productSize.deleteMany({
                     where: {
                         productId: product.id
                     }
                 })
             } else if (sizes && colors) {
-                console.log(7)
                 const newSizes: string[] = [];
-                console.log(sizes)
                 // If the updated product has sizes, we iterate over them
                 for(const size of sizes){
                     // we check if the size already exists
@@ -360,7 +352,6 @@ async(req: Request, res: Response) => {
                     })
                     
                     if(existingSize){
-                        console.log(8)
                         // if the size exists, we iterate over updated product colors
                         const newColors: string[] = [];
                         for(const color of colors){
@@ -421,17 +412,14 @@ async(req: Request, res: Response) => {
                                 },
                             });
                         }
-                        console.log(9)
 
                     } else{
                         // if the size doesn't exist, we push it to the array to be added later
-                        console.log(12)
                         newSizes.push(size)
                     }
                 }
                 // we add the new sizes
                 if(newSizes.length > 0){
-                    console.log(10)
                     const sizeObjects: PartialSize[] = newSizes.map(size => ({ size }));
                     const productWithSize: ProductWithSizes = await prisma.product.update({ 
                         where: {
@@ -481,7 +469,6 @@ async(req: Request, res: Response) => {
                         }
                     }
                 }
-                console.log(sizes)
                 // and we remove the sizes that are not in the updated product
                 const unusedSizes = await prisma.productSize.findMany({
                     where: {
@@ -500,10 +487,8 @@ async(req: Request, res: Response) => {
                         },
                     });
                 }
-                console.log(11)
             }
         } else{
-            console.log(3)
             res.status(404).json('PRODUCT_404')
         }
         res.sendStatus(200)
