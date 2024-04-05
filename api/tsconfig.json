@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "types": ["node", "express", "multer"]
+    },
+    "files": ["server.ts"],
+    "include": ["routes", "middleware"],
+    "exclude": ["node_modules"]
+}
