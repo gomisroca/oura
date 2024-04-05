@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
 import { SnackbarCloseReason } from '@mui/base';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
     item: Product;
@@ -27,12 +28,17 @@ export default function ColorMenu({ item, activeSize }: Props) {
     
     const addToCart = (item: Product, color: string) => {
         setOpen(true);
-
-        let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
-        item.cartID = (Math.random() * 9999).toString();
-        item.color = color;
-        cart.push(item);
-        localStorage.setItem('oura_cart', JSON.stringify(cart));
+        if(size){
+            let cart_item = {
+                cartId: uuidv4(),
+                id: item.id,
+                size: size!.size,
+                color: color,
+            }
+            let cart: CartItem[] = JSON.parse(localStorage.getItem('oura_cart') || '[]');
+            cart.push(cart_item);
+            localStorage.setItem('oura_cart', JSON.stringify(cart));
+        }
     }
 
     const handleClose = (event: React.SyntheticEvent, reason: SnackbarCloseReason) => {

@@ -6,26 +6,24 @@ import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
 import { useState } from 'react';
 import { SnackbarCloseReason } from '@mui/base';
+import { v4 as uuidv4 } from 'uuid';
 
-interface item extends Product {
-    cartID?: string;
-}
 interface Props {
-    item: item;
+    item: Product;
 }
 
 export default function AddToCart({ item }: Props) {
     const [open, setOpen] = useState<boolean>(false);  
     
-    const addToCart = (item: item) => {
+    const addToCart = (item: Product) => {
         setOpen(true);
-
-        item.cartID = (Math.random() * 9999).toString();
-        let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
-        if(item.cartID){
-            cart.push(item as Product);
-            localStorage.setItem('oura_cart', JSON.stringify(cart));
+        let cart_item = {
+            cartId: uuidv4(),
+            id: item.id
         }
+        let cart: CartItem[] = JSON.parse(localStorage.getItem('oura_cart') || '[]');
+        cart.push(cart_item);
+        localStorage.setItem('oura_cart', JSON.stringify(cart));
     }
 
     const handleClose = (event: React.SyntheticEvent, reason: SnackbarCloseReason) => {
