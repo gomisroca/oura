@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "NODE_ENV=development nodemon index.ts",
         "start": "NODE_ENV=production node index.ts",
-        "build": "esbuild index.ts --platform=node --bundle --minify --outfile=dist/index.ts"
+        "build": "esbuild index.ts --platform=node --bundle --minify --outfile=dist/index.ts",
+        "postinstall": "prisma generate"
     },
     "keywords": [],
     "author": "",
