@@ -1,16 +1,19 @@
 {
     "version": 2,
     "builds": [
-     {
-      "src": "index.ts",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["dist/**"] }
-     }
+        {
+            "src": "index.ts",
+            "use": "@vercel/node",
+            "config": { "includeFiles": ["dist/**"] }
+        }
     ],
     "routes": [
-     {
-      "src": "/(.*)",
-      "dest": "index.ts"
-     }
+        {
+            "src": "/(.*)",
+            "dest": "index.ts",
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }
     ]
-   }
+}
