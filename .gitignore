@@ -5,3 +5,4 @@ settings.json
 NOTES.md
 api/public
 api/dist
+.vercel

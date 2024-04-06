@@ -4,7 +4,28 @@ import multer, { FileFilterCallback } from 'multer';
 const fs = require('fs-extra');
 const { v4: uuidv4 } = require('uuid');
 
-import { AuthedRequest, ProductWithSizes, SizeWithColors } from '../index';
+interface RequestUser {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
+    iat: number;
+    exp?: number;
+}
+
+interface AuthedRequest extends Request {
+    user?: RequestUser;
+}
+
+type ProductWithSizes = Prisma.ProductGetPayload<{
+    include: { sizes: { include: { colors: true } } }
+}>
+
+type SizeWithColors = Prisma.ProductSizeGetPayload<{
+    include: { colors: true }
+}>
+
 const { verifyEditorToken } = require('../middleware/auth');
 import { Prisma, PrismaClient, Product, ProductSize, SizeColor } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -279,10 +300,10 @@ async(req: Request, res: Response) => {
             let media: string[] = [];
             let image = product.image;
             // If we are sending files...
-            if(files.media && files.media.length > 0){
+            if(image && files.media && files.media.length > 0){
                 // We remove the old image
                 const regex = /\/([^\/]+)$/; // Match '/' followed by one or more characters that are not '/'
-                const match = product.image.match(regex);
+                const match = image.match(regex);
 
                 if (match) {
                     const imagePath = match[1];

@@ -5,8 +5,25 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { verifyBasicToken, verifyAdminToken } = require('../middleware/auth');
 
-import { AuthedRequest, ProductWithSizes } from '../index';
-import { Order, PrismaClient, ProductSize, Role, SizeColor, User } from '@prisma/client'
+interface RequestUser {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
+    iat: number;
+    exp?: number;
+}
+
+interface AuthedRequest extends Request {
+    user?: RequestUser;
+}
+
+type ProductWithSizes = Prisma.ProductGetPayload<{
+    include: { sizes: { include: { colors: true } } }
+}>
+
+import { Order, Prisma, PrismaClient, ProductSize, Role, SizeColor, User } from '@prisma/client'
 const prisma = new PrismaClient();
 
 interface RegisterInputs {

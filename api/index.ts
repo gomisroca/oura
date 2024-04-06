@@ -20,6 +20,10 @@ app.use(bodyParser.urlencoded({
 }));
 app.use('/public', express.static('public'));
 
+app.get('/', (req, res) => {
+  res.send('hi')
+})
+
 // Routers
 const productsRouter = require('./routes/products');
 app.use('/products', productsRouter);
@@ -30,4 +34,6 @@ app.use('/users', usersRouter);
 const settingsRouter = require('./routes/settings');
 app.use('/settings', settingsRouter);
 
-app.listen(4030, () => console.log('API Server On'));
+app.listen(3030, () => console.log('API Server Ready on Port 3030'));
+
+module.exports = app;

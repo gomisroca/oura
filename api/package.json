@@ -2,11 +2,19 @@
     "name": "oura-api",
     "version": "1.0.0",
     "description": "",
-    "main": "script.js",
+    "main": "script.js",  
+    "pre-commit": [
+        "ts.check",
+        "build",
+        "add-build"
+    ],
     "scripts": {
-        "dev": "NODE_ENV=development nodemon server.ts",
-        "start": "NODE_ENV=production node server.ts",
-        "build": "esbuild server.ts --platform=node --bundle --minify --outfile=built/server.ts"
+        "dev": "NODE_ENV=development nodemon index.ts",
+        "start": "NODE_ENV=production node index.ts",
+        "build": "rimraf dist && tsc",
+        "ts.check": "tsc --project tsconfig.json",
+        "add-build": "git add dist",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
     "author": "",
@@ -23,7 +31,9 @@
         "mongoose": "^6.9.0",
         "multer": "^1.4.5-lts.1",
         "pg": "^8.11.3",
+        "pre-commit": "^1.2.2",
         "require-all": "^3.0.0",
+        "rimraf": "^5.0.5",
         "vite": "^4.1.4"
     },
     "devDependencies": {

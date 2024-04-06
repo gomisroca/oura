@@ -1,6 +1,19 @@
 const jwt = require("jsonwebtoken");
-import { NextFunction, RequestHandler, Response } from 'express';
-import { AuthedRequest, RequestUser } from '../index';
+import { NextFunction, RequestHandler, Request, Response } from 'express';
+
+interface RequestUser {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
+    iat: number;
+    exp?: number;
+}
+
+interface AuthedRequest extends Request {
+    user?: RequestUser;
+}
 
 const verifyBasicToken: RequestHandler = (req: AuthedRequest, res: Response, next: NextFunction): Response | void => {
     const token: string | undefined = req.headers.authorization;
