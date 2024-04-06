@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
 app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('hi')
+  res.send('OURA API')
 })
 
 // Routers

@@ -9,7 +9,7 @@
       "forceConsistentCasingInFileNames": true,
       "types": ["node", "express", "multer"]
     },
-    "files": ["index.ts"],
+    "files": ["app.ts"],
     "include": ["routes", "middleware"],
     "exclude": ["node_modules"]
 }

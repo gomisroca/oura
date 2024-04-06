@@ -3,31 +3,9 @@ const router = express.Router()
 import multer, { FileFilterCallback } from 'multer';
 const fs = require('fs-extra');
 const { v4: uuidv4 } = require('uuid');
-
-interface RequestUser {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: 'BASIC' | 'EDITOR' | 'SUPER' | 'ADMIN';
-    iat: number;
-    exp?: number;
-}
-
-interface AuthedRequest extends Request {
-    user?: RequestUser;
-}
-
-type ProductWithSizes = Prisma.ProductGetPayload<{
-    include: { sizes: { include: { colors: true } } }
-}>
-
-type SizeWithColors = Prisma.ProductSizeGetPayload<{
-    include: { colors: true }
-}>
-
+import { AuthedRequest, ProductWithSizes, SizeWithColors } from '../index';
 const { verifyEditorToken } = require('../middleware/auth');
-import { Prisma, PrismaClient, Product, ProductSize, SizeColor } from '@prisma/client';
+import { PrismaClient, Product, ProductSize, SizeColor } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const DIR = './public/temp';
