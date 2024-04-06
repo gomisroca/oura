@@ -4,7 +4,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 import express from 'express';
 const app = express()
-const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser');
 
