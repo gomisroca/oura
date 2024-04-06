@@ -2,19 +2,11 @@
     "name": "oura-api",
     "version": "1.0.0",
     "description": "",
-    "main": "script.js",  
-    "pre-commit": [
-        "ts.check",
-        "build",
-        "add-build"
-    ],
+    "main": "script.js",
     "scripts": {
         "dev": "NODE_ENV=development nodemon index.ts",
         "start": "NODE_ENV=production node index.ts",
-        "build": "rimraf dist && tsc",
-        "ts.check": "tsc --project tsconfig.json",
-        "add-build": "git add dist",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "esbuild index.ts --platform=node --bundle --minify --outfile=dist/index.ts"
     },
     "keywords": [],
     "author": "",
