@@ -17,7 +17,7 @@ export default function Cart() {
     const [cartChanged, setChange] = useState<boolean>(false)
     const [cartEl, setCartEl] = useState<null | HTMLElement>(null);
     const openCart = Boolean(cartEl);
-    let cart: CartItem[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: CartItem[] = JSON.parse(localStorage.getItem('oura_cart') || '[]');
     const [cartProducts, setCartProducts] = useState<CartProduct[]>();
     const [totalPrice, setTotalPrice] = useState<null | number>();
     
