@@ -13,7 +13,7 @@ function DesktopLayout({ settings }: Props) {
             <div className='flex overflow-y-hidden h-full justify-center items-center'>
                 <img
                 className='h-[100vh] max-w-[unset]'
-                src={settings.image ? settings.image  : LandingPlaceholder}
+                src={settings && settings.image ? settings.image  : LandingPlaceholder}
                 alt="OURA Landing"
                 />
             </div>

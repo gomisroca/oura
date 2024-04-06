@@ -115,7 +115,7 @@ export default function Cart() {
             sx: { borderRadius: 0 }
             }}>   
                 <div className='bg-zinc-200 text-zinc-700'>
-                    {cart && cart.length == 0 ? 
+                    {!cart || (cart && cart.length == 0) ? 
                         <div className='w-screen md:w-[500px] p-5 cursor-default text-center'>
                             There is nothing in your cart yet.
                         </div> 
