@@ -24,9 +24,7 @@ export default function UserUpload() {
             role: 'BASIC',
             password: form.password.value,
         }
-        if(form.role) {
-            formData.role = form.role.value
-        }
+      
         console.log(formData)
 
         await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/register` , formData).then(res => {
@@ -71,21 +69,6 @@ export default function UserUpload() {
                     name="email" 
                     type="text"
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Role
-                    </label>
-                    <select 
-                    defaultValue={'BASIC'}
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
-                    name="role"
-                    id="role">
-                        <option value="BASIC">BASIC</option>
-                        <option value="EDITOR">EDITOR</option>
-                        <option value="SUPER">SUPER</option>
-                        <option value="ADMIN">ADMIN</option>
-                    </select>
                 </div>
                 <div className="flex flex-col">
                     <label className="uppercase font-bold mb-2">
