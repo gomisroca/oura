@@ -33,6 +33,6 @@ app.use('/users', usersRouter);
 const settingsRouter = require('./routes/settings');
 app.use('/settings', settingsRouter);
 
-app.listen(3030, () => console.log('API Server Ready on Port 3030'));
+app.listen(4030, () => console.log('API Server Ready on Port 3030'));
 
 module.exports = app;

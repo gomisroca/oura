@@ -136,7 +136,7 @@ async(req: AuthedRequest, res: Response) => {
             if(addSizes == 'true'){
                 splitSizes = sizes!.split(',');
                 splitColors = colors!.split(',');
-                colorStock = Number(stock) / (colors!.length * sizes!.length);
+                colorStock = Number(stock) / (splitColors!.length * splitSizes!.length);
             }
 
             // We add the basic data for the product
@@ -203,8 +203,8 @@ async(req: AuthedRequest, res: Response) => {
             for (let i = 0; i < files['media'].length; i++) {
                 let result: any = (files['media'][i].filename).match(imageReg);
                 const uuid = uuidv4();
-                media.push(url + '/public/' + product.id + '/' + uuid + result[0]);
-                fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.id + '/' + uuid + result[0], 
+                media.push(url + '/public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0]);
+                fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0], 
                 function (err: unknown) {
                     if (err) {
                         return console.error(err);
@@ -265,11 +265,12 @@ router.get('/:id', async(req: Request, res: Response) => {
 
 // Update Single
 router.post('/:id', 
-// verifyEditorToken, 
+verifyEditorToken, 
 upload.fields([{ name: 'media', maxCount: 1 }]),
 async(req: Request, res: Response) => {
     try{
         const updatedProduct: PartialProduct = req.body;
+        console.log(updatedProduct)
         let sizes: string[] | undefined;
         let colors: string[] | undefined;
         let colorStock: number | undefined;
@@ -291,9 +292,9 @@ async(req: Request, res: Response) => {
                 } 
             }
         });
+
         const imageReg = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
         const url = req.protocol + '://' + req.get('host');
-
 
         if(product){
             const files = req.files as {[fieldname: string]: Express.Multer.File[]};
@@ -304,10 +305,9 @@ async(req: Request, res: Response) => {
                 // We remove the old image
                 const regex = /\/([^\/]+)$/; // Match '/' followed by one or more characters that are not '/'
                 const match = image.match(regex);
-
                 if (match) {
                     const imagePath = match[1];
-                    const productImageUrl ='./public/' + req.params.id + '/' + imagePath;
+                    const productImageUrl ='./public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + imagePath;
                     fs.unlink(productImageUrl, (err: any) => {
                         if(err){
                             console.error(err.message);
@@ -315,14 +315,15 @@ async(req: Request, res: Response) => {
                         }
                     });
                 }
-                
+            }
+            if(files.media && files.media.length > 0){
                 // We add the new image to the product
                 for (let i = 0; i < files['media'].length; i++) {
                     let result: any = (files['media'][i].filename).match(imageReg);
                     const uuid = uuidv4();
-                    media.push(url + '/public/' + product.id + '/' + uuid + result[0]);
+                    media.push(url + '/public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0]);
                     image = media[i];
-                    fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.id + '/' + uuid + result[0], 
+                    fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0], 
                     function (err: unknown) {
                         if (err) {
                             return console.error(err);
@@ -330,6 +331,7 @@ async(req: Request, res: Response) => {
                     });
                 }
             }
+            
             // We update the basic product info
             await prisma.product.update({ 
                 where: {

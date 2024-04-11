@@ -13,7 +13,7 @@ const safelistPatterns = [
 module.exports = {
   safelist: safelistPatterns,
   content: [
-    './src/**/*.{js,jsx,ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     extend: {},
