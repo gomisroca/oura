@@ -20,13 +20,13 @@ export default function UserUpload() {
             firstName: string;
             lastName: string;
             email: string;
-            role: string;
+            role: string | undefined;
             password: string;
         } = {
             firstName: form.firstName.value,
             lastName: form.lastName.value,
             email: form.email.value,
-            role: form.role.value,
+            role: form.role?.value,
             password: form.password.value,
         }
         console.log(formData)
