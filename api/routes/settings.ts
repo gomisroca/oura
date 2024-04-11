@@ -191,18 +191,29 @@ async(req: Request, res: Response) => {
                         }
                     });
                 }
+                await prisma.homepageSettings.update({
+                    where: {
+                        id: settings[0].id
+                    },
+                    data:{
+                        categories: categories,
+                        sale: req.body.sale === 'true',
+                        saleText: req.body.saleText,
+                        image: media[0],
+                    }
+                })
+            } else{
+                await prisma.homepageSettings.update({
+                    where: {
+                        id: settings[0].id
+                    },
+                    data:{
+                        categories: categories,
+                        sale: req.body.sale === 'true',
+                        saleText: req.body.saleText,
+                    }
+                })
             }
-            await prisma.homepageSettings.update({
-                where: {
-                    id: settings[0].id
-                },
-                data:{
-                    categories: categories,
-                    sale: req.body.sale === 'true',
-                    saleText: req.body.saleText,
-                    image: media[0],
-                }
-            })
         } else{
             // if settings doesn't exist, we simply create it
             await prisma.homepageSettings.create({
