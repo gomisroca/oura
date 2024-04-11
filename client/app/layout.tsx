@@ -25,7 +25,6 @@ export default function RootLayout({
                 <UserProvider>
                     <div className="absolute top-0 flex flex-col bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 w-full min-h-full">
                         <div className="absolute top-0 w-full left-0 z-10">
-                            {/* @ts-expect-error Async Server Component */}
                             <Navbar />
                         </div>
                         <div className="relative mt-[1.40rem] md:mt-7 flex items-center justify-center">
