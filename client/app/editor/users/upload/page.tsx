@@ -82,7 +82,7 @@ export default function UserUpload() {
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
                     name="role"
                     id="role">
-                        <option value="BASIC">BASIC</option>
+                        <option selected value="BASIC">BASIC</option>
                         <option value="EDITOR">EDITOR</option>
                         <option value="SUPER">SUPER</option>
                         <option value="ADMIN">ADMIN</option>
