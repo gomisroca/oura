@@ -16,18 +16,16 @@ export default function UserUpload() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = event.currentTarget;
-        let formData: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            role: string | null;
-            password: string;
-        } = {
+        
+        let formData = {
             firstName: form.firstName.value,
             lastName: form.lastName.value,
             email: form.email.value,
-            role: form.role.value,
+            role: 'BASIC',
             password: form.password.value,
+        }
+        if(form.role) {
+            formData.role = form.role.value
         }
         console.log(formData)
 
@@ -79,10 +77,11 @@ export default function UserUpload() {
                         Role
                     </label>
                     <select 
+                    defaultValue={'BASIC'}
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
                     name="role"
                     id="role">
-                        <option selected value="BASIC">BASIC</option>
+                        <option value="BASIC">BASIC</option>
                         <option value="EDITOR">EDITOR</option>
                         <option value="SUPER">SUPER</option>
                         <option value="ADMIN">ADMIN</option>
