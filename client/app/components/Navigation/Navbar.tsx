@@ -1,52 +1,37 @@
-'use client'
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-
 import UserMenu from "./UserMenu/index";
 import CategoryMenu from "./CategoryMenu";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Urbanist } from 'next/font/google'
+ 
+const urbanist = Urbanist({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: '600'
+})
 
-export default function Navbar() {
-    const { push } = useRouter();
-    const [categories, setCategories] = useState<Category>();
-    const [filteredCategories, setFilteredCategories] = useState<Category>();
-    const [settings, setSettings] = useState<NavigationSettings>();
-
-    const fetchNavigationSettings = async() => {
-        await axios.get<NavigationSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+async function getCategories(){
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
+    if(!res.ok){
+        return null
     }
 
-    const fetchCategories = async() => {
-        await axios.get<Category[]>(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-        .then((res) => {
-            setCategories(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+    return res.json();
+}
+
+async function getSettings(){
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
+    if(!res.ok){
+        return null
     }
 
-    const filterCategories = async() => {
-        let filteredCategories: Category = {};
+    return res.json();
+}
+
+async function getData() {
+    const categories = await getCategories();
+    const settings = await getSettings();
+    let filteredCategories: Category = {};
+    if(categories && settings){
         settings?.categories.forEach((category: string) => {
             const cat = category.toLocaleLowerCase();
             if (categories && categories[cat]) {
@@ -60,30 +45,21 @@ export default function Navbar() {
                 }
             }
         })
-        if(filteredCategories){
-            console.log(filteredCategories)
-            setFilteredCategories(filteredCategories)
-        }
     }
-    useEffect(() => {
-        fetchNavigationSettings();
-        fetchCategories();
-    }, []);
+    return filteredCategories
+}
 
-    useEffect(() => {
-        if(categories && settings && !filteredCategories){
-            filterCategories();
-        }
-    }, [categories, settings]);
+export default async function Navbar() {
+    const filteredCategories = await getData();
 
     return (
         <>
-        <div className="sticky flex flex-row w-full bg-zinc-200 text-zinc-700 drop-shadow">
-            <div 
-            className="px-2 font-semibold subpixel-antialiased text-[0.9rem] md:text-[1.2rem] hover:text-zinc-800 cursor-pointer" 
-            onClick={() => push('/')}>
+        <div className={urbanist.className + " sticky flex flex-row w-full bg-zinc-200 text-zinc-700 drop-shadow"}>
+            <Link 
+            className="px-2 font-semibold subpixel-antialiased text-[0.9rem] md:text-[1.2rem] hover:text-zinc-800 cursor-pointer"
+            href={'/'}>
                 OURA
-            </div>
+            </Link>
             <div className="my-auto flex flex-row items-center">
                 {filteredCategories &&
                 Object.entries(filteredCategories).map(([gender, categories]) => (

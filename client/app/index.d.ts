@@ -31,9 +31,16 @@ type Product = {
     color?: string;
 }
 
+type OrderProduct = {
+    id: string;
+    orderId: string;
+    productId: string;
+    product: Product;
+}
+
 type Order = {
     id: string;
-    products: string[];
+    products: OrderProduct[];
     createdAt: string;
 }
 

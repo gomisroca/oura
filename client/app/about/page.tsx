@@ -1,9 +1,5 @@
-'use client'
-
-import axios from 'axios';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import VerticalBannerPlaceholder from '../../public/images/ph_hbanner.png';
+import VerticalBannerPlaceholder from 'public/images/ph_hbanner.png';
 
 interface Value {
     icon: string;
@@ -16,7 +12,16 @@ interface Partner {
     image?: string;
 }
 
-function About() {
+async function getData() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
+    if(!res.ok){
+        return null
+    }
+
+    return res.json();
+}
+
+async function About() {
     const values: Value[] = [
         {
             icon: '🌲',
@@ -79,28 +84,8 @@ function About() {
             name: 'GreenThread Collective',
         }
     ]
-    const [settings, setSettings] = useState<AboutSettings>();
-    
-    const fetchAboutSettings = async() => {
-        await axios.get<AboutSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
-        .then((res) => {
-            console.log(res.data);
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
-    }
-
-    useEffect(() => {
-        fetchAboutSettings();
-    }, []);
+    const settings = await getData();
+   
     
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>

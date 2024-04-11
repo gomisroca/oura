@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+'use client'
+
+import { useUser } from "app/contexts/UserContext";
+import Link from "next/link";
 
 export default function EditorDashboard() {
     const { user } = useUser();
-    const navigate = useNavigate();
     return (
         <>
             <div className="flex flex-col items-center gap-2 mt-5">
@@ -11,63 +12,63 @@ export default function EditorDashboard() {
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Products</span>
                     <div className="flex gap-2">
-                        <div 
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('products')}>
+                        href={'editor/products'}>
                             Product List
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('products/upload')}>
+                        href={'editor/products/upload'}>
                             Add Product
-                        </div>
+                        </Link>
                     </div>
                 </div>}
                 {(user?.role == 'SUPER' || user?.role == 'ADMIN') &&
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Display Settings</span>
                     <div className="grid grid-cols-2 gap-2">
-                        <div 
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('homepage')}>
+                        href={'editor/homepage'}>
                             Homepage
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('categories')}>
+                        href={'editor/categories'}>
                             Categories
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('navigation')}>
+                        href={'editor/navigation'}>
                             Navigation
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('sidebar')}>
+                        href={'editor/sidebar'}>
                             Sidebar
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('about')}>
+                        href={'editor/about'}>
                             About
-                        </div>
+                        </Link>
                     </div>
                 </div>}
                 {user?.role == 'ADMIN' &&
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Users</span>
                     <div className="flex gap-2">
-                        <div 
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('users/upload')}>
+                        href={'editor/users/upload'}>
                             Add User
-                        </div>
-                        <div 
+                        </Link>
+                        <Link 
                         className='text-center uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                        onClick={() => navigate('users')}>
+                        href={'editor/users'}>
                             Edit User
-                        </div>
+                        </Link>
                     </div>
                 </div>}
             </div>

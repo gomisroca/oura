@@ -3,8 +3,7 @@ import ShoppingCartTwoToneIcon from '@mui/icons-material/ShoppingCartTwoTone';
 import ClearIcon from '@mui/icons-material/Clear';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface CartProduct {
     cartItem: CartItem;
@@ -12,18 +11,17 @@ interface CartProduct {
 }
 
 export default function Cart() {
-    const { push } = useRouter();
     const [cartChanged, setChange] = useState<boolean>(false)
     const [cartEl, setCartEl] = useState<null | HTMLElement>(null);
     const openCart = Boolean(cartEl);
-    let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
     const [cartProducts, setCartProducts] = useState<CartProduct[]>();
     const [totalPrice, setTotalPrice] = useState<null | number>();
+    let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
     
     const fetchProduct = async(id: string): Promise<Product> => {
         try {
-            const response = await axios.get<Product>(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`);
-            return response.data;
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`);
+            return res.json();
         }
         catch(error) {
             console.log(error);
@@ -31,42 +29,46 @@ export default function Cart() {
         }
     }
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            let cart_products: CartProduct[] = [];
-            for(const cartItem of cart) {
-                try {
-                    const product = await fetchProduct(cartItem.id);
-                    const cart_product = {
-                        cartItem: cartItem,
-                        product: product
-                    }
-                    cart_products.push(cart_product);
-                } catch (error: unknown) {
-                    console.error(`Failed to fetch product with ID ${cartItem.id}: ${error}`);
+    const fetchProducts = async () => {
+        let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
+        let cart_products: CartProduct[] = [];
+        for(const cartItem of cart) {
+            try {
+                const product = await fetchProduct(cartItem.id);
+                const cart_product = {
+                    cartItem: cartItem,
+                    product: product
                 }
+                cart_products.push(cart_product);
+            } catch (error: unknown) {
+                console.error(`Failed to fetch product with ID ${cartItem.id}: ${error}`);
             }
-            setCartProducts(cart_products)
-
-            let totalCartPrice = 0;
-            for (let i = 0; i < cart_products.length; i++) {
-                totalCartPrice = totalCartPrice + cart_products[i].product.price
-            }
-            totalCartPrice = Math.floor(totalCartPrice * 100) / 100;
-            setTotalPrice(Number(totalCartPrice));
         }
+        setCartProducts(cart_products)
 
+        let totalCartPrice = 0;
+        for (let i = 0; i < cart_products.length; i++) {
+            totalCartPrice = totalCartPrice + cart_products[i].product.price
+        }
+        totalCartPrice = Math.floor(totalCartPrice * 100) / 100;
+        setTotalPrice(Number(totalCartPrice));
+    }
+
+    useEffect(() => {
         fetchProducts();
     }, [])
 
 
     const handleCart = (event: React.MouseEvent<HTMLDivElement>) => {
+        fetchProducts();
         setCartEl(event.currentTarget);
     };
+
     const handleCartClose = () => {
         setCartEl(null);
     };
     const handleItemRemove = (id: string) => {
+        let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
         let item = cart.find(x => x.cartId == id);
         if(item){
             const index = cart.indexOf(item);
@@ -125,9 +127,9 @@ export default function Cart() {
                         <div
                         className='w-[95vw] md:w-[500px] flex flex-row text-start items-center cursor-pointer border-t border-b border-zinc-400'
                         key={item.cartItem.cartId}>
-                            <div 
+                            <Link 
                             className='h-[120px] py-2 px-4 w-full flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
-                            onClick={() => push('/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id)}>
+                            href={'/category/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id}>
                                 <div className='w-[50px]'>
                                     <img
                                     className='max-w-[50px] max-h-[50px]'
@@ -149,7 +151,7 @@ export default function Cart() {
                                         </span>}
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                             <div 
                             className='flex cursor-pointer hover:bg-red-300 h-[120px] items-center justify-items-center'
                             onClick={() => handleItemRemove(item.cartItem.cartId!)}>
@@ -163,13 +165,13 @@ export default function Cart() {
                             <div className='mx-5 text-sm'>
                                TOTAL <span className='text-lg'>{totalPrice}€</span>
                             </div>
-                            <div onClick={() => push("/checkout")}>
+                            <Link href={"/checkout"}>
                                 <button 
                                 className='font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
                                 onClick={() => handleCartClose()}>
                                     CHECKOUT
                                 </button>
-                            </div>
+                            </Link>
                         </div> 
                     </div>
                     : null}

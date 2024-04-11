@@ -1,17 +1,17 @@
+'use client'
+
 import axios from "axios";
-import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { redirect } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { useUser } from "app/contexts/UserContext";
 
 export default function UserUpload() {
-    const navigate = useNavigate();
     const { user } = useUser();
     if (user && user.role !== 'ADMIN'){
-        navigate('/')
+        redirect('/')
     }
     
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
-    const [passCheck, setPassCheck] = useState<boolean>(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -87,18 +87,6 @@ export default function UserUpload() {
                         <option value="SUPER">SUPER</option>
                         <option value="ADMIN">ADMIN</option>
                     </select>
-                </div>
-                <div className="flex flex-row">
-                    <label className="uppercase font-bold mr-4">
-                        Set New Password? This could critically impact the user.
-                    </label>
-                    <input 
-                    checked={passCheck || false}
-                    onChange={(e) => { setPassCheck(e.target.checked) }}
-                    type="checkbox" 
-                    name="passCheck"
-                    className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
-                    />
                 </div>
                 <div className="flex flex-col">
                     <label className="uppercase font-bold mb-2">

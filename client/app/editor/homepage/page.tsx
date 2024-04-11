@@ -1,14 +1,15 @@
+'use client'
+
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "app/contexts/UserContext";
+import { redirect } from "next/navigation";
 
 export default function HomepageSettings() {
-    const navigate = useNavigate();
     const { user } = useUser();
     if (user && (user?.role == 'BASIC' || user?.role == 'EDITOR')){
-        navigate('/')
+        redirect('/')
     }
     
     const [media, setMedia] = useState<FileList>();

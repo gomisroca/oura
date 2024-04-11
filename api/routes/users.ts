@@ -281,6 +281,13 @@ router.get("/orders", verifyBasicToken, async (req: AuthedRequest, res: Response
         const orders = await prisma.order.findMany({
             where: {
                 userId: req.user!.id
+            },
+            include:{
+                products: {
+                    include: {
+                        product: true
+                    }
+                }
             }
         })
 

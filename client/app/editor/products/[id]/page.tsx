@@ -1,35 +1,44 @@
+'use client'
+
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Cookies } from "react-cookie";
 
-export default function ProductUpdate() {
-    const id = useParams().id;
+interface Params {
+    id: string;
+ }
+interface ColorWithSizeName extends Color  {
+    size: string;
+}
+
+export default function ProductUpdate({ params } : { params: Params }) {
+    const cookieManager = new Cookies();
+    const accessToken = cookieManager.get('oura__access_token__')
+    const id = params.id;
     const [product, setProduct] = useState<Product>();
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
 
     const [name, setName] = useState<string | undefined>();
-    const [price, setPrice] = useState<string | undefined>();
-    const [sales, setSales] = useState<string | undefined>();
+    const [price, setPrice] = useState<string | undefined>('0');
+    const [sales, setSales] = useState<string | undefined>('0');
     const [description, setDescription] = useState<string | undefined>();
     const [addSizes, setAddSizes] = useState<boolean>(false);
     const [sizes, setSizes] = useState<any>([]);
     const [colors, setColors] = useState<any>([]);
     const [colorData, setColorData] = useState<ColorWithSizeName[] | undefined>();
-    const [stock, setStock] = useState<string | undefined>();
+    const [stock, setStock] = useState<string | undefined>('0');
     const [gender, setGender] = useState<string | undefined>();
     const [category, setCategory] = useState<string | undefined>();
     const [subcategory, setSubcategory] = useState<string | undefined>();
     const [onSeasonal, setOnSeasonal] = useState<boolean>(false);
     const [onSale, setOnSale] = useState<boolean>(false);
 
-    interface ColorWithSizeName extends Color  {
-        size: string;
-    }
     useEffect(() => {
         axios.get<Product>(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
         .then(res => {
+            console.log(res)
             setProduct(res.data);
             setName(res.data.name);
             setPrice(res.data.price.toString());
@@ -83,8 +92,7 @@ export default function ProductUpdate() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.currentTarget;
-        
+
         const formData = new FormData();
         if(media){
             Array.from(media).forEach(file => formData.append('media', file))
@@ -104,13 +112,19 @@ export default function ProductUpdate() {
         formData.append('subcategory', subcategory!);
         formData.append('onSeasonal', onSeasonal.toString()!);
         formData.append('onSale', onSale.toString()!);
-        console.log(formData)
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}` , formData).then(res => {
-            if(res.status === 200){
-                setSuccessPrompt(true);
+        if(accessToken){
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
             }
-        });
+            await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}`, formData, {
+                headers: headers
+            }).then(res => {
+                if(res.status === 200){
+                    setSuccessPrompt(true);
+                }
+            });
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {
@@ -224,7 +238,7 @@ export default function ProductUpdate() {
                 </div>
                 <div className="flex flex-col">
                     <span className="uppercase text-sm">Current Stock</span>
-                    <div  className="flex flex-row gap-2">
+                    <div  className="gap-2 grid grid-cols-4">
                     {colorData && colorData.map(x => (
                     <div key={x.id} className="flex flex-row rounded-full px-2 bg-zinc-300 items-center text-black">
                         <span className="px-2">{x.size}</span>

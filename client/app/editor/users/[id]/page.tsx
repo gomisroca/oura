@@ -1,16 +1,24 @@
+'use client'
+
 import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "app/contexts/UserContext";
+import { redirect } from "next/navigation";
+import { Cookies } from "react-cookie";
 
-export default function UserEdit() {
-    const navigate = useNavigate();
+interface Params {
+    id: string;
+}
+
+export default function UserEdit({ params } : { params: Params}) {
+    const cookieManager = new Cookies();
+    const accessToken = cookieManager.get('oura__access_token__')
     const { user } = useUser();
     if (user && user.role !== 'ADMIN'){
-        navigate('/')
+        redirect('/')
     }
     
-    const id = useParams().id;
+    const id = params.id;
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [userInfo, setUser] = useState<User>();
     const [firstName, setFirstName] = useState<string | undefined>();
@@ -21,7 +29,12 @@ export default function UserEdit() {
     const [newPassword, setNewPassword] = useState<string | undefined>();
 
     useEffect(() => {
-        axios.get<User>(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`)
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        }
+        axios.get<User>(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+            headers: headers
+        })
         .then(res => {
             setUser(res.data);
             setFirstName(res.data.firstName);
@@ -60,7 +73,12 @@ export default function UserEdit() {
         }
         console.log(formData)
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}` , formData).then(res => {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        }
+        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}` , formData, {
+            headers: headers
+        }).then(res => {
             if(res.status === 200){
                 setSuccessPrompt(true);
             }

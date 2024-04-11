@@ -1,9 +1,14 @@
+'use client'
+
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
+import { Cookies } from 'react-cookie';
 
 export default function ProductUpload() {
+    const cookieManager = new Cookies();
+    const accessToken = cookieManager.get('oura__access_token__')
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [genders, setGenders] = useState<string[]>();
@@ -67,13 +72,19 @@ export default function ProductUpload() {
         formData.append('gender', form.gender.value);
         formData.append('category', form.category.value);
         formData.append('subcategory', form.subcategory.value);
-        console.log(formData)
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
+        if(accessToken){
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
             }
-        });
+            await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/`, formData, {
+                headers: headers
+            }).then(res => {
+                if(res.status === 201){
+                    setSuccessPrompt(true);
+                }
+            });
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {

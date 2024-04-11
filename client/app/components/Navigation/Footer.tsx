@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Link {
     name: string;
@@ -6,7 +6,6 @@ interface Link {
 }
 
 export default function Footer() {
-    const { push } = useRouter();
 
     let links: Link[] = [
         {
@@ -25,12 +24,12 @@ export default function Footer() {
             <nav>
                 <ul className="flex flex-row">
                 {links.map(link => (
-                    <li 
+                    <Link 
                     key={link.name} 
                     className="px-2 text-[0.8rem] cursor-pointer hover:text-zinc-800"
-                    onClick={() => push(`/${link.url}`)}>
+                    href={`/${link.url}`}>
                         {link.name.toUpperCase()}
-                    </li>
+                    </Link>
                 ))}
                 </ul>
             </nav>

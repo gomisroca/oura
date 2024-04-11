@@ -1,4 +1,5 @@
-import axios from "axios";
+'use client'
+
 import { createContext, useState, useEffect, useContext, PropsWithChildren } from 'react';
 import { Cookies, useCookies } from 'react-cookie';
 
@@ -33,52 +34,43 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const getUserInfo = async(): Promise<unknown | void> => {
         try {
-            await axios.get<UserData>(`${process.env.NEXT_PUBLIC_API_URL}/users/info`)
-            .then(res => {
-                let userData: UserData = {
-                    firstName: res.data.firstName,
-                    lastName: res.data.lastName,
-                    email: res.data.email,
-                    role: res.data.role
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/info`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 }
+            });
+            if(res.ok){
+                let userData: UserData = await res.json();
                 setUser(userData);
-            })
-            .catch(error => {
-                if(error.response){
-                    console.log(error.response)
-                }
-            })
+            }
         }
         catch(err) {
             return err
         }
+
     }
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {
         try{
-            let registered: boolean = await axios.post<string>(`${process.env.NEXT_PUBLIC_API_URL}/users/register/`, credentials)
-            .then(res => {
-                if (res.status === 201) {
-                    removeCookie('oura__access_token__', { path: '/' });
-                    setCookie('oura__access_token__', res.data, { path: '/' });
-                    setAccessToken(res.data);
-                    return true;
-                } else{
-                    return false;
-                }
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials)
+            })
+            
+            if (res.status === 201) {
+                const newToken = await res.json();
+                removeCookie('oura__access_token__', { path: '/' });
+                setCookie('oura__access_token__', newToken, { path: '/' });
+                setAccessToken(newToken);
 
-            })
-            .catch(error => {
-                if(error.response){
-                    console.log(error.response)
-                } else if(error.request){
-                    console.log(error.request)
-                } else{
-                    console.log(error.message)
-                }
-                return false
-            })
-            return registered;
+                return true;
+            }
+            return false;
         }catch(err){
             return err
         }
@@ -86,31 +78,30 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            let loggedIn: boolean = await axios.post<string>(`${process.env.NEXT_PUBLIC_API_URL}/users/login/`, credentials)
-            .then(res => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials)
+            })
+
+            if(res.ok){
                 const expiry = new Date();
                 if (credentials.keepAlive){
                     expiry.setDate(expiry.getDate() + 7);
                 } else{
                     expiry.setHours(expiry.getHours() + 1);
                 }
-
+                
+                const newToken = await res.json();
                 removeCookie('oura__access_token__', { path: '/' });
-                setCookie('oura__access_token__', res.data, { path: '/', expires: expiry });
-                setAccessToken(res.data);
+                setCookie('oura__access_token__', newToken, { path: '/', expires: expiry });
+                setAccessToken(newToken);
+
                 return true;
-            })
-            .catch(error => {
-                if(error.response){
-                    console.log(error.response)
-                } else if(error.request){
-                    console.log(error.request)
-                } else{
-                    console.log(error.message)
-                }
-                return false;
-            })
-            return loggedIn;
+            }
+            return false;
         }catch(err){
             return err
         }
@@ -143,7 +134,6 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     useEffect((): void => {
         if(accessToken){
-            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             getUserInfo();
         }
       }, [accessToken]);

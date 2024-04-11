@@ -1,9 +1,11 @@
+'use client'
+
 import { useState } from 'react';
 
 import FormAddress from './FormAddress';
 import FormPayment from './FormPayment';
-import {useUser} from '../../contexts/UserContext';
 import CheckoutList from './CheckoutList';
+import { useUser } from 'app/contexts/UserContext';
 
 export default function Checkout() {
     const { user } = useUser();
@@ -12,7 +14,7 @@ export default function Checkout() {
         setAddressPassed(proceed)
     }
 
-    let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');
+    let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
 
     if(user){
         return (

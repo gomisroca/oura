@@ -1,3 +1,5 @@
+'use client'
+
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import ShoppingCartTwoToneIcon from '@mui/icons-material/ShoppingCartTwoTone';

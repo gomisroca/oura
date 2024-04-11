@@ -1,16 +1,21 @@
+'use client'
+
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "app/contexts/UserContext";
+import { redirect } from "next/navigation";
 
-export default function CategoryEdit() {    
-    const navigate = useNavigate();
+interface Params {
+    id: string;
+}
+
+export default function CategoryEdit({ params } : { params: Params }) {    
     const { user } = useUser();
     if (user && (user?.role == 'BASIC' || user?.role == 'EDITOR')){
-        navigate('/')
+        redirect('/')
     }
     
-    const category = useParams().category;
+    const category = params.id;
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [settings, setSettings] = useState<HomepageSettings>();
@@ -18,8 +23,9 @@ export default function CategoryEdit() {
 
     const fetchCategorySettings = async() => {
         console.log(category)
-        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${category}`)
+        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${category.toLowerCase()}`)
         .then((res) => {
+            console.log(res.data)
             setSettings(res.data);
         })
         .catch(error => {
@@ -72,10 +78,15 @@ export default function CategoryEdit() {
                 <label className="uppercase font-bold mb-2">
                     Background Image
                 </label>
-                {settings?.image &&
+                {settings?.image ?
                 <div className="p-2 border border-zinc-400">
                     <span className="text-sm uppercase">Current Image</span>
                     <img src={settings.image} />
+                </div>
+                :
+                
+                <div className="p-2 border border-zinc-400 uppercase">
+                    No image
                 </div>}
                 <input 
                 type="file" 

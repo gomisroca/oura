@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CartPlaceholder from '../../assets/ph_cart.png';
+import CartPlaceholder from 'public/images/ph_cart.png';
+import Link from "next/link";
 
 interface CartProduct {
     cartItem: CartItem;
@@ -9,8 +9,7 @@ interface CartProduct {
 }
 
 export default function CheckoutList() {
-    const navigate = useNavigate();
-    let cart: CartItem[] = JSON.parse(localStorage.getItem('oura_cart') || '[]');
+    let cart: CartItem[] = global?.window?.localStorage?.getItem('oura_cart') ? JSON.parse(localStorage.getItem('oura_cart')!) : [];
     const [cartProducts, setCartProducts] = useState<CartProduct[]>();
     const [totalPrice, setTotalPrice] = useState<null | number>();
     
@@ -65,9 +64,9 @@ export default function CheckoutList() {
                 <div
                 className='flex flex-row text-start items-center'
                 key={item.cartItem.cartId}>
-                    <div 
+                    <Link 
                     className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
-                    onClick={() => navigate('/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id)}
+                    href={'/category/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id}
                     >
                         <div className='w-[50px]'>
                             <img
@@ -93,7 +92,7 @@ export default function CheckoutList() {
                                 : null}
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
                 ))}
                 <div className='border-t-2 border-zinc-400 flex justify-end p-3 items-center cursor-default'>

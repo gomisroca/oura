@@ -1,3 +1,5 @@
+'use client'
+
 import Cart from './Cart';
 import Account from './Account';
 

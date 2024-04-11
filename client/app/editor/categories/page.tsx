@@ -1,13 +1,15 @@
+'use client'
+
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "app/contexts/UserContext";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function CategoriesSettings() {
-    const navigate = useNavigate();
     const { user } = useUser();
     if (user && (user?.role == 'BASIC' || user?.role == 'EDITOR')){
-        navigate('/')
+        redirect('/')
     }
     
     const [categories, setCategories] = useState<Category[]>();
@@ -53,13 +55,13 @@ export default function CategoriesSettings() {
     
     return (
         <>
-        <div className="mt-5">
+        <div className="mt-5 flex grid-cols-4 gap-2">
             {categories &&
             Object.entries(categories).map(([gender, categories]) => (
-                <div 
-                onClick={() => navigate(gender)}
+                <Link 
+                href={'categories/' + gender}
                 key={gender} 
-                className="p-2 border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 cursor-pointer">
+                className="flex flex-col p-2 border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 cursor-pointer">
                     <div className="uppercase text-sm py-2">Gender: {gender}</div>
                     {Object.entries(categories).map(category => (
                         <div 
@@ -75,7 +77,7 @@ export default function CategoriesSettings() {
                             ))}
                         </div>
                     ))}
-                </div>
+                </Link>
             ))}
         </div>
         </>

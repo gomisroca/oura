@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react';
 import ColorMenu from './ColorMenu';
 import Size from './Size';
@@ -19,7 +21,13 @@ export default function SizeMenu({ item }: Props) {
         <div className='justify-center flex flex-col text-zinc-700'>
             <div className='justify-center flex flex-row'>
                 {item.sizes.map(size => (
-                    <Size item={item} size={size.size} activeSize={activeSize} onSizeSelection={handleSizeSelection} />
+                    <Size 
+                    key={size.size} 
+                    item={item} 
+                    size={size.size} 
+                    activeSize={activeSize} 
+                    onSizeSelection={handleSizeSelection} 
+                    />
                 ))}
                 
             </div>

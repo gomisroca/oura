@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 interface Props {
     item: Product;
     size: string;
@@ -7,20 +5,20 @@ interface Props {
     onSizeSelection: (size: string) => void;
 }
 
-export default function Size({ item, size, activeSize, onSizeSelection }: Props) {
-    const [hasStock, setHasStock] = useState<boolean>(false);
-
-    useEffect(() => {
-        let colors: Color[] | undefined = item.sizes.find(s => s.size === size)?.colors;
-        if(colors){
-            for (const color of colors){
-                if (color.amount > 0) {
-                    setHasStock(true)
-                    return;
-                }
+function checkStock(item, size): boolean {
+    let colors: Color[] | undefined = item.sizes.find(s => s.size === size)?.colors;
+    if(colors){
+        for (const color of colors){
+            if (color.amount > 0) {
+                return true
             }
         }
-    }, [item])
+    }
+    return false
+}
+
+export default function Size({ item, size, activeSize, onSizeSelection }: Props) {
+    let hasStock = checkStock(item, size);
 
     return(
         item && size ?

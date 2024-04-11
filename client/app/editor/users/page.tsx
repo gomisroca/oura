@@ -1,18 +1,28 @@
+'use client'
+
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "app/contexts/UserContext";
+import { redirect } from "next/navigation";
+import { Cookies } from "react-cookie";
+import Link from "next/link";
 
 export default function UserEditList() {
-    const navigate = useNavigate();
+    const cookieManager = new Cookies();
+    const accessToken = cookieManager.get('oura__access_token__')
     const { user } = useUser();
     if (user && user.role !== 'ADMIN'){
-        navigate('/')
+        redirect('/')
     }
     const [users, setUsers] = useState<User[]>();
 
     useEffect(() => {
-        axios.get<User[]>(`${process.env.NEXT_PUBLIC_API_URL}/users/`)
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        }
+        axios.get<User[]>(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+            headers: headers
+        })
         .then(res => {
             setUsers(res.data)
         })
@@ -31,8 +41,8 @@ export default function UserEditList() {
         <div className="flex flex-col gap-2 mt-5">
         {users &&
         users.map((user: User) => (
-            <div 
-            onClick={() => navigate(user.id)}
+            <Link 
+            href={'users/' +user.id}
             key={user.id} 
             className="w-[250px] flex flex-col border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 p-4 cursor-pointer">
                 <span className="border-b border-zinc-400 p-2">{user.firstName} {user.lastName}</span>
@@ -40,7 +50,7 @@ export default function UserEditList() {
                     <span>{user.email}</span>
                     <span>{user.role}</span>
                 </div>
-            </div>
+            </Link>
         ))}
         </div>
     )

@@ -1,53 +1,47 @@
+'use client'
+
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CheckoutConfirmation from './CheckoutConfirmation';
+import { redirect } from 'next/navigation';
+import { Cookies } from 'react-cookie';
 
 export default function FormPayment() {
-    const navigate = useNavigate();
+    const cookieManager = new Cookies();
+    const accessToken = cookieManager.get('oura__access_token__')
     const { register, handleSubmit } = useForm();
     const [orderConfirmed, setOrderConfirmed] = useState<boolean>(false);
 
     const onSubmit = () => {
         let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');    
-
-        axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/update`, cart)
-        .then(res => {
-            if(res.status === 200){
-                axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/purchase`, cart)
-                .then(res => {
-                    if(res.status === 200){
-                        setOrderConfirmed(true);
-                        setTimeout(() => {
-                            localStorage.removeItem('oura_cart');
-                            navigate('/')
-                        }, 10000)
-                    }
-                })
-                .catch(error => {
-                    if(error.response){
-                        console.log(error.response)
-                    } else if(error.request){
-                        console.log(error.request)
-                    } else{
-                        console.log(error.message)
-                    }
-                })
+        if(accessToken){
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
             }
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
-        
+            axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/purchase`, cart, { headers: headers })
+            .then(res => {
+                if(res.status === 200){
+                    setOrderConfirmed(true);
+                    setTimeout(() => {
+                        localStorage.removeItem('oura_cart');
+                        redirect('/')
+                    }, 10000)
+                }
+            })
+            .catch(error => {
+                if(error.response){
+                    console.log(error.response)
+                } else if(error.request){
+                    console.log(error.request)
+                } else{
+                    console.log(error.message)
+                }
+            })
+        }
     }
+
     if(orderConfirmed){
         return(
             <>
@@ -63,6 +57,12 @@ export default function FormPayment() {
                 </div>
                 <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
                     <div className='p-5 flex flex-row'>
+                        <TextField
+                            type="text"
+                            required
+                            {...register("cardHolder", { required: true })}
+                            label="Card Holder"
+                        />
                         <TextField
                             type="tel"
                             required

@@ -1,7 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { FormEvent, useEffect, useState } from "react";
 import FailurePrompt from "./FailurePrompt";
-import axios from "axios";
 import { useUser } from "app/contexts/UserContext";
 
 interface Props {
@@ -30,9 +29,9 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
     };
 
     const fetchSidebarSettings = async() => {
-        await axios.get<SidebarSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
-        .then((res) => {
-            setSettings(res.data);
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
+        .then(async(res) => {
+            setSettings(await res.json());
         })
         .catch(error => {
             if(error.response){
@@ -107,7 +106,7 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
                 <hr/>
                 <div className='p-5 flex max-w-[300px] items-center justify-center'>
                     <img
-                    src={settings?.image ? settings.image: '/images/ph_hbanner.png'} 
+                    src={settings?.image ? settings.image : '/images/ph_hbanner.png'} 
                     className="max-h-[500px]"
                     />
                 </div>

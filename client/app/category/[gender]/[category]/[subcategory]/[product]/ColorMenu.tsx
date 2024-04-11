@@ -20,7 +20,6 @@ export default function ColorMenu({ item, activeSize }: Props) {
     useEffect(() => {
         if(activeSize){
             let size: Size | undefined = item.sizes.find(s => s.size === activeSize);
-            console.log(size)
             setSize(size);
         }
     }, [item, activeSize])

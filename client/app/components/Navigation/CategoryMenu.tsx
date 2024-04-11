@@ -1,7 +1,9 @@
+'use client'
+
 import { useEffect, useState } from "react";
 import Menu from '@mui/material/Menu';
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Props {
     gender: string;
@@ -9,27 +11,23 @@ interface Props {
 }
 
 export default function CategoryMenu({ gender, categories }: Props) {
-    const navigate = useNavigate();
+    const { push } = useRouter();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>();
 
-    const fetchHomepageSettings = async() => {
-        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-        .then((res) => {
-            setHomepageSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+    async function getSettings() {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
+        if(!res.ok){
+            return null
+        }
+        return res.json();
+    }
+
+    async function setSettings() {
+        setHomepageSettings(await getSettings())
     }
 
     useEffect(() => {
-        fetchHomepageSettings();
+        setSettings();
     }, []);
     
     // Main Menus
@@ -74,20 +72,20 @@ export default function CategoryMenu({ gender, categories }: Props) {
         onClose={handleMainMenuClose}>
             <div className="flex flex-col">
                 {homepageSettings?.sale &&
-                <div 
+                <Link 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 text-rose-500 font-bolder cursor-pointer" 
-                onClick={() => navigate(`${gender.toLowerCase()}/season`)}>
+                href={`/category/${gender.toLowerCase()}/season`}>
                     <span className="uppercase text-lg">
                         {homepageSettings.saleText}
                     </span>
-                </div>}
-                <div 
+                </Link>}
+                <Link 
                 className="p-2 border-b-2 border-zinc-400 hover:bg-zinc-300 cursor-pointer" 
-                onClick={() => navigate(`${gender.toLowerCase()}`)}>
+                href={`/category/${gender.toLowerCase()}`}>
                     <span className="uppercase text-sm">
                         All
                     </span>
-                </div>
+                </Link>
                 {categories && 
                 Object.entries(categories).map(subcategory => (
                 <div key={subcategory[0]}>
@@ -117,18 +115,18 @@ export default function CategoryMenu({ gender, categories }: Props) {
                         horizontal: 'left',
                     }}>
                         <div className="flex flex-col">
-                            <div 
+                            <Link 
                             className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                            onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}`)}>
+                            href={`/category/${gender.toLowerCase()}/${subcategory[0].toLowerCase()}`}>
                                 <span className="uppercase text-sm">All</span>
-                            </div>
+                            </Link>
                             {subcategory[1].map((sub: string) => (
-                                <div 
+                                <Link 
                                 key={sub} 
                                 className="p-2 border-b-2 border-zinc-400 cursor-pointer hover:bg-zinc-300"
-                                onClick={() => navigate(`${gender.toLowerCase()}/${subcategory[0].toLowerCase()}/${sub.toLowerCase()}`)}>
+                                href={`/category/${gender.toLowerCase()}/${subcategory[0].toLowerCase()}/${sub.toLowerCase()}`}>
                                     <span className="uppercase text-sm">{sub}</span>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </Menu>
