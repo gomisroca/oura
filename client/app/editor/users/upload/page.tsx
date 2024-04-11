@@ -20,7 +20,7 @@ export default function UserUpload() {
             firstName: string;
             lastName: string;
             email: string;
-            role: string | undefined;
+            role: any;
             password: string;
         } = {
             firstName: form.firstName.value,
