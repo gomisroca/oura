@@ -22,7 +22,7 @@ async function Landing() {
             <div className={antonio.className + ' flex w-screen h-screen text-zinc-200 overflow-hidden justify-center items-center'}>
                 <div className='flex relative overflow-y-hidden h-full md:w-[100vw] justify-center items-center'>
                     <img
-                    className="h-full max-w-none"
+                    className="max-w-none"
                     src={settings && settings.image ? settings.image  : LandingPlaceholder.src}
                     alt="OURA Landing"
                     />
