@@ -196,40 +196,55 @@ async(req: AuthedRequest, res: Response) => {
                     })
                 }
             }
-
-            // We save the product image in the server
-            let media: string[] = [];
             const files = req.files as {[fieldname: string]: Express.Multer.File[]};
-            for (let i = 0; i < files['media'].length; i++) {
-                let result: any = (files['media'][i].filename).match(imageReg);
-                const uuid = uuidv4();
-                media.push(url + '/public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0]);
-                fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0], 
-                function (err: unknown) {
-                    if (err) {
-                        return console.error(err);
-                    }
-                });
-            }
+            if(files.media && files.media.length > 0){
+                // We save the product image in the server
+                let media: string[] = [];
+                for (let i = 0; i < files['media'].length; i++) {
+                    let result: any = (files['media'][i].filename).match(imageReg);
+                    const uuid = uuidv4();
+                    media.push(url + '/public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0]);
+                    fs.move('./public/temp/' + files['media'][i].filename, './public/' + product.gender + '/' + product.category + '/' + product.subcategory + '/' + product.id + '/' + uuid + result[0], 
+                    function (err: unknown) {
+                        if (err) {
+                            return console.error(err);
+                        }
+                    });
+                }
 
-            // And attach the image to the product
-            const finalProduct: ProductWithSizes = await prisma.product.update({ 
+                // And attach the image to the product
+                const finalProduct: ProductWithSizes = await prisma.product.update({ 
+                    where: {
+                        id: product.id,
+                    },
+                    data: {
+                        image: media[0]
+                    },
+                    include: {
+                        sizes: {
+                            include: {
+                                colors: true
+                            }
+                        }
+                    }
+                })
+
+            res.status(201).json(finalProduct)
+        } else{
+            const finalProduct: Product | null = await prisma.product.findUnique({ 
                 where: {
                     id: product.id,
-                },
-                data: {
-                    image: media[0]
                 },
                 include: {
                     sizes: {
                         include: {
-                            colors: true
+                            colors: true,
                         }
-                    }
+                    } 
                 }
             })
-
             res.status(201).json(finalProduct)
+        }
         } else{
             res.status(400).send("INVALID_CREDENTIALS");
         }
