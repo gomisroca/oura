@@ -1,7 +1,7 @@
 'use client'
 
 import UserMenu from "./UserMenu/index";
-import CategoryMenu from "./CategoryMenu";
+import CategoryMenu from "@/components/navigation/navbar/category-menu";
 import Link from "next/link";
 import { Urbanist } from 'next/font/google'
 import { useEffect, useState } from "react";
@@ -13,24 +13,30 @@ const urbanist = Urbanist({
 })
 
 async function getCategories(){
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-    if(!res.ok){
-        return null
-    }
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
+        if(!res.ok){
+            return null
+        }
 
-    return res.json();
+        return res.json();
+    } catch(err){
+        console.log(err)
+    }
 }
 
 async function getSettings(){
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
-    if(!res.ok){
-        return null
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
+        if(!res.ok){
+            return null
+        }
+
+        return res.json();
+    } catch(err){
+        console.log(err)
     }
-
-    return res.json();
 }
-
-
 
 export default function Navbar() {
     const [filteredCategories, setFilteredCategories] = useState<Category>();

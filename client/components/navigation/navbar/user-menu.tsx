@@ -5,14 +5,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import Drawer from '@mui/material/Drawer';
 
-import { useUser } from '../../../contexts/UserContext';
-import { useRouter } from 'next/navigation';
-import LoginForm from './LoginForm';
-import RegisterForm from './RegisterForm';
-import UserSettings from './UserSettings';
+import { useUser } from '@/contexts/user';
+import LoginForm from '@/components/navigation/navbar/login-form';
+import RegisterForm from '@/components/navigation/navbar/register-form';
+import UserSettings from '@/components/navigation/navbar/user-settings';
+import Link from 'next/link';
 
-export default function Account() {
-    const { push } = useRouter();
+export default function UserMenu() {
     const { user, userLogout } = useUser();
 
     // Menu Handling
@@ -112,20 +111,20 @@ export default function Account() {
                         Settings
                     </span>
                     <hr/>
-                    <span 
+                    <Link 
                     className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-zinc-300' 
-                    onClick={() => push(`/order-history`)}>
+                    href={`/order-history`}>
                         Your Orders
-                    </span>
+                    </Link>
                     <hr/>
                     {user.role !== 'BASIC' ?
                     <div>
                         <hr/>
-                        <span 
+                        <Link 
                         className='px-5 py-2 uppercase w-full block text-center cursor-pointer hover:bg-violet-300' 
-                        onClick={() => push(`/editor`)}>
+                        href={`/editor`}>
                             🔒 Dashboard
-                        </span>
+                        </Link>
                         <hr/>
                     </div>
                     : null}

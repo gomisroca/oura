@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react';
-import ColorMenu from './ColorMenu';
-import Size from './Size';
+import ColorMenu from '@/components/product/color-menu';
+import Size from '@/components/product/size';
 
 interface Props {
     item: Product;

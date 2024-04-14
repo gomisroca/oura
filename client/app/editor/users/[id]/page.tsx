@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
 import { Cookies } from "react-cookie";
 

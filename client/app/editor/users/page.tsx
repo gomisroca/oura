@@ -1,8 +1,7 @@
 'use client'
 
-import axios from "axios";
 import { useEffect, useState } from "react"
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user;
 import { redirect } from "next/navigation";
 import { Cookies } from "react-cookie";
 import Link from "next/link";
@@ -16,25 +15,25 @@ export default function UserEditList() {
     }
     const [users, setUsers] = useState<User[]>();
 
-    useEffect(() => {
-        const headers = {
-            'Authorization': `Bearer ${accessToken}`
-        }
-        axios.get<User[]>(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
-            headers: headers
-        })
-        .then(res => {
-            setUsers(res.data)
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+    const getUsers = async() => {
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
+                method: 'get',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            })
+            if (res.ok) {
+                const users = await res.json();
+                setUsers(users)
             }
-        })
+        }catch(err){
+            return err
+        }
+    }
+
+    useEffect(() => {
+        getUsers();
     }, [])
     
     return (

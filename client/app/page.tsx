@@ -6,12 +6,16 @@ import { Antonio } from 'next/font/google'
 const antonio = Antonio({ subsets: ['latin'] })
 
 async function getData() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-    if(!res.ok){
-        return null
-    }
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
+        if(!res.ok){
+            return null
+        }
 
-    return res.json();
+        return res.json();
+    }catch(err){
+        console.log(err)
+    }
 }
 
 async function Landing() {

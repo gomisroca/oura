@@ -34,7 +34,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const getUserInfo = async(): Promise<unknown | void> => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/info`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/info`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register/`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
                 body: JSON.stringify(credentials)
             })
             
-            if (res.status === 201) {
+            if (res.ok) {
                 const newToken = await res.json();
                 removeCookie('oura__access_token__', { path: '/' });
                 setCookie('oura__access_token__', newToken, { path: '/' });
@@ -78,7 +78,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login/`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/sign-in`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

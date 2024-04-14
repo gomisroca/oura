@@ -10,27 +10,39 @@ interface Params {
 }
 
 async function getCategories() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-    if(!res.ok){
-        return null
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
+        if(!res.ok){
+            return null
+        }
+        return res.json()
+    } catch(err){
+        console.log(err)
     }
-    return res.json()
 }
 
 async function getCategorySettings(gender: string){
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${gender}`);
-    if(!res.ok){
-        return null
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${gender}`);
+        if(!res.ok){
+            return null
+        }
+        return res.json()
+    } catch(err){
+        console.log(err)
     }
-    return res.json()
 }
 
 async function getCatalog(){
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
-    if(!res.ok){
-        return null
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
+        if(!res.ok){
+            return null
+        }
+        return res.json()
+    } catch(err){
+        console.log(err)
     }
-    return res.json()
 }
 
 async function filterCatalog(gender) {

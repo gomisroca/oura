@@ -3,7 +3,7 @@
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 
 export default function UserUpload() {
     const { user } = useUser();

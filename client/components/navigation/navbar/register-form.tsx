@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import { FormEvent, useEffect, useState } from "react";
-import FailurePrompt from "./FailurePrompt";
-import { useUser } from "app/contexts/UserContext";
+import FailurePrompt from "@/components/navigation/navbar/failure-prompt";
+import { useUser } from "@/contexts/user";
 
 interface Props {
     onLoginToggle: () => void;
@@ -29,19 +29,23 @@ export default function RegisterForm({ onLoginToggle, onRegisterToggle }: Props)
     };
 
     const fetchSidebarSettings = async() => {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
-        .then(async(res) => {
-            setSettings(await res.json());
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        try{
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
+            .then(async(res) => {
+                setSettings(await res.json());
+            })
+            .catch(error => {
+                if(error.response){
+                    console.log(error.response)
+                } else if(error.request){
+                    console.log(error.request)
+                } else{
+                    console.log(error.message)
+                }
+            })
+        } catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-import FormAddress from './FormAddress';
-import FormPayment from './FormPayment';
-import CheckoutList from './CheckoutList';
-import { useUser } from 'app/contexts/UserContext';
+import FormAddress from '@/components/shop/form-address';
+import FormPayment from '@/components/shop/form-payment';
+import CheckoutList from '@/components/shop/checkout-list';
+import { useUser } from '@/contexts/user';
 
 export default function Checkout() {
     const { user } = useUser();

@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 import { useState } from 'react';
-import CheckoutConfirmation from './CheckoutConfirmation';
+import CheckoutConfirmation from '@/components/shop/checkout-confirmation';
 import { redirect } from 'next/navigation';
 import { Cookies } from 'react-cookie';
 

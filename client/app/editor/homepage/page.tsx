@@ -3,7 +3,7 @@
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
 
 export default function HomepageSettings() {

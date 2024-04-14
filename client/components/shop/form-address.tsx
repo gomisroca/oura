@@ -2,7 +2,7 @@
 
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
-import CheckoutList from './CheckoutList';
+import CheckoutList from '@/components/shop/checkout-list';
 
 interface Props {
     canProceed: (proceed: boolean) => void;

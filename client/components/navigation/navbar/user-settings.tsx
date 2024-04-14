@@ -1,4 +1,4 @@
-import { useUser } from 'app/contexts/UserContext';
+import { useUser } from '@/contexts/user';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -33,18 +33,21 @@ export default function UserSettings({ onSettingsToggle }: Props) {
             data.old_password = form.old_password.value;
             data.new_password = form.new_password.value;
         }
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/update`, {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        });
-        if(res.ok){
-            setSuccessPrompt(true);
-            updateToken(await res.json())
-            setTimeout(() => { onSettingsToggle() }, 5000);
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/update`, {
+                method: 'POST',
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+            if(res.ok){
+                setSuccessPrompt(true);
+                updateToken(await res.json())
+                setTimeout(() => { onSettingsToggle() }, 5000);
+            }
+        } catch(err){
+            console.log(err)
         }
     }
 

@@ -1,7 +1,7 @@
 interface Props {
-  active: boolean
+    active: boolean
 }
-
+  
 function FailurePrompt({ active }: Props) {
     if(active) {
         return (

@@ -1,7 +1,7 @@
 import FullItemPlaceholder from 'public/images/ph_fullitem.png';
-import AddToCart from './AddToCart';
-import RelatedItems from './RelatedItems';
-import SizeMenu from './SizeMenu';
+import AddToCart from '@/components/product/add-to-cart';
+import RelatedItems from '@/components/product/related-items';
+import SizeMenu from '@/components/product/size-menu';
 
 interface Params {
     gender: string;
@@ -11,21 +11,29 @@ interface Params {
 }
 
 async function getProduct(id: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)    
-    if(!res.ok){
-        throw new Error('Failed to fetch data')
-    }
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)    
+        if(!res.ok){
+            throw new Error('Failed to fetch data')
+        }
 
-    return res.json();
+        return res.json();
+    } catch(err){
+        console.log(err)
+    }
 }
 
 async function getCatalog() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
-    if(!res.ok){
-        throw new Error('Failed to fetch data')
-    }
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
+        if(!res.ok){
+            throw new Error('Failed to fetch data')
+        }
 
-    return res.json();
+        return res.json();
+    } catch(err){
+        console.log(err)
+    }
 }
 
 async function Product({ params } : { params: Params }) {

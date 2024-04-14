@@ -2,11 +2,15 @@ import Link from "next/link";
 import ItemPlaceholder from 'public/images/ph_item.png';
 
 async function getCatalog(){
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
-    if(!res.ok){
-        return null
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
+        if(!res.ok){
+            return null
+        }
+        return res.json()
+    } catch(err){
+        console.log(err)
     }
-    return res.json()
 }
 
 export default async function ProductList() {

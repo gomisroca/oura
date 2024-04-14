@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Menu from '@mui/material/Menu';
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface Props {
@@ -11,15 +10,18 @@ interface Props {
 }
 
 export default function CategoryMenu({ gender, categories }: Props) {
-    const { push } = useRouter();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>();
 
     async function getSettings() {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-        if(!res.ok){
-            return null
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
+            if(!res.ok){
+                return null
+            }
+            return res.json();
+        } catch(err){
+            console.log(err)
         }
-        return res.json();
     }
 
     async function setSettings() {

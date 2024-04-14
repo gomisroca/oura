@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import Order from "./Order";
+import Order from "@/components/shop/order";
 
 async function getData(){
     try{
