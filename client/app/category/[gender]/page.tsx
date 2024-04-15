@@ -1,4 +1,4 @@
-import VerticalBannerPlaceholder from 'public/images/ph_vbanner.png';
+import VerticalBannerPlaceholder from '@/public/images/ph_vbanner.png';
 import ItemPlaceholder from 'public/images/ph_item.png';
 
 import Image from "next/image";
@@ -45,9 +45,8 @@ async function getCatalog(){
     }
 }
 
-async function filterCatalog(gender) {
+async function filterCatalog(gender: string) {
     const catalog = await getCatalog();
-
     let productArray: Product[];
 
     productArray = catalog.filter(x => (x.gender.toLowerCase() == gender));
@@ -63,16 +62,23 @@ export default async function Catalog({ params } : { params: Params }) {
     const settings = await getCategorySettings(params.gender);
 
     const gender = params.gender;
-    let products: Product[] = await filterCatalog(gender);
+    const products: Product[] = await filterCatalog(gender);
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
             <div className='overflow-hidden w-screen h-[150px] sm:h-[400px] bg-white items-center justify-center flex'>
+                {settings && settings.image ?
                 <img
                 className='w-screen brightness-75'
-                src={settings?.image ? settings.image : VerticalBannerPlaceholder}
+                src={settings.image}
                 alt="Sale Image"
                 />
+                :
+                <img
+                className='w-screen brightness-75'
+                src={VerticalBannerPlaceholder.src}
+                alt="Sale Image"
+                />}
                 <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
                     {gender}
                 </div>

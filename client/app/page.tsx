@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import LandingPlaceholder from '../public/images/ph_landing.png'
+import LandingPlaceholder from '@/public/images/ph_landing.png'
 import { Antonio } from 'next/font/google'
+import { HomepageSettings } from "@prisma/client";
  
 const antonio = Antonio({ subsets: ['latin'] })
 
@@ -20,16 +21,25 @@ async function getData() {
 
 async function Landing() {
     const settings: HomepageSettings = await getData();
-
+    
     return (
         <>
             <div className={antonio.className + ' flex w-screen h-screen text-zinc-200 overflow-hidden justify-center items-center'}>
                 <div className='flex relative overflow-y-hidden h-full md:w-[100vw] justify-center items-center'>
-                    <img
+                    {settings && settings.image ?
+                    <Image
+                    fill
                     className="max-w-none"
-                    src={settings && settings.image ? settings.image  : LandingPlaceholder.src}
+                    src={settings.image}
                     alt="OURA Landing"
                     />
+                    :
+                    <Image
+                    fill
+                    className="max-w-none"
+                    src={LandingPlaceholder}
+                    alt="OURA Landing"
+                    />}
                 </div>
                 <div className='drop-shadow-xl absolute bottom-2/4 right-2 md:right-4 text-center w-full text-[4rem] md:text-[5rem] 2xl:text-[12rem] font-semibold opacity-30'>
                     OURA
@@ -44,7 +54,7 @@ async function Landing() {
                 <div className='absolute self-center mt-16 w-full grid justify-items-center'>
                     {settings.sale &&
                     <span className='px-2 py-1 md:px-5 md:py-2 text-[1rem] md:text-[3rem] font-semibold'>
-                        {settings.saleText.toUpperCase()}
+                        {settings.saleText?.toUpperCase()}
                     </span>}
                     <div className='flex flex-row'>
                         {settings.categories &&

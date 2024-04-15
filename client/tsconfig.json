@@ -25,6 +25,7 @@
       "@/components/*": ["components/*"],
       "@/contexts/*": ["contexts/*"],
       "@/utils/*": ["utils/*"],
+      "@/public/*": ["public/*"],
     },
   },
   "include": [

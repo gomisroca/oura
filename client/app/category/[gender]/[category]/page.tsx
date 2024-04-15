@@ -1,4 +1,4 @@
-import VerticalBannerPlaceholder from 'public/images/ph_vbanner.png';
+import VerticalBannerPlaceholder from '@/public/images/ph_vbanner.png';
 import ItemPlaceholder from 'public/images/ph_item.png';
 
 import Image from "next/image";
@@ -77,11 +77,18 @@ export default async function Catalog({ params } : { params: Params }) {
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
             <div className='overflow-hidden w-screen h-[150px] sm:h-[400px] bg-white items-center justify-center flex'>
+                {settings && settings.image ?
                 <img
                 className='w-screen brightness-75'
-                src={settings?.image ? settings.image : VerticalBannerPlaceholder}
+                src={settings.image}
                 alt="Sale Image"
                 />
+                :
+                <img
+                className='w-screen brightness-75'
+                src={VerticalBannerPlaceholder.src}
+                alt="Sale Image"
+                />}
                 <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] ml-1 md:ml-4 text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
                     {gender}
                 </div> 
