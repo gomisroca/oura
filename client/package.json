@@ -28,7 +28,7 @@
     "localforage": "^1.10.0",
     "lucia": "^3.1.1",
     "match-sorter": "^6.3.1",
-    "next": "^14.1.4",
+    "next": "^14.2.1",
     "next-auth": "^4.24.7",
     "oslo": "^1.2.0",
     "pg": "^8.11.5",
@@ -41,7 +41,7 @@
     "react-spring-lightbox": "^1.7.1",
     "sort-by": "^1.2.0",
     "typescript": "^5.4.4",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "vite-plugin-fonts": "^0.7.0"
   },
   "devDependencies": {
