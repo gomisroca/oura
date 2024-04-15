@@ -49,14 +49,16 @@ export default function CategoryEdit({ params } : { params: Params }) {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${category}` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
-            }
-        });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${category}`, {
+            method: 'POST',
+            body: formData
+        })
+        if(res.ok){
+            setSuccessPrompt(true);
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {

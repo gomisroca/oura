@@ -35,20 +35,16 @@ export default function NavigationSettings() {
     }
 
     const fetchNavigationSettings = async() => {
-        await axios.get<NavigationSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
-        .then((res) => {
-            setSettings(res.data);
-            setValue(res.data.categories);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
+            if(res.ok){
+                const data = await res.json();
+                setSettings(data);
+                setValue(data.categories);
             }
-        })
+        }catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -57,12 +53,17 @@ export default function NavigationSettings() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`, value).then(res => {
-            if(res.status === 201){
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`, {
+                method: 'POST',
+                body: JSON.stringify(value)
+            });
+            if(res.ok){
                 setSuccessPrompt(true);
             }
-        });
+        }catch(err){
+            console.log(err)
+        }
     }
 
     return (

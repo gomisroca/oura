@@ -6,7 +6,7 @@ async function getData(){
         const nextCookies = cookies();
         const accessToken = nextCookies.get('oura__access_token__')
         if(accessToken){
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/orders`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/orders`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,7 +1,6 @@
 'use client'
 
 import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
@@ -20,40 +19,33 @@ export default function HomepageSettings() {
     const [sale, setSale] = useState<boolean>(false);
     const [saleText, setSaleText] = useState<string>();
 
-    const fetchCategories = async() => {
-        await axios.get<Category[]>(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-        .then((res) => {
-            setCategories(res.data);
-            fetchHomepageSettings();
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+    const fetchCategories = async() =>  {
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
+            if(res.ok){
+                const data = await res.json();
+                console.log(data)
+                setCategories(data);
+                fetchHomepageSettings()
             }
-        })
+        } catch(err){
+            console.log(err)
+        }
     }
 
     const fetchHomepageSettings = async() => {
-        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-        .then((res) => {
-            setSettings(res.data);
-            setSale(res.data.sale);
-            setSaleText(res.data.saleText);
-            setValue(res.data.categories);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
+            if(res.ok){
+                const data = await res.json()
+                setSettings(data);
+                setSale(data.sale);
+                setSaleText(data.saleText);
+                setValue(data.categories)
             }
-        })
+        } catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -66,18 +58,20 @@ export default function HomepageSettings() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
         formData.append('categories', value);
         formData.append('sale', sale.toString()!);
         formData.append('saleText', saleText!);
         console.log(formData)
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
-            }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`, {
+            method: 'POST',
+            body: formData
         });
+        if(res.ok){
+            setSuccessPrompt(true);
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {

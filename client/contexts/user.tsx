@@ -34,7 +34,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const getUserInfo = async(): Promise<unknown | void> => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/info`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/info`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/register`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
 
     const userLogin = async(credentials: LoginFormData): Promise<unknown | boolean> => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/sign-in`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/sign-in`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

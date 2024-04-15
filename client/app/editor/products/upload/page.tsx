@@ -17,7 +17,7 @@ export default function ProductUpload() {
 
     const fetchCatalog = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
             if(res.ok){
                 const data = await res.json();
                 let genderArray: string[] = [];
@@ -69,7 +69,7 @@ export default function ProductUpload() {
         formData.append('subcategory', form.subcategory.value);
 
         if(accessToken){
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`

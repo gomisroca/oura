@@ -30,7 +30,7 @@ export default function UserEdit({ params } : { params: Params}) {
 
     const getUser = async(id: string) => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
@@ -74,7 +74,7 @@ export default function UserEdit({ params } : { params: Params}) {
         }
         console.log(formData)
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userInfo?.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -88,7 +88,7 @@ export default function UserEdit({ params } : { params: Params}) {
 
     const deleteUser = async() => {
         console.log('hi')
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userInfo?.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${accessToken}`

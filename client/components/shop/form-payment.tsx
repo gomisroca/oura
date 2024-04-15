@@ -16,7 +16,7 @@ export default function FormPayment() {
     const onSubmit = async() => {
         let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');    
         if(accessToken){
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/purchase`,{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/purchase`,{
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`

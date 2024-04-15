@@ -16,19 +16,15 @@ export default function SidebarSettings() {
     const [settings, setSettings] = useState<SidebarSettings>();
 
     const fetchSidebarSettings = async() => {
-        await axios.get<SidebarSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
+            if(res.ok) {
+                const data = await res.json()
+                setSettings(data);
             }
-        })
+        } catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -41,14 +37,16 @@ export default function SidebarSettings() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
-            }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`, {
+            method: 'POST',
+            body: formData
         });
+        if(res.ok){
+            setSuccessPrompt(true);
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {

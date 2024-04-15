@@ -1,7 +1,6 @@
 'use client'
 
 import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
 
@@ -35,59 +34,60 @@ export default function ProductUpdate({ params } : { params: Params }) {
     const [onSeasonal, setOnSeasonal] = useState<boolean>(false);
     const [onSale, setOnSale] = useState<boolean>(false);
 
-    useEffect(() => {
-        axios.get<Product>(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
-        .then(res => {
-            console.log(res)
-            setProduct(res.data);
-            setName(res.data.name);
-            setPrice(res.data.price.toString());
-            setSales(res.data.sales.toString());
-            setDescription(res.data.description);
-            if(res.data.sizes.length > 0){
-                setAddSizes(true);
-                let totalAmount = 0;
-                let sizeArray: string[] = [];
-                let colorNameArray: string[] = [];
-                let colorArray: ColorWithSizeName[] = [];
-                res.data.sizes.forEach(size => {
-                    if (!sizeArray.includes(size.size.toUpperCase())) {
-                        sizeArray.push(size.size.toUpperCase());
-                    }
-                    size.colors.forEach(color => {
-                        let colorData = {
-                            ...color,
-                            size: size.size
+    async function getProduct(id: string){
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
+            if(res.ok){
+                const data = await res.json();
+                setProduct(data);
+                setName(data.name);
+                setPrice(data.price.toString());
+                setSales(data.sales.toString());
+                setDescription(data.description);
+                if(data.sizes.length > 0){
+                    setAddSizes(true);
+                    let totalAmount = 0;
+                    let sizeArray: string[] = [];
+                    let colorNameArray: string[] = [];
+                    let colorArray: ColorWithSizeName[] = [];
+                    data.sizes.forEach(size => {
+                        if (!sizeArray.includes(size.size.toUpperCase())) {
+                            sizeArray.push(size.size.toUpperCase());
                         }
-                        colorArray.push(colorData)
-                        console.log(colorData)
-                        if (!colorNameArray.includes(color.name.toLowerCase())) {
-                            colorNameArray.push(color.name.toLowerCase());
-                        }
-                        totalAmount += color.amount;
+                        size.colors.forEach(color => {
+                            let colorData = {
+                                ...color,
+                                size: size.size
+                            }
+                            colorArray.push(colorData)
+                            console.log(colorData)
+                            if (!colorNameArray.includes(color.name.toLowerCase())) {
+                                colorNameArray.push(color.name.toLowerCase());
+                            }
+                            totalAmount += color.amount;
+                        });
                     });
-                });
-                setSizes(sizeArray)
-                setColorData(colorArray)
-                setColors(colorNameArray);
-                setStock(totalAmount.toString());
+                    setSizes(sizeArray)
+                    setColorData(colorArray)
+                    setColors(colorNameArray);
+                    setStock(totalAmount.toString());
+                }
+                setGender(data.gender);
+                setCategory(data.category);
+                setSubcategory(data.subcategory);
+                setOnSeasonal(data.onSeasonal);
+                setOnSale(data.onSale);
             }
-            setGender(res.data.gender);
-            setCategory(res.data.category);
-            setSubcategory(res.data.subcategory);
-            setOnSeasonal(res.data.onSeasonal);
-            setOnSale(res.data.onSale);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
-    }, [id])
+        } catch(err){
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        if(!product){
+            getProduct(id)
+        }
+    }, [])
     
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -95,7 +95,7 @@ export default function ProductUpdate({ params } : { params: Params }) {
 
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
         formData.append('name', name!);
         formData.append('price', price!);
@@ -114,16 +114,16 @@ export default function ProductUpdate({ params } : { params: Params }) {
         formData.append('onSale', onSale.toString()!);
 
         if(accessToken){
-            const headers = {
-                'Authorization': `Bearer ${accessToken}`
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            })
+            if(res.ok){
+                setSuccessPrompt(true);
             }
-            await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}`, formData, {
-                headers: headers
-            }).then(res => {
-                if(res.status === 200){
-                    setSuccessPrompt(true);
-                }
-            });
         }
     }
 

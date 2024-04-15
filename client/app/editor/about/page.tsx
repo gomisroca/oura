@@ -16,19 +16,16 @@ export default function AboutSettings() {
     const [settings, setSettings] = useState<AboutSettings>();
 
     const fetchAboutSettings = async() => {
-        await axios.get<AboutSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
+            if(res.ok){
+                const data = await res.json()
+                setSettings(data);
             }
-        })
+        }
+        catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -41,14 +38,19 @@ export default function AboutSettings() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
-        }
-
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/about` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
+            formData.append('image', media[0])
+            try{
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`, {
+                    method: 'POST',
+                    body: formData
+                }); 
+                if(res.ok){
+                    setSuccessPrompt(true);
+                }
+            }catch(err){
+                console.log(err)
             }
-        });
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {
