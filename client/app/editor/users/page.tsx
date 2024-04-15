@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { useUser } from "@/contexts/user;
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
 import { Cookies } from "react-cookie";
 import Link from "next/link";
