@@ -24,11 +24,11 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/contexts/*": ["contexts/*"],
-      "@/lib/*": ["lib/*"],
+      "@/utils/*": ["utils/*"],
     },
   },
   "include": [
-    "lib/*.ts",
+    "utils/*.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",

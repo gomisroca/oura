@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-import prisma from "@/lib/db";
+import prisma from "@/utils/db";
 import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
