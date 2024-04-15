@@ -1,6 +1,6 @@
 'use client'
 
-import UserMenu from "./UserMenu/index";
+import UserWrapper from "@/components/navigation/navbar/user-wrapper";
 import CategoryMenu from "@/components/navigation/navbar/category-menu";
 import Link from "next/link";
 import { Urbanist } from 'next/font/google'
@@ -82,7 +82,7 @@ export default function Navbar() {
                 ))}
             </div>
             <div className="absolute right-0 self-center">
-                <UserMenu />
+                <UserWrapper />
             </div>
         </div>
         </>
