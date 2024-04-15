@@ -1,9 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import ItemPlaceholder from 'public/images/ph_item.png';
 
 async function getCatalog(){
     try{
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`);
         if(!res.ok){
             return null
         }
@@ -25,7 +26,8 @@ export default async function ProductList() {
             key={product.id} 
             className="text-center h-[275px] sm:h-[275px] md:h-[350px] w-[175px] md:w-[225px] flex flex-col border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 p-4 cursor-pointer">
                 <div className="h-2/3 md:h-3/4 w-full bg-white items-center justify-center overflow-hidden flex">
-                    <img 
+                    <Image
+                    fill
                     className="h-full max-w-none mx-auto"
                     src={product.image ? product.image : ItemPlaceholder.src} 
                     alt={product.name}
