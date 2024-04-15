@@ -28,34 +28,35 @@ export default function UserEdit({ params } : { params: Params}) {
     const [passCheck, setPassCheck] = useState<boolean>(false);
     const [newPassword, setNewPassword] = useState<string | undefined>();
 
-    useEffect(() => {
-        const headers = {
-            'Authorization': `Bearer ${accessToken}`
-        }
-        axios.get<User>(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-            headers: headers
-        })
-        .then(res => {
-            setUser(res.data);
-            setFirstName(res.data.firstName);
-            setLastName(res.data.lastName);
-            setEmail(res.data.email);
-            setRole(res.data.role);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
+    const getUser = async(id: string) => {
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            })
+            if(res.ok){
+                const user: User = await res.json();
+                setUser(user);
+                setFirstName(user.firstName);
+                setLastName(user.lastName);
+                setEmail(user.email);
+                setRole(user.role);
             }
-        })
-    }, [id])
+        } catch (err){
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        getUser(id);
+    }, [])
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = event.currentTarget;
+        
         let formData: {
             firstName: string;
             lastName: string;
@@ -73,105 +74,125 @@ export default function UserEdit({ params } : { params: Params}) {
         }
         console.log(formData)
 
-        const headers = {
-            'Authorization': `Bearer ${accessToken}`
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userInfo?.id}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(formData)
+        })
+        if(res.ok){
+            setSuccessPrompt(true);
         }
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}` , formData, {
-            headers: headers
-        }).then(res => {
-            if(res.status === 200){
-                setSuccessPrompt(true);
-            }
-        });
     }
-    
+
+    const deleteUser = async() => {
+        console.log('hi')
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userInfo?.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        if(res.ok){
+            setSuccessPrompt(true);
+        }
+    }
+
     return (
         <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
             {successPrompt ?
             <div className='font-semibold text-center mt-2 mb-4'>User {userInfo?.firstName} {userInfo?.lastName} was updated.</div>
             :
-            <form 
-            method="post" 
-            onSubmit={handleSubmit} 
-            className="flex-col grid gap-y-4 p-4">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        First Name
-                    </label>
-                    <input
-                    value={firstName || ''}
-                    onChange={(e) => { setFirstName(e.target.value) }}
-                    name="firstName" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Last Name
-                    </label>
-                    <input
-                    value={lastName || ''}
-                    onChange={(e) => { setLastName(e.target.value) }}
-                    name="lastName" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Email
-                    </label>
-                    <input
-                    value={email || ''}
-                    onChange={(e) => { setEmail(e.target.value) }}
-                    name="email" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Role
-                    </label>
-                    <select 
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
-                    name="role"
-                    value={role}
-                    onChange={(e) => { setRole(e.target.value)}}
-                    id="role">
-                        <option value="BASIC">BASIC</option>
-                        <option value="EDITOR">EDITOR</option>
-                        <option value="SUPER">SUPER</option>
-                        <option value="ADMIN">ADMIN</option>
-                    </select>
-                </div>
-                <div className="flex flex-row">
-                    <label className="uppercase font-bold mr-4">
-                        Set New Password? This could critically impact the user.
-                    </label>
-                    <input 
-                    checked={passCheck || false}
-                    onChange={(e) => { setPassCheck(e.target.checked) }}
-                    type="checkbox" 
-                    name="passCheck"
-                    className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
-                    />
-                </div>
-                {passCheck &&
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        New Password
-                    </label>
-                    <input
-                    onChange={(e) => { setNewPassword(e.target.value) }}
-                    name="newPassword" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>}
+            <div className="flex flex-col gap-y-10">
+                <form 
+                method="post" 
+                onSubmit={handleSubmit} 
+                className="flex-col grid gap-y-4 p-4">
+                    <div className="flex flex-col">
+                        <label className="uppercase font-bold mb-2">
+                            First Name
+                        </label>
+                        <input
+                        value={firstName || ''}
+                        onChange={(e) => { setFirstName(e.target.value) }}
+                        name="firstName" 
+                        type="text"
+                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="uppercase font-bold mb-2">
+                            Last Name
+                        </label>
+                        <input
+                        value={lastName || ''}
+                        onChange={(e) => { setLastName(e.target.value) }}
+                        name="lastName" 
+                        type="text"
+                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="uppercase font-bold mb-2">
+                            Email
+                        </label>
+                        <input
+                        value={email || ''}
+                        onChange={(e) => { setEmail(e.target.value) }}
+                        name="email" 
+                        type="text"
+                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="uppercase font-bold mb-2">
+                            Role
+                        </label>
+                        <select 
+                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
+                        name="role"
+                        value={role}
+                        onChange={(e) => { setRole(e.target.value)}}
+                        id="role">
+                            <option value="BASIC">BASIC</option>
+                            <option value="EDITOR">EDITOR</option>
+                            <option value="SUPER">SUPER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                    </div>
+                    <div className="flex flex-row">
+                        <label className="uppercase font-bold mr-4">
+                            Set New Password? This could critically impact the user.
+                        </label>
+                        <input 
+                        checked={passCheck || false}
+                        onChange={(e) => { setPassCheck(e.target.checked) }}
+                        type="checkbox" 
+                        name="passCheck"
+                        className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                        />
+                    </div>
+                    {passCheck &&
+                    <div className="flex flex-col">
+                        <label className="uppercase font-bold mb-2">
+                            New Password
+                        </label>
+                        <input
+                        onChange={(e) => { setNewPassword(e.target.value) }}
+                        name="newPassword" 
+                        type="text"
+                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    </div>}
+                    <button 
+                    type="submit" 
+                    className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+                        Update
+                    </button>
+                </form>
                 <button 
-                type="submit" 
-                className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
-                    Update
+                onClick={() => deleteUser()}
+                className="uppercase font-bold py-4 hover:bg-red-500 transition duration-200 w-1/3 m-auto">
+                    Delete
                 </button>
-            </form>
+            </div>
             }
         </div>
         )

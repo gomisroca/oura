@@ -1,6 +1,5 @@
 'use client'
 
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
@@ -16,37 +15,33 @@ export default function ProductUpload() {
     const [subcategories, setSubcategories] = useState<string[]>();
     const [addSizes, setAddSizes] = useState<boolean>(false);
 
-    const fetchCatalog = () => {
-        axios.get<Product[]>(`${process.env.NEXT_PUBLIC_API_URL}/products`)
-        .then((res) => {
-            let genderArray: string[] = [];
-            let categoryArray: string[] = [];
-            let subcategoryArray: string[] = [];
+    const fetchCatalog = async() => {
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`)
+            if(res.ok){
+                const data = await res.json();
+                let genderArray: string[] = [];
+                let categoryArray: string[] = [];
+                let subcategoryArray: string[] = [];
 
-            for(const product of res.data){
-                if (!genderArray.includes(product.gender.toLowerCase())){
-                    genderArray.push(product.gender.toLowerCase())
+                for(const product of data){
+                    if (!genderArray.includes(product.gender.toLowerCase())){
+                        genderArray.push(product.gender.toLowerCase())
+                    }
+                    if (!categoryArray.includes(product.category.toLowerCase())){
+                        categoryArray.push(product.category.toLowerCase())
+                    }
+                    if (!subcategoryArray.includes(product.subcategory.toLowerCase())){
+                        subcategoryArray.push(product.subcategory.toLowerCase())
+                    }
                 }
-                if (!categoryArray.includes(product.category.toLowerCase())){
-                    categoryArray.push(product.category.toLowerCase())
-                }
-                if (!subcategoryArray.includes(product.subcategory.toLowerCase())){
-                    subcategoryArray.push(product.subcategory.toLowerCase())
-                }
+                setGenders(genderArray);
+                setCategories(categoryArray);
+                setSubcategories(subcategoryArray);
             }
-            setGenders(genderArray);
-            setCategories(categoryArray);
-            setSubcategories(subcategoryArray);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        } catch(err){
+            console.log(err)
+        }
     }
     useEffect(() => {
         fetchCatalog();
@@ -58,7 +53,7 @@ export default function ProductUpload() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
         formData.append('name', form.p_name.value);
         formData.append('price', form.price.value);
@@ -74,16 +69,16 @@ export default function ProductUpload() {
         formData.append('subcategory', form.subcategory.value);
 
         if(accessToken){
-            const headers = {
-                'Authorization': `Bearer ${accessToken}`
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            })
+            if(res.ok){
+                setSuccessPrompt(true);
             }
-            await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/`, formData, {
-                headers: headers
-            }).then(res => {
-                if(res.status === 201){
-                    setSuccessPrompt(true);
-                }
-            });
         }
     }
 

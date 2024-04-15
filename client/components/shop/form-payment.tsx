@@ -2,7 +2,6 @@
 
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
-import axios from 'axios';
 import { useState } from 'react';
 import CheckoutConfirmation from '@/components/shop/checkout-confirmation';
 import { redirect } from 'next/navigation';
@@ -14,31 +13,23 @@ export default function FormPayment() {
     const { register, handleSubmit } = useForm();
     const [orderConfirmed, setOrderConfirmed] = useState<boolean>(false);
 
-    const onSubmit = () => {
+    const onSubmit = async() => {
         let cart: Product[] = JSON.parse(localStorage.getItem('oura_cart') || '{}');    
         if(accessToken){
-            const headers = {
-                'Authorization': `Bearer ${accessToken}`
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/purchase`,{
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: JSON.stringify(cart)
+            })
+            if(res.ok){
+                setOrderConfirmed(true);
+                setTimeout(() => {
+                    localStorage.removeItem('oura_cart');
+                    redirect('/')
+                }, 10000)
             }
-            axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/users/purchase`, cart, { headers: headers })
-            .then(res => {
-                if(res.status === 200){
-                    setOrderConfirmed(true);
-                    setTimeout(() => {
-                        localStorage.removeItem('oura_cart');
-                        redirect('/')
-                    }, 10000)
-                }
-            })
-            .catch(error => {
-                if(error.response){
-                    console.log(error.response)
-                } else if(error.request){
-                    console.log(error.request)
-                } else{
-                    console.log(error.message)
-                }
-            })
         }
     }
 
