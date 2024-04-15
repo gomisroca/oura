@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/db";
 import { Prisma, Product, ProductSize, SizeColor } from "@prisma/client";
 import { verifyUser } from "@/utils/auth";
-import path from "path";
-import { writeFile } from "fs/promises";
-import {v4 as uuidv4} from 'uuid';
 import { handleImageUpload } from "@/utils/image-upload";
 
 interface PartialSizeColor{
@@ -14,22 +11,7 @@ interface PartialSizeColor{
 interface PartialSize{
     size: string;
 }
-interface PartialProduct {
-    name: string;
-    description: string;
-    image: string;
-    gender: string;
-    category: string;
-    subcategory: string;
-    addSizes: string;
-    sizes?: string;
-    colors?: string;
-    price: number;
-    stock: number;
-    sales: number;
-    onSale: string;
-    onSeasonal: string;
-}
+
 type ProductWithSizes = Prisma.ProductGetPayload<{
     include: { sizes: { include: { colors: true } } }
 }>
@@ -46,6 +28,7 @@ export async function GET(req: NextRequest) {
             }
         })
         if(allProducts){
+            console.log(allProducts)
             return NextResponse.json(allProducts, { status: 200 });
         } else{
             return NextResponse.json('CATALOG_404', { status: 404 })
@@ -146,7 +129,7 @@ export async function POST(req: NextRequest) {
             // Image File Handling
             const image_file: File | null = formData.get("image") as File;
             if (image_file) {
-                const image = await handleImageUpload(image_file, type, gender, category, subcategory)
+                const image = await handleImageUpload(image_file, type)
                 const finalProduct: ProductWithSizes = await prisma.product.update({ 
                     where: {
                         id: product.id,
