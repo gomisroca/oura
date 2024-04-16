@@ -3,43 +3,34 @@ import Link from "next/link";
 import LandingPlaceholder from '@/public/images/ph_landing.png'
 import { Antonio } from 'next/font/google'
 import { HomepageSettings } from "@prisma/client";
+import { getHomepageSettings } from "@/utils/settings";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
  
 const antonio = Antonio({ subsets: ['latin'] })
 
-async function getData() {
-    try{
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-        if(!res.ok){
-            return null
-        }
-
-        return res.json();
-    }catch(err){
-        console.log(err)
-    }
-}
-
 async function Landing() {
-    const settings: HomepageSettings = await getData();
+    const settings: HomepageSettings | null = await getHomepageSettings();
     
     return (
         <>
-            <div className={antonio.className + ' flex w-screen h-screen text-zinc-200 overflow-hidden justify-center items-center'}>
-                <div className='flex relative overflow-y-hidden h-full md:w-[100vw] justify-center items-center'>
+            <div className={antonio.className + ' flex w-screen text-zinc-200 overflow-hidden justify-center items-center'}>
+                <div className='max-w-full overflow-hidden flex relative md:w-[100vw] justify-center items-center'>
+                    <AspectRatio ratio={16/9}>
                     {settings && settings.image ?
                     <Image
                     fill
-                    className="max-w-none"
+                    className="max-w-full h-auto"
                     src={settings.image}
                     alt="OURA Landing"
                     />
                     :
                     <Image
                     fill
-                    className="max-w-none"
+                    className="max-w-full h-auto"
                     src={LandingPlaceholder}
                     alt="OURA Landing"
                     />}
+                    </AspectRatio>
                 </div>
                 <div className='drop-shadow-xl absolute bottom-2/4 right-2 md:right-4 text-center w-full text-[4rem] md:text-[5rem] 2xl:text-[12rem] font-semibold opacity-30'>
                     OURA
@@ -61,7 +52,7 @@ async function Landing() {
                         settings.categories.map(gender => (
                         <Link 
                         key={gender}
-                        className='text-center border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px]'
+                        className='rounded-md text-center border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px] transition duration-200'
                         href={`/category/${gender.toLowerCase()}/season`}>
                             {gender.toUpperCase()}
                         </Link>
