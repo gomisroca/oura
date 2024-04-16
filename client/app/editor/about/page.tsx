@@ -1,9 +1,9 @@
 'use client'
 
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getAboutSettings } from "@/utils/settings";
 
 export default function AboutSettings() {
     const { user } = useUser();
@@ -17,11 +17,7 @@ export default function AboutSettings() {
 
     const fetchAboutSettings = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
-            if(res.ok){
-                const data = await res.json()
-                setSettings(data);
-            }
+            setSettings(await getAboutSettings());
         }
         catch(err){
             console.log(err)

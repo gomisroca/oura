@@ -1,9 +1,10 @@
 'use client'
 
+import { Label } from "@/components/ui/label";
+import { getProduct } from "@/utils/products";
 import { Autocomplete, TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
-
 interface Params {
     id: string;
  }
@@ -34,11 +35,10 @@ export default function ProductUpdate({ params } : { params: Params }) {
     const [onSeasonal, setOnSeasonal] = useState<boolean>(false);
     const [onSale, setOnSale] = useState<boolean>(false);
 
-    async function getProduct(id: string){
+    async function assignProduct(id: string){
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
-            if(res.ok){
-                const data = await res.json();
+            const data = await getProduct(id);
+            if(data){
                 setProduct(data);
                 setName(data.name);
                 setPrice(data.price.toString());
@@ -85,7 +85,7 @@ export default function ProductUpdate({ params } : { params: Params }) {
 
     useEffect(() => {
         if(!product){
-            getProduct(id)
+            assignProduct(id)
         }
     }, [])
     
@@ -142,10 +142,10 @@ export default function ProductUpdate({ params } : { params: Params }) {
         method="post" 
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Name
-                </label>
+                </Label>
                 <input
                 value={name || ''}
                 onChange={(e) => { setName(e.target.value) }}
@@ -153,10 +153,10 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Price
-                </label>
+                </Label>
                 <input 
                 value={price || 0}
                 onChange={(e) => { setPrice(e.target.value) }}
@@ -165,10 +165,10 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Sales
-                </label>
+                </Label>
                 <input 
                 value={sales || 0}
                 onChange={(e) => { setSales(e.target.value) }}
@@ -176,10 +176,10 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Description
-                </label>
+                </Label>
                 <textarea 
                 value={description || ''}
                 onChange={(e) => { setDescription(e.target.value) }}
@@ -187,24 +187,24 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Add Sizes?
-                </label>
+                </Label>
                 <input 
                 checked={addSizes || false}
                 onChange={(e) => { setAddSizes(e.target.checked) }}
                 type="checkbox" 
                 name="addSizes"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 />
             </div>
             {addSizes &&
-            <div className="flex flex-col">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase font-bold">
                         Sizes
-                    </label>
-                    {sizes ?
+                    </Label>
+                    {sizes &&
                     <Autocomplete
                     multiple
                     value={sizes}
@@ -215,14 +215,13 @@ export default function ProductUpdate({ params } : { params: Params }) {
                     freeSolo
                     options={sizes}
                     renderInput={(params) => <TextField {...params} />}
-                    />
-                    : null }
+                    />}
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase font-bold">
                         Colors
-                    </label>
-                    {colors ?
+                    </Label>
+                    {colors &&
                     <Autocomplete
                     multiple
                     value={colors}
@@ -233,11 +232,12 @@ export default function ProductUpdate({ params } : { params: Params }) {
                     freeSolo
                     options={colors}
                     renderInput={(params) => <TextField {...params} />}
-                    />
-                    : null }
+                    />}
                 </div>
-                <div className="flex flex-col">
-                    <span className="uppercase text-sm">Current Stock</span>
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase text-sm">
+                        Current Stock
+                    </Label>
                     <div  className="gap-2 grid grid-cols-4">
                     {colorData && colorData.map(x => (
                     <div key={x.id} className="flex flex-row rounded-full px-2 bg-zinc-300 items-center text-black">
@@ -250,9 +250,9 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 </div>
             </div>}
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Total Stock
-                </label>
+                </Label>
                 <input 
                 value={stock || 0}
                 name="stock"
@@ -261,9 +261,9 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Gender
-                </label>
+                </Label>
                 <input
                 value={gender || ''}
                 onChange={(e) => { setGender(e.target.value) }}
@@ -272,9 +272,9 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>            
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Category
-                </label>
+                </Label>
                 <input
                 value={category || ''}
                 onChange={(e) => { setCategory(e.target.value) }}
@@ -283,9 +283,9 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Subcategory
-                </label>
+                </Label>
                 <input
                 value={subcategory || ''}
                 onChange={(e) => { setSubcategory(e.target.value) }}
@@ -294,33 +294,33 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>   
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Seasonal?
-                </label>
+                </Label>
                 <input 
                 checked={onSeasonal || false}
                 onChange={(e) => { setOnSeasonal(e.target.checked) }}
                 type="checkbox" 
                 name="onSeasonal"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500" 
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500" 
                 />
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Sale?
-                </label>
+                </Label>
                 <input 
                 checked={onSale || false}
                 onChange={(e) => { setOnSale(e.target.checked) }}
                 type="checkbox" 
                 name="onSale"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 />
             </div>
             <div className="flex flex-col gap-2">
-                <label className="uppercase font-bold">
+                <Label className="uppercase font-bold">
                     Image
-                </label>
+                </Label>
                 {product?.image &&
                 <div className="p-2 border border-zinc-400">
                     <span className="text-sm uppercase">Current Image</span>

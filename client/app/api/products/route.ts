@@ -28,7 +28,6 @@ export async function GET(req: NextRequest) {
             }
         })
         if(allProducts){
-            console.log(allProducts)
             return NextResponse.json(allProducts, { status: 200 });
         } else{
             return NextResponse.json('CATALOG_404', { status: 404 })

@@ -49,7 +49,6 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
         catch(err) {
             return err
         }
-
     }
 
     const userRegister = async(credentials: RegisterFormData): Promise<unknown | boolean> => {

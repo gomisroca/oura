@@ -1,9 +1,9 @@
 'use client'
 
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getSidebarSettings } from "@/utils/settings";
 
 export default function SidebarSettings() {
     const { user } = useUser();
@@ -17,11 +17,7 @@ export default function SidebarSettings() {
 
     const fetchSidebarSettings = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/sidebar`)
-            if(res.ok) {
-                const data = await res.json()
-                setSettings(data);
-            }
+            setSettings(await getSidebarSettings());
         } catch(err){
             console.log(err)
         }

@@ -1,9 +1,9 @@
 'use client'
 
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getCategorySettings } from "@/utils/settings";
 
 interface Params {
     id: string;
@@ -20,23 +20,8 @@ export default function CategoryEdit({ params } : { params: Params }) {
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [settings, setSettings] = useState<HomepageSettings>();
 
-
     const fetchCategorySettings = async() => {
-        console.log(category)
-        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories/${category.toLowerCase()}`)
-        .then((res) => {
-            console.log(res.data)
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        setSettings(await getCategorySettings(category));
     }
 
     useEffect(() => {

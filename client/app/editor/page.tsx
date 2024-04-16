@@ -7,7 +7,7 @@ export default function EditorDashboard() {
     const { user } = useUser();
     return (
         <>
-            <div className="flex flex-col items-center gap-2 mt-5">
+            <div className="m-auto flex flex-col items-center gap-2 mt-5">
                 {user?.role !== 'BASIC' &&
                 <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
                     <span className="uppercase">Products</span>

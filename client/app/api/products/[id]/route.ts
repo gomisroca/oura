@@ -5,22 +5,6 @@ import fs from 'fs';
 import { verifyUser } from "@/utils/auth";
 import { handleImageUpload } from "@/utils/image-upload";
 
-interface PartialProduct {
-    name: string;
-    description: string;
-    image: string;
-    gender: string;
-    category: string;
-    subcategory: string;
-    addSizes: string;
-    sizes?: string;
-    colors?: string;
-    price: number;
-    stock: number;
-    sales: number;
-    onSale: string;
-    onSeasonal: string;
-}
 interface PartialSizeColor{
     name: string;
     amount: number;

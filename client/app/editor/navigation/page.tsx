@@ -5,6 +5,7 @@ import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getNavigationSettings } from "@/utils/settings";
 
 export default function NavigationSettings() {
     const { user } = useUser();
@@ -36,12 +37,9 @@ export default function NavigationSettings() {
 
     const fetchNavigationSettings = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
-            if(res.ok){
-                const data = await res.json();
-                setSettings(data);
-                setValue(data.categories);
-            }
+            const data = await getNavigationSettings()
+            setSettings(data);
+            setValue(data.categories);
         }catch(err){
             console.log(err)
         }

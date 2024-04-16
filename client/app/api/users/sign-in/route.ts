@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
                     email: email.toLowerCase(),
                 },
             });
-            console.log(user)
 
             let isPassValid: boolean = await bcrypt.compare(password, user?.password);
 

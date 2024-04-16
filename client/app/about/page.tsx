@@ -1,3 +1,5 @@
+import { BannerImage } from '@/components/ui/banner-image';
+import { getAboutSettings } from '@/utils/settings';
 import Image from 'next/image';
 import VerticalBannerPlaceholder from 'public/images/ph_hbanner.png';
 
@@ -10,19 +12,6 @@ interface Value {
 interface Partner {
     name: string;
     image?: string;
-}
-
-async function getData() {
-    try{
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
-        if(!res.ok){
-            return null
-        }
-
-        return res.json();
-    } catch(err){
-        console.log(err)
-    }
 }
 
 async function About() {
@@ -88,17 +77,13 @@ async function About() {
             name: 'GreenThread Collective',
         }
     ]
-    const settings = await getData();
+    const settings = await getAboutSettings()
    
     
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
             <div className='h-[100px] md:h-[400px]'>
-                <Image
-                className='w-screen brightness-75'
-                src={settings?.image ? settings.image : VerticalBannerPlaceholder}
-                alt="About Us Image"
-                />
+                <BannerImage type='about' />
             </div>
             <div className="bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 z-[1] flex flex-col justify-evenly mx-auto my-4 px-2">
                 {values && 

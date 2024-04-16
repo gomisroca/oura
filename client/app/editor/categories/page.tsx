@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getCategorySettings } from "@/utils/settings";
 
 export default function CategoriesSettings() {
     const { user } = useUser();
@@ -33,19 +34,7 @@ export default function CategoriesSettings() {
     }
 
     const fetchCategorySettings = async() => {
-        await axios.get<CategorySettings[]>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        setSettings(await getCategorySettings());
     }
 
     useEffect(() => {

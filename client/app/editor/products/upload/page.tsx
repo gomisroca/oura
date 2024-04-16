@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
 import { Cookies } from 'react-cookie';
+import { getProducts } from "@/utils/products";
 
 export default function ProductUpload() {
     const cookieManager = new Cookies();
@@ -17,9 +18,8 @@ export default function ProductUpload() {
 
     const fetchCatalog = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
-            if(res.ok){
-                const data = await res.json();
+            const data = await getProducts();
+            if(data){
                 let genderArray: string[] = [];
                 let categoryArray: string[] = [];
                 let subcategoryArray: string[] = [];
@@ -97,8 +97,8 @@ export default function ProductUpload() {
         method="post" 
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Name
                 </label>
                 <input 
@@ -106,8 +106,8 @@ export default function ProductUpload() {
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Price
                 </label>
                 <input 
@@ -116,8 +116,8 @@ export default function ProductUpload() {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Description
                 </label>
                 <textarea 
@@ -137,9 +137,9 @@ export default function ProductUpload() {
                 />
             </div>
             {addSizes &&
-            <div className="flex flex-col">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1">
+                    <label className="uppercase font-bold">
                         Sizes 
                     </label>
                     <input
@@ -148,8 +148,8 @@ export default function ProductUpload() {
                     id="sizes"
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <label className="uppercase font-bold">
                         Colors
                     </label>
                     <input
@@ -159,8 +159,8 @@ export default function ProductUpload() {
                     className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
                 </div>
             </div>}
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Total Stock
                 </label>
                 <input 
@@ -168,8 +168,8 @@ export default function ProductUpload() {
                 type="number"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Gender
                 </label>
                 {genders ?
@@ -181,8 +181,8 @@ export default function ProductUpload() {
                 />
                 : null }
             </div>            
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Category
                 </label>
                 {categories ?
@@ -194,8 +194,8 @@ export default function ProductUpload() {
                 />
                 : null }
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <label className="uppercase font-bold">
                     Subcategory
                 </label>
                 {subcategories ?
@@ -207,8 +207,8 @@ export default function ProductUpload() {
                 />
                 : null }
             </div>   
-            <div className="flex flex-col ">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1 ">
+                <label className="uppercase font-bold">
                     Image
                 </label>
                 <input 

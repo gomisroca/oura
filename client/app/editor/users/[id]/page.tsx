@@ -72,7 +72,6 @@ export default function UserEdit({ params } : { params: Params}) {
         if(passCheck && newPassword){
             formData.new_password = newPassword;
         }
-        console.log(formData)
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}`, {
             method: 'POST',
@@ -87,7 +86,6 @@ export default function UserEdit({ params } : { params: Params}) {
     }
 
     const deleteUser = async() => {
-        console.log('hi')
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userInfo?.id}`, {
             method: 'DELETE',
             headers: {

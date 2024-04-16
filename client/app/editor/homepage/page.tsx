@@ -4,6 +4,8 @@ import { Autocomplete, TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getHomepageSettings } from "@/utils/settings";
+import { getCategories } from "@/utils/categories";
 
 export default function HomepageSettings() {
     const { user } = useUser();
@@ -21,13 +23,8 @@ export default function HomepageSettings() {
 
     const fetchCategories = async() =>  {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-            if(res.ok){
-                const data = await res.json();
-                console.log(data)
-                setCategories(data);
-                fetchHomepageSettings()
-            }
+            setCategories(await getCategories());
+            fetchHomepageSettings()
         } catch(err){
             console.log(err)
         }
@@ -35,14 +32,11 @@ export default function HomepageSettings() {
 
     const fetchHomepageSettings = async() => {
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-            if(res.ok){
-                const data = await res.json()
-                setSettings(data);
-                setSale(data.sale);
-                setSaleText(data.saleText);
-                setValue(data.categories)
-            }
+            const data = await getHomepageSettings();
+            setSettings(data);
+            setSale(data.sale);
+            setSaleText(data.saleText);
+            setValue(data.categories)
         } catch(err){
             console.log(err)
         }
