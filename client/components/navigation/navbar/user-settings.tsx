@@ -8,6 +8,7 @@ import { useUser } from '@/contexts/user';
 import { FormEvent, useState } from 'react';
 import FailurePrompt from './failure-prompt';
 import SuccessPrompt from './success-prompt';
+import { AdImage } from '@/components/ui/ad';
 
 interface FormData {
     firstName: string,
@@ -133,7 +134,7 @@ export default function UserSettings() {
             <SuccessPrompt active={successPrompt} />
             <Separator />
             <div className='p-5 flex items-center justify-center'>
-                <BannerImage type='sidebar' />
+                <AdImage />
             </div>
         </div>
         </>

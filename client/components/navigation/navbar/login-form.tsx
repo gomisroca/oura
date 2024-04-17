@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SheetClose } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
+import { AdImage } from '@/components/ui/ad';
 
 export default function LoginForm() {
     const { userLogin } = useUser();
@@ -75,7 +76,7 @@ export default function LoginForm() {
                 <SuccessPrompt active={successPrompt} />
                 <Separator />
                 <div className='p-5 flex items-center justify-center'>
-                    <BannerImage type='sidebar' />
+                    <AdImage />
                 </div>
             </div>
         </>

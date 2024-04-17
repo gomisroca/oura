@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { BannerImage } from "@/components/ui/banner-image";
+import { AdImage } from "@/components/ui/ad";
 
 export default function RegisterForm() {
     const { userRegister } = useUser();
@@ -84,7 +85,7 @@ export default function RegisterForm() {
                 <SuccessPrompt active={successPrompt} />
                 <Separator />
                 <div className='p-5 flex items-center justify-center'>
-                    <BannerImage type='sidebar' />
+                    <AdImage />
                 </div>
             </div>
         </>
