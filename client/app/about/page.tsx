@@ -1,4 +1,5 @@
 import { BannerImage } from '@/components/ui/banner-image';
+import { Card } from '@/components/ui/card';
 import { getAboutSettings } from '@/utils/settings';
 import Image from 'next/image';
 import VerticalBannerPlaceholder from 'public/images/ph_hbanner.png';
@@ -82,10 +83,10 @@ async function About() {
     
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='h-[100px] md:h-[400px]'>
+            <div className='rounded-b-full overflow-hidden h-[100px] md:h-[400px]'>
                 <BannerImage type='about' />
             </div>
-            <div className="bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 z-[1] flex flex-col justify-evenly mx-auto my-4 px-2">
+            <div className="flex flex-col justify-evenly mx-auto my-4 px-2">
                 {values && 
                 <div className="flex flex-col md:p-5 first:mt-0 border-b-2 border-zinc-400 last:border-b-0 text-zinc-700">
                     <span 
@@ -94,9 +95,9 @@ async function About() {
                     </span>
                     <ul className="grid md:grid-cols-2 gap-2 mt-3 self-center">
                     {values.map((value: Value) => (
-                        <li key={value.title}>
+                        <Card key={value.title}>
                             <div 
-                            className="flex flex-col cursor-default w-[90vw] sm:w-[500px] sm:h-[250px] p-4 border-2 border-zinc-400 hover:border-zinc-500">
+                            className="flex flex-col cursor-default w-[90vw] sm:w-[500px] sm:h-[250px] p-4 ">
                                 <div className="text-xl border-b border-zinc-400 uppercase">
                                     {value.icon} {value.title}
                                 </div>
@@ -104,7 +105,7 @@ async function About() {
                                     {value.body}
                                 </div>
                             </div>
-                        </li>
+                        </Card>
                     ))}
                     </ul>
                 </div>}
@@ -116,12 +117,12 @@ async function About() {
                     </span>
                     <ul className="grid md:grid-cols-2 gap-2 mt-3 self-center">
                     {partners.map((partner: Partner) => (
-                        <li key={partner.name}>
+                        <Card key={partner.name}>
                             <Image 
-                            className="w-[400px] h-[100px] border-2 border-zinc-400 hover:border-zinc-500" 
+                            className="w-[400px] h-[100px]" 
                             src={partner.image ? partner.image : VerticalBannerPlaceholder} 
                             alt={partner.name} />
-                        </li>
+                        </Card>
                     ))}
                     </ul>
                 </div>}

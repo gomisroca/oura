@@ -35,7 +35,7 @@ export default function RootLayout({
                             <div className="flex-1 flex">
                                 {children}
                             </div>        
-                            <div className="w-full left-0 z-10">
+                            <div className="w-full left-0 z-10 flex justify-end">
                                 <Footer />
                             </div>
                         </div>

@@ -17,13 +17,7 @@ export default async function Catalog({ params } : { params: Params }) {
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='rounded-b-full overflow-hidden w-screen h-[150px] sm:h-[400px] bg-zinc-200 items-center justify-center flex'>
-                <BannerImage type='category' gender={gender} />
-                <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
-                    {gender}
-                </div>
-            </div>
-
+            <BannerImage type='category' gender={gender} />
             <ProductCatalog gender={gender} />
         </div>
     )
