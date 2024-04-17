@@ -40,7 +40,47 @@ export async function GET(req: NextRequest) {
             }
             return acc;
         }, {});
-        
+        console.log(result)
+        return NextResponse.json(result, { status: 200 })
+    }catch(err: unknown){
+        return NextResponse.json({ message: err }, { status: 500 })
+    }   
+}
+
+export async function POST(
+    req: NextRequest
+) {
+    try{
+        const gender = await req.text();
+        console.log(gender)
+        const allCategories: any = await prisma.product.findMany({
+            select: {
+                gender: true,
+                category: true,
+                subcategory: true,
+            },
+            where: {
+                gender: { has: gender.toLowerCase()}
+            },
+            distinct: ["category", "subcategory"]
+        })
+
+        const result: Record<string, string[]> = allCategories.reduce((acc: Record<string, string[]>, curr) => {
+            const { category, subcategory } = curr;
+            for(const cat of category){
+                if (!acc[cat.toLowerCase()]) {
+                    acc[cat.toLowerCase()] = [];
+                }
+                for(const sub of subcategory){
+                    if (!acc[cat.toLowerCase()].includes(sub.toLowerCase())) {
+                        acc[cat.toLowerCase()].push(sub.toLowerCase());
+                    }
+                }
+            }
+            console.log(acc)
+            return acc;
+        }, {});
+        console.log(result)
         return NextResponse.json(result, { status: 200 })
     }catch(err: unknown){
         return NextResponse.json({ message: err }, { status: 500 })

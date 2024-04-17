@@ -12,7 +12,10 @@ export async function getCategories() {
 
 export async function getCategory(gender: string){
     try{
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${gender}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`,{
+            method: 'POST',
+            body: gender
+        });
         if(!res.ok){
             return null
         }
