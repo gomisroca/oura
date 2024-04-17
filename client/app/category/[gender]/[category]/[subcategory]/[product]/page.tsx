@@ -15,9 +15,9 @@ async function Product({ params } : { params: Params }) {
     const catalog: Product[] = await getProducts();
 
     return (
-        <div className='flex flex-col overflow-hidden w-full h-full text-gray-700'>
+        <div className='m-auto flex flex-col overflow-hidden w-full h-full text-gray-700'>
             {product &&
-            <Card className="flex flex-col md:flex-row p-4 sm:p-10 w-[95vw] min-h-[600px] sm:w-4/5 cursor-default mt-8 self-center">
+            <Card className="bg-zinc-200/30 flex flex-col md:flex-row p-4 sm:p-10 w-[95vw] min-h-[600px] sm:w-4/5 cursor-default mt-8 self-center">
                 <ProductData id={params.product} />
             </Card>}
             {catalog && product && params.gender && params.category &&

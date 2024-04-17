@@ -44,7 +44,7 @@ export default function CategoriesSettings() {
     
     return (
         <>
-        <div className="mt-5 flex grid-cols-4 gap-2">
+        <div className="m-auto mt-5 flex grid-cols-4 gap-2">
             {categories &&
             Object.entries(categories).map(([gender, categories]) => (
                 <Link 

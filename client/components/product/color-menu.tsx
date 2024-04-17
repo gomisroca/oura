@@ -2,7 +2,6 @@
 
 import {useContext, useEffect, useState} from 'react';
 import { useToast } from "@/components/ui/use-toast"
-import { v4 as uuidv4 } from 'uuid';
 import { Button } from "@/components/ui/button"
 import {
   Tooltip,
@@ -39,17 +38,17 @@ export default function ColorMenu({ item, activeSize }: Props) {
                             {color.amount > 0 ?
                             <Button
                             onClick={() => {
-                                addToCart(item, size, color.name)
-                                toast({
-                                    description: `Done! Added ${item.name} to your cart`,
-                                })
+                            addToCart(item, size, color.name)
+                            toast({
+                                description: `Done! Added ${item.name} to your cart`,
+                            })
                             }}
-                            className={`rounded w-[40px] h-[25px] border-2 border-zinc-400 text-center hover:border-zinc-500 hover:bg-${color.name}-500 my-2 mx-[10px] bg-${color.name}-400`} 
+                            className={`rounded w-[40px] h-[25px] border-2 text-center hover:bg-${color.name.toLowerCase()}-500 my-2 mx-[10px] bg-${color.name.toLowerCase()}-400`} 
                             ></Button>
                             :
                             <Button
                             key={color.id} 
-                            className={`rounded w-[40px] h-[25px] border-2 border-zinc-400 text-center cursor-default my-2 mx-[2px] hover:bg-${color.name}-500 bg-${color.name}-400 opacity-30`} 
+                            className={`rounded w-[40px] h-[25px] border-2 text-center cursor-default my-2 mx-[2px] hover:bg-${color.name.toLowerCase()}-500 bg-${color.name.toLowerCase()}-400 opacity-30`} 
                             ></Button>}
                             </TooltipTrigger>
                             <TooltipContent>

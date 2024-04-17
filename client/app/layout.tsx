@@ -28,8 +28,8 @@ export default function RootLayout({
             <body style={{backgroundImage: `url(${bg.src})`}}>
                 <UserProvider>
                     <CartProvider>
-                        <div className="flex flex-col min-h-screen top-0 bg-gradient-to-br from-zinc-200/95 via-zinc-200/95 to-zinc-300/90 w-full">
-                            <div className="w-full left-0 z-10">
+                        <div className="flex flex-col min-h-screen top-0 bg-gradient-to-br  from-zinc-200/95 via-zinc-200/95 to-zinc-300/90 w-full">
+                            <div className="absolute w-full left-0 z-10">
                                 <Navbar />
                             </div>
                             <div className="flex-1 flex">

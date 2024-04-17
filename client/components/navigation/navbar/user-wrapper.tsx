@@ -5,7 +5,7 @@ import UserMenu from '@/components/navigation/navbar/user-menu';
 
 export default function UserWrapper() {
     return (
-        <div className='flex flex-row items-center px-2'>
+        <div className='flex flex-row h-full'>
             <Cart />
             <UserMenu />
         </div>

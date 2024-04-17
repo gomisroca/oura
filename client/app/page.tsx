@@ -14,12 +14,11 @@ async function Landing() {
     return (
         <>
             <div className={antonio.className + ' flex w-screen text-zinc-200 overflow-hidden justify-center items-center'}>
-                <div className='max-w-full overflow-hidden flex relative md:w-[100vw] justify-center items-center'>
-                    <AspectRatio ratio={16/9}>
+                <div className='h-full overflow-hidden flex md:w-full justify-center items-center'>
                     {settings && settings.image ?
                     <Image
                     fill
-                    className="max-w-full h-auto"
+                    className="max-w-none h-auto"
                     src={settings.image}
                     alt="OURA Landing"
                     />
@@ -30,7 +29,6 @@ async function Landing() {
                     src={LandingPlaceholder}
                     alt="OURA Landing"
                     />}
-                    </AspectRatio>
                 </div>
                 <div className='drop-shadow-xl absolute bottom-2/4 right-2 md:right-4 text-center w-full text-[4rem] md:text-[5rem] 2xl:text-[12rem] font-semibold opacity-30'>
                     OURA

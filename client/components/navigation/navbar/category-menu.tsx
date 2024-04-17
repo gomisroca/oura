@@ -22,9 +22,9 @@ interface Props {
 export default function CategoryMenu({ homepageSettings, gender, categories }: Props) {
     return (
         <>
-        <Menubar>
+        <Menubar className="h-full">
             <MenubarMenu>
-                <MenubarTrigger> 
+                <MenubarTrigger className="hover:bg-zinc-100/30 h-full"> 
                     {gender}
                 </MenubarTrigger>
                 <MenubarContent>
