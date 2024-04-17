@@ -1,6 +1,8 @@
 'use client'
 
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { getProduct } from "@/utils/products";
 import { Autocomplete, TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -25,15 +27,21 @@ export default function ProductUpdate({ params } : { params: Params }) {
     const [sales, setSales] = useState<string | undefined>('0');
     const [description, setDescription] = useState<string | undefined>();
     const [addSizes, setAddSizes] = useState<boolean>(false);
-    const [sizes, setSizes] = useState<any>([]);
-    const [colors, setColors] = useState<any>([]);
+    const [sizes, setSizes] = useState<string[]>([]);
+    const [colors, setColors] = useState<string[]>([]);
     const [colorData, setColorData] = useState<ColorWithSizeName[] | undefined>();
     const [stock, setStock] = useState<string | undefined>('0');
-    const [gender, setGender] = useState<string | undefined>();
-    const [category, setCategory] = useState<string | undefined>();
-    const [subcategory, setSubcategory] = useState<string | undefined>();
+    const [gender, setGender] = useState<string[]>([]);
+    const [category, setCategory] = useState<string[]>([]);
+    const [subcategory, setSubcategory] = useState<string[]>([]);
     const [onSeasonal, setOnSeasonal] = useState<boolean>(false);
     const [onSale, setOnSale] = useState<boolean>(false);
+
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+    const [selectedColors, setSelectedColors] = useState<string[]>([]);
+    const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
 
     async function assignProduct(id: string){
         try{
@@ -68,13 +76,19 @@ export default function ProductUpdate({ params } : { params: Params }) {
                         });
                     });
                     setSizes(sizeArray)
+                    setSelectedSizes(sizeArray)
                     setColorData(colorArray)
+                    setSelectedColors(colorNameArray)
                     setColors(colorNameArray);
                     setStock(totalAmount.toString());
                 }
+                console.log(data.gender)
                 setGender(data.gender);
+                setSelectedGenders(data.gender);
                 setCategory(data.category);
+                setSelectedCategories(data.category);
                 setSubcategory(data.subcategory);
+                setSelectedSubcategories(data.subcategory);
                 setOnSeasonal(data.onSeasonal);
                 setOnSale(data.onSale);
             }
@@ -103,13 +117,13 @@ export default function ProductUpdate({ params } : { params: Params }) {
         formData.append('description', description!);
         formData.append('addSizes', addSizes.toString()!);
         if(addSizes){
-            formData.append('sizes', sizes!);
-            formData.append('colors', colors!);
+            formData.append('sizes', JSON.stringify(selectedSizes)!);
+            formData.append('colors', JSON.stringify(selectedColors)!);
         }
         formData.append('stock', stock!);
-        formData.append('gender', gender!);
-        formData.append('category', category!);
-        formData.append('subcategory', subcategory!);
+        formData.append('gender', JSON.stringify(selectedGenders)!);
+        formData.append('category', JSON.stringify(selectedCategories)!);
+        formData.append('subcategory', JSON.stringify(selectedSubcategories)!);
         formData.append('onSeasonal', onSeasonal.toString()!);
         formData.append('onSale', onSale.toString()!);
 
@@ -146,45 +160,45 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 <Label className="uppercase font-bold">
                     Name
                 </Label>
-                <input
+                <Input
                 value={name || ''}
                 onChange={(e) => { setName(e.target.value) }}
                 name="p_name" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                type="text" 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-col gap-1">
                 <Label className="uppercase font-bold">
                     Price
                 </Label>
-                <input 
+                <Input 
                 value={price || 0}
                 onChange={(e) => { setPrice(e.target.value) }}
                 name="price"
                 step="0.01"
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-col gap-1">
                 <Label className="uppercase font-bold">
                     Sales
                 </Label>
-                <input 
+                <Input 
                 value={sales || 0}
                 onChange={(e) => { setSales(e.target.value) }}
                 name="sales"
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-col gap-1">
                 <Label className="uppercase font-bold">
                     Description
                 </Label>
-                <textarea 
+                <Textarea 
                 value={description || ''}
                 onChange={(e) => { setDescription(e.target.value) }}
                 name="description"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-row">
                 <Label className="uppercase font-bold">
@@ -204,35 +218,29 @@ export default function ProductUpdate({ params } : { params: Params }) {
                     <Label className="uppercase font-bold">
                         Sizes
                     </Label>
-                    {sizes &&
                     <Autocomplete
-                    multiple
-                    value={sizes}
-                    onChange={(event: React.ChangeEvent<{}>, newSizes: string[]) => {
-                        setSizes(newSizes);
-                    }}
-                    id="size"
+                    onChange={(event, value) => setSelectedSizes(value)} 
+                    value={selectedSizes || sizes || ''}
+                    id="sizes"
                     freeSolo
-                    options={sizes}
-                    renderInput={(params) => <TextField {...params} />}
-                    />}
+                    multiple
+                    options={sizes && sizes.length > 0 ? sizes.map(size => size.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />} 
+                    />
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label className="uppercase font-bold">
                         Colors
                     </Label>
-                    {colors &&
                     <Autocomplete
-                    multiple
-                    value={colors}
-                    onChange={(event: React.ChangeEvent<{}>, newColors: string[]) => {
-                        setColors(newColors);
-                    }}
+                    onChange={(event, value) => setSelectedColors(value)} 
                     id="colors"
+                    value={selectedColors || colors || ''}
                     freeSolo
-                    options={colors}
-                    renderInput={(params) => <TextField {...params} />}
-                    />}
+                    multiple
+                    options={colors && colors.length > 0 ? colors.map(color => color.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />} 
+                    />
                 </div>
                 <div className="flex flex-col gap-1">
                     <Label className="uppercase text-sm">
@@ -258,40 +266,49 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 name="stock"
                 onChange={(e) => { setStock(e.target.value) }}
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-col">
                 <Label className="uppercase font-bold mb-2">
                     Gender
                 </Label>
-                <input
-                value={gender || ''}
-                onChange={(e) => { setGender(e.target.value) }}
-                name="gender" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                <Autocomplete
+                onChange={(event, value) => setSelectedGenders(value)} 
+                value={selectedGenders || gender || ''}
+                id="gender"
+                freeSolo
+                multiple
+                options={gender && gender.length > 0 ? gender.map(gender => gender.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>            
             <div className="flex flex-col">
                 <Label className="uppercase font-bold mb-2">
                     Category
                 </Label>
-                <input
-                value={category || ''}
-                onChange={(e) => { setCategory(e.target.value) }}
-                name="category" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                <Autocomplete
+                onChange={(event, value) => setSelectedCategories(value)} 
+                value={selectedCategories || category || ''}
+                id="category"
+                freeSolo
+                multiple
+                options={category && category.length > 0 ? category.map(category => category.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>
             <div className="flex flex-col">
                 <Label className="uppercase font-bold mb-2">
                     Subcategory
                 </Label>
-                <input
-                value={subcategory || ''}
-                onChange={(e) => { setSubcategory(e.target.value) }}
-                name="subcategory" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                <Autocomplete
+                onChange={(event, value) => setSelectedSubcategories(value)} 
+                value={selectedSubcategories || subcategory || ''}
+                id="subcategory"
+                freeSolo
+                multiple
+                options={subcategory && subcategory.length > 0 ? subcategory.map(sub => sub.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>   
             <div className="flex flex-row">
                 <Label className="uppercase font-bold">

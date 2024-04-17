@@ -222,6 +222,9 @@ export async function POST(
                                                 data: colorInputs as SizeColor[]
                                             })
                                         }
+                                    },
+                                    include: {
+                                        colors: true,
                                     }
                                 })
                             }
