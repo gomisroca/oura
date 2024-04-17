@@ -1,11 +1,13 @@
 'use client'
 
-import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
 import CheckoutConfirmation from '@/components/shop/checkout-confirmation';
 import { redirect } from 'next/navigation';
 import { Cookies } from 'react-cookie';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 export default function FormPayment() {
     const cookieManager = new Cookies();
@@ -46,42 +48,55 @@ export default function FormPayment() {
                 <div className='text-sm text-red-600 my-2'>
                     This is a mock website. None of the data filled in these forms is stored or used in any way.
                 </div>
-                <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
-                    <div className='p-5 flex flex-row'>
-                        <TextField
+                <form className='w-full p-5 pt-0' method='post' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='p-5 flex flex-col gap-4'>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="cardHolder">
+                                Card Holder
+                            </Label>
+                            <Input
                             type="text"
                             required
                             {...register("cardHolder", { required: true })}
-                            label="Card Holder"
-                        />
-                        <TextField
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="cardNumber">
+                                Card Number
+                            </Label>
+                            <Input
                             type="tel"
                             required
-                            {...register("cardNumber", { required: true, pattern: /[0-9\s]{13,19}/i})}
-                            label="Card Number"
-                        />
-                        <TextField
-                            required
+                            {...register("cardNumber", { required: true })}
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="expiryDate">
+                                Expiry Date
+                            </Label>
+                            <Input
                             type="date"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            {...register("expiryDate", { required: true })} 
-                            label="Expiry Date"
-                        />
-                        <TextField
                             required
-                            type="number" 
-                            label="CVV"
-                            {...register("cvv", { required: true, pattern: /[0-9\s]{3}/i })} 
-                        />
+                            {...register("expiryDate", { required: true })}
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="cvv">
+                                CVV
+                            </Label>
+                            <Input
+                            type="number"
+                            required
+                            {...register("cvv", { required: true })}
+                            />
+                        </div>
                     </div>
                     <div className='grid w-[200px] m-auto'>
-                        <button 
-                        className='font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        <Button 
+                        variant='outline'
                         type="submit">
-                            Submit
-                        </button>
+                            Log In
+                        </Button>
                     </div>
                 </form>
             </div>

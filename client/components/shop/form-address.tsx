@@ -1,8 +1,10 @@
 'use client'
 
-import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CheckoutList from '@/components/shop/checkout-list';
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 
 interface Props {
     canProceed: (proceed: boolean) => void;
@@ -21,63 +23,98 @@ export default function FormAddress({ canProceed }: Props) {
                 <div className='text-sm text-red-600 my-2'>
                     This is a mock website. None of the data filled in these forms is stored or used in any way.
                 </div>
-                <form className='p-5' onSubmit={handleSubmit(onSubmit)}>
-                    <div className='p-5 flex flex-row'>
-                        <TextField
+                <form className='w-full p-5 pt-0' method='post' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='p-5 flex flex-col gap-4'>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="firstName">
+                                First Name
+                            </Label>
+                            <Input
                             required
+                            type="text"
                             {...register("firstName", { required: true, pattern: /^[A-Za-z]+$/i, maxLength: 20 })}
-                            label="First Name"
-                        />
-                        <TextField
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="lastName">
+                            Last Name
+                            </Label>
+                            <Input
                             required
+                            type="text"
                             {...register("lastName", { required: true, pattern: /^[A-Za-z]+$/i,  maxLength: 20 })} 
-                            label="Last Name"
-                        />
-                        <TextField
+                            />
+                        </div>
+                        
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="email">
+                                E-Mail
+                            </Label>
+                            <Input
                             required
-                            type="email" 
-                            label="E-Mail"
+                            type="email"
                             {...register("email", { required: true })} 
-                        />
-                        <TextField
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="birthDate">
+                                Birth Date
+                            </Label>
+                            <Input
                             required
                             type="date"
-                            label="Birth Date"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                             {...register("birthDate", { required: true })} 
-                        />
+                            />
+                        </div>
                     </div>
-                    <div className='p-5 flex flex-row'>
-                        <TextField
+                    <div  className='p-5 flex flex-col gap-4'>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="address">
+                                Street Address
+                            </Label>
+                            <Input
                             required
+                            type="text"
                             {...register("address", { required: true })}
-                            label="Street Address"
-                        />
-                        <TextField
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="zipCode">
+                                ZIP Code
+                            </Label>
+                            <Input
                             required
                             placeholder='00000'
                             {...register("zipCode", { required: true })}
                             type="number"
-                            label="ZIP Code"
-                        />
-                        <TextField
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="province">
+                                Province
+                            </Label>
+                            <Input
+                            type="text"
                             {...register("province")}
-                            label="Province"
-                        />
-                        <TextField
+                            />
+                            </div>
+                        <div className='flex flex-col gap-1'>
+                            <Label htmlFor="country">
+                                Country
+                            </Label>
+                            <Input
                             required
+                            type="text"
                             {...register("country", { required: true })}
-                            label="Country"
-                        />
+                            />
+                        </div>
                     </div>
                     <div className='grid w-[200px] m-auto'>
-                        <button 
-                        className='font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
+                        <Button 
+                        variant='outline'
                         type="submit">
-                            Submit
-                        </button>
+                            Log In
+                        </Button>
                     </div>
                 </form>
             </div>

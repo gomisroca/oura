@@ -21,7 +21,8 @@ export default function UserMenu() {
         <Menubar className="h-full flex items-center">
             {user ?
                 <MenubarMenu>
-                    <MenubarTrigger className='h-full md:px-4 hover:bg-zinc-100/30' style={{textShadow: "black 3px 3px 5px"}}>
+
+                    <MenubarTrigger className='h-full md:px-4 hover:bg-zinc-100/30'>
                         {user.firstName.toUpperCase()}
                     </MenubarTrigger>
                     <MenubarContent>
