@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getProducts } from "@/utils/products";
 import { Card } from "../ui/card";
 import { AspectRatio } from "../ui/aspect-ratio";
+import { CatalogSkeleton } from "../skeletons/catalog-skeleton";
 
 export function ProductCatalog({ gender, category, subcategory } : { gender: string, category?: string, subcategory?: string }) {
     const [products, setProducts] = useState<Product[]>();
@@ -35,7 +36,7 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
 
     return (
         <>
-            {products &&
+            {products ?
             <div className='mx-auto p-1 sm:p-5 mb-5'>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1 sm:gap-2">
                     {products.sort(({sales:a}, {sales:b}) => b-a).map((item) => (
@@ -84,7 +85,8 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
                     </Card>
                     ))}
                 </div>
-            </div>}
+            </div>
+            : <CatalogSkeleton />}
         </>
     )
 }

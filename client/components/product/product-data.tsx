@@ -8,6 +8,7 @@ import { getProduct } from "@/utils/products";
 import { Card } from "../ui/card";
 import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
+import { ProductSkeleton } from "../skeletons/product-skeleton";
 
 export function ProductData({ id } : { id: string}){
     const [product, setProduct] = useState<Product>();
@@ -77,5 +78,9 @@ export function ProductData({ id } : { id: string}){
                 </div>
             </div>
         </>
-    )}
+    )} else{
+        return (
+            <ProductSkeleton />
+        )
+    }
 }
