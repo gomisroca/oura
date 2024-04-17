@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import PH from '@/public/images/ph_cart.png';
 import Link from 'next/link';
 import { ShoppingCart, X } from 'lucide-react';
@@ -49,7 +49,7 @@ export default function Cart() {
         <>
             <Menubar>
                 <MenubarMenu>
-                    <MenubarTrigger onClick={() => fetchProducts()}>
+                    <MenubarTrigger onClick={() => fetchProducts()} className='h-full md:px-4 hover:bg-zinc-100/30'>
                         <ShoppingCart />
                     </MenubarTrigger>
                     <MenubarContent className='w-[300px]'>
@@ -61,7 +61,7 @@ export default function Cart() {
                         <div className='flex flex-col'>
                         {cartProducts.length > 0 && cartProducts.map((item) => (
                             <div key={item.cartItem.cartId}  className='w-full flex items-center justify-center'>
-                                <Link className='w-full' href={'/category/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id}>
+                                <Link className='w-full' href={'/category/' + item.product.gender[0].toLowerCase()+ '/' + item.product.category[0].toLowerCase() + '/' + item.product.subcategory[0].toLowerCase() + '/' + item.product.id}>
                                     <MenubarItem className='w-full flex justify-between'>
                                         {item.product.image ?
                                         <img
@@ -84,7 +84,7 @@ export default function Cart() {
                                                 <span>{item.cartItem.size}</span>}
                                                 {item.cartItem.color &&
                                                 <span 
-                                                className={`rounded w-[25px] h-[15px] border-2 border-zinc-400 text-center bg-${item.cartItem.color}-400`}>
+                                                className={`rounded w-[25px] h-[20px] border text-center bg-${item.cartItem.color.toLowerCase()}-400`}>
                                                 </span>}
                                             </div>
                                         </div>

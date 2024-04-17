@@ -52,36 +52,65 @@ export async function POST(req: NextRequest) {
             const description = formData.get('description') as string;
             const addSizes = formData.get('addSizes');
             const stock = formData.get('stock');
-            const gender = formData.get('gender') as string;
-            const category = formData.get('category') as string;
-            const subcategory = formData.get('subcategory') as string;
+            const gender = formData.get('gender');
+            const category = formData.get('category');
+            const subcategory = formData.get('subcategory');
 
-            // Create initial product
+
+            let genderArray: string[] = [];
+            if(gender){
+                genderArray = JSON.parse(gender as string);
+                genderArray = genderArray.map(x => x.toLowerCase())
+            }
+
+            let categoryArray: string[] = [];
+            if(category){
+                categoryArray = JSON.parse(category as string);
+                categoryArray = categoryArray.map(x => x.toLowerCase())
+                console.log(categoryArray[0])
+            }
+
+            let subcategoryArray: string[] = [];
+            if(subcategory){
+                subcategoryArray = JSON.parse(subcategory as string);
+                subcategoryArray = subcategoryArray.map(x => x.toLowerCase())
+            }
+
             const product: Product = await prisma.product.create({ 
                 data: { 
                     name: name,
                     price: Number(price),
                     description: description,
                     totalStock: Number(stock),
-                    gender: gender.toLowerCase(),
-                    category: category.toLowerCase(),
-                    subcategory: subcategory.toLowerCase()
+                    gender: genderArray,
+                    category: categoryArray,
+                    subcategory: subcategoryArray
                 }
             });
+            console.log(product)
 
             // Size and Color Handling
             let colorStock: number;
-            let splitSizes: string[] = [];
-            let splitColors: string[] = [];
             if(addSizes == 'true'){
-                const sizes = formData.get('sizes') as string;
-                const colors = formData.get('colors') as string;
-                splitSizes = sizes!.split(',');
-                splitColors = colors!.split(',');
-                colorStock = Number(stock) / (splitColors!.length * splitSizes!.length); 
+                const sizes = formData.get('sizes');
+                let sizesArray: string[] = [];
+                if(sizes){
+                    sizesArray = JSON.parse(sizes as string);
+                    sizesArray = sizesArray.map(x => x.toUpperCase())
+                }
+
+                const colors = formData.get('colors');
+                let colorsArray: string[] = [];
+                if(colors){
+                    colorsArray = JSON.parse(colors as string);
+                    colorsArray = colorsArray.map(x => x.toLowerCase())
+                }
+
+                colorStock = Number(stock) / (colorsArray.length * sizesArray.length); 
                 // If we actually have Sizes and Colors
-                if(splitSizes.length > 0 && splitColors.length > 0){
-                    const sizeObjects: PartialSize[] = splitSizes.map(size => ({ size }));
+                if(sizesArray.length > 0 && colorsArray.length > 0){
+                    const sizeObjects: PartialSize[] = sizesArray.map(size => ({ size }));
+                    console.log(sizeObjects)
                     const productWithSize: ProductWithSizes = await prisma.product.update({ 
                         where: {
                             id: product.id,
@@ -101,7 +130,7 @@ export async function POST(req: NextRequest) {
                             }
                         }
                     })
-                    const colorInputs: PartialSizeColor[] = splitColors.map((name) => ({
+                    const colorInputs: PartialSizeColor[] = colorsArray.map((name) => ({
                         name,
                         amount: colorStock,
                     }));

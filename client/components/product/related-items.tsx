@@ -10,7 +10,7 @@ interface Props {
 }
 
 function filterCatalog(catalog, item, gender, category): Product[] {
-    let itemDataArray = catalog.filter(x => (x.gender.toLowerCase() == gender.toLowerCase()) && x.category.toLowerCase() == category.toLowerCase());
+    let itemDataArray = catalog.filter(x => (x.gender.includes(gender.toLowerCase())) && x.category.includes(category.toLowerCase()));
     let filter = itemDataArray.find(x => x.id == item.id);
     if (filter){
         const index = itemDataArray.indexOf(filter);
@@ -36,7 +36,7 @@ export default function RelatedItems({ catalog, item, gender, category }: Props)
                             <Link
                             key={product.id}
                             className="h-[275px] sm:h-[275px] md:h-[350px] w-[175px] md:w-[225px] cursor-pointer"
-                            href={'/category/' + product.gender.toLowerCase() + '/' + product.category + '/' + product.subcategory + '/' + product.id}>
+                            href={'/category/' + product.gender[0].toLowerCase() + '/' + product.category[0].toLowerCase() + '/' + product.subcategory[0].toLowerCase() + '/' + product.id}>
                                 <div className="rounded-t-md h-2/3 md:h-3/4 w-full bg-zinc-200 items-center justify-center overflow-hidden flex">
                                 {product.image ?
                                 <img

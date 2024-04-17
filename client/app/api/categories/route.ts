@@ -2,9 +2,9 @@ import prisma from "@/utils/db";
 import { NextRequest, NextResponse } from "next/server";
 
 interface ClothingItem {
-    gender: string;
-    category: string;
-    subcategory: string;
+    gender: string[];
+    category: string[];
+    subcategory: string[];
 }
 interface GenderData {
     [category: string]: string[];
@@ -23,14 +23,20 @@ export async function GET(req: NextRequest) {
 
         const result: Record<string, GenderData> = allCategories.reduce((acc: Record<string, GenderData>, curr) => {
             const { gender, category, subcategory } = curr;
-            if (!acc[gender.toLowerCase()]) {
-                acc[gender.toLowerCase()] = {};
-            }
-            if (!acc[gender.toLowerCase()][category.toLowerCase()]) {
-                acc[gender.toLowerCase()][category.toLowerCase()] = [];
-            }
-            if (!acc[gender.toLowerCase()][category.toLowerCase()].includes(subcategory.toLowerCase())) {
-                acc[gender.toLowerCase()][category.toLowerCase()].push(subcategory.toLowerCase());
+            for(const gen of gender){
+                if (!acc[gen.toLowerCase()]) {
+                    acc[gen.toLowerCase()] = {};
+                }
+                for(const cat of category){
+                    if (!acc[gen.toLowerCase()][cat.toLowerCase()]) {
+                        acc[gen.toLowerCase()][cat.toLowerCase()] = [];
+                    }
+                    for(const sub of subcategory){
+                        if (!acc[gen.toLowerCase()][cat.toLowerCase()].includes(sub.toLowerCase())) {
+                            acc[gen.toLowerCase()][cat.toLowerCase()].push(sub.toLowerCase());
+                        }
+                    }
+                }
             }
             return acc;
         }, {});

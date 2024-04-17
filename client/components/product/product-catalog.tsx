@@ -15,13 +15,13 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
         const catalog = await getProducts();
         let productArray: Product[];
     
-        productArray = catalog.filter(x => (x.gender.toLowerCase() == gender));
+        productArray = catalog.filter(x => (x.gender.includes(gender)));
         if(category == 'season'){
             productArray = productArray.filter(x => x.onSeasonal == true);
         }else if(category){
-            productArray = productArray.filter(x => x.category == category);
+            productArray = productArray.filter(x => x.category.includes(category));
             if(subcategory){
-                productArray = productArray.filter(x => x.subcategory == subcategory);
+                productArray = productArray.filter(x => x.subcategory.includes(subcategory));
             }
         }
         setProducts(productArray)
@@ -29,7 +29,7 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
 
     useEffect(() => {
         if(!products){
-            filterCatalog()
+            filterCatalog();
         }
     }, [])
 
@@ -43,7 +43,7 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
                         <Link 
                         key={item.id}
                         className="h-[275px] md:h-[350px] w-[175px] md:w-[225px]"
-                        href={'/category/' + item.gender.toLowerCase() + '/' + item.category + '/' + item.subcategory + '/' + item.id}>
+                        href={'/category/' + item.gender[0].toLowerCase() + '/' + item.category[0].toLowerCase() + '/' + item.subcategory[0].toLowerCase() + '/' + item.id}>
                             <div className="rounded-t-md h-2/3 md:h-3/4 w-full items-center justify-center overflow-hidden flex">
                                 <AspectRatio ratio={2/3}>
                                 {item.image ?

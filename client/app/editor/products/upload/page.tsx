@@ -5,21 +5,34 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from "@mui/material";
 import { Cookies } from 'react-cookie';
 import { getProducts } from "@/utils/products";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ProductSize, SizeColor } from "@prisma/client";
 
 export default function ProductUpload() {
     const cookieManager = new Cookies();
     const accessToken = cookieManager.get('oura__access_token__')
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
+    const [sizes, setSizes] = useState<ProductSize[]>();
+    const [colors, setColors] = useState<SizeColor[]>();
     const [genders, setGenders] = useState<string[]>();
     const [categories, setCategories] = useState<string[]>();
     const [subcategories, setSubcategories] = useState<string[]>();
     const [addSizes, setAddSizes] = useState<boolean>(false);
 
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+    const [selectedColors, setSelectedColors] = useState<string[]>([]);
+    const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
+
     const fetchCatalog = async() => {
         try{
             const data = await getProducts();
             if(data){
+                let colorArray: SizeColor[] = [];
+                let sizeArray: ProductSize[] = [];
                 let genderArray: string[] = [];
                 let categoryArray: string[] = [];
                 let subcategoryArray: string[] = [];
@@ -34,7 +47,21 @@ export default function ProductUpload() {
                     if (!subcategoryArray.includes(product.subcategory.toLowerCase())){
                         subcategoryArray.push(product.subcategory.toLowerCase())
                     }
+                    for(const size of product.sizes){
+                        const check = sizeArray.filter(x => x.size == size.size)
+                        if (check.length == 0){
+                            sizeArray.push(size)
+                        }
+                        for(const color of size.colors){
+                            const check = colorArray.filter(x => x.name == color.name)
+                            if (check.length == 0){
+                                colorArray.push(color)
+                            }
+                        }
+                    }
                 }
+                setColors(colorArray);
+                setSizes(sizeArray);
                 setGenders(genderArray);
                 setCategories(categoryArray);
                 setSubcategories(subcategoryArray);
@@ -60,14 +87,14 @@ export default function ProductUpload() {
         formData.append('description', form.description.value);
         formData.append('addSizes', form.addSizes.checked);
         if(addSizes){
-            formData.append('sizes', form.sizes.value);
-            formData.append('colors', form.colors.value);
+            formData.append('sizes', JSON.stringify(selectedSizes));
+            formData.append('colors', JSON.stringify(selectedColors));
         }
         formData.append('stock', form.stock.value);
-        formData.append('gender', form.gender.value);
-        formData.append('category', form.category.value);
-        formData.append('subcategory', form.subcategory.value);
-
+        formData.append('gender', JSON.stringify(selectedGenders));
+        formData.append('category', JSON.stringify(selectedCategories));
+        formData.append('subcategory', JSON.stringify(selectedSubcategories));
+        console.log(formData)
         if(accessToken){
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`, {
                 method: 'POST',
@@ -89,7 +116,7 @@ export default function ProductUpload() {
     }
 
     return (
-    <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+    <div className="flex flex-col m-auto w-2/3 mt-10 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Product was published.</div>
         :
@@ -101,20 +128,20 @@ export default function ProductUpload() {
                 <label className="uppercase font-bold">
                     Name
                 </label>
-                <input 
+                <Input 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="p_name" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                type="text"/>
             </div>
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
                     Price
                 </label>
-                <input 
+                <Input 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="price"
                 step="0.01"
-                type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                type="number"/> 
             </div>
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
@@ -122,7 +149,7 @@ export default function ProductUpload() {
                 </label>
                 <textarea 
                 name="description"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="rounded-md transition duration-200 p-2 bg-zinc-200 border border-zinc-400/80  hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-row">
                 <label className="uppercase font-bold mr-4">
@@ -142,85 +169,91 @@ export default function ProductUpload() {
                     <label className="uppercase font-bold">
                         Sizes 
                     </label>
-                    <input
-                    name="sizes"
-                    type="text"
+                    <Autocomplete
+                    onChange={(event, value) => setSelectedSizes(value)} 
                     id="sizes"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    freeSolo
+                    multiple
+                    options={sizes && sizes.length > 0 ? sizes.map(size => size.size.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="uppercase font-bold">
                         Colors
                     </label>
-                    <input
-                    name="colors"
-                    type="text"
+                    <Autocomplete
+                    onChange={(event, value) => setSelectedColors(value)} 
                     id="colors"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    freeSolo
+                    multiple
+                    options={colors && colors.length > 0 ? colors.map(color => color.name.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
                 </div>
             </div>}
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
                     Total Stock
                 </label>
-                <input 
+                <Input
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="stock"
-                type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                type="number" /> 
             </div>
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
-                    Gender
+                    Genders
                 </label>
-                {genders ?
                 <Autocomplete
+                onChange={(event, value) => setSelectedGenders(value)} 
                 id="gender"
                 freeSolo
-                options={genders.map(gender => gender.toUpperCase())}
+                multiple
+                options={genders && genders.length > 0 ? genders.map(gender => gender.toUpperCase()) : []}
                 renderInput={(params) => <TextField {...params} />}
                 />
-                : null }
             </div>            
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
-                    Category
+                    Categories
                 </label>
-                {categories ?
                 <Autocomplete
+                onChange={(event, value) => setSelectedCategories(value)} 
                 id="category"
                 freeSolo
-                options={categories.map(category => category.toUpperCase())}
+                multiple
+                options={categories && categories.length > 0 ? categories.map(category => category.toUpperCase()) : []}
                 renderInput={(params) => <TextField {...params} />}
                 />
-                : null }
             </div>
             <div className="flex flex-col gap-1">
                 <label className="uppercase font-bold">
                     Subcategory
                 </label>
-                {subcategories ?
                 <Autocomplete
+                onChange={(event, value) => setSelectedSubcategories(value)} 
                 id="subcategory"
                 freeSolo
-                options={subcategories.map(subcategory => subcategory.toUpperCase())}
+                multiple
+                options={subcategories && subcategories.length > 0 ? subcategories.map(sub => sub.toUpperCase()) : []}
                 renderInput={(params) => <TextField {...params} />}
                 />
-                : null }
             </div>   
             <div className="flex flex-col gap-1 ">
                 <label className="uppercase font-bold">
                     Image
                 </label>
-                <input 
+                <Input 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 type="file" 
-                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)}
-                className="block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" />
+                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)} />
             </div>
-            <button 
-            type="submit" 
-            className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+            <Button 
+            variant='outline'
+            type="submit">
                 Submit
-            </button>
+            </Button>
         </form>
         }
     </div>

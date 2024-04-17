@@ -66,7 +66,7 @@ export default function CheckoutList() {
                 key={item.cartItem.cartId}>
                     <Link 
                     className='p-2 w-full border-b-2 flex flex-row hover:bg-zinc-300 items-center cursor-pointer'
-                    href={'/category/' + item.product.gender.toLowerCase() + '/' + item.product.category + '/' + item.product.subcategory + '/' + item.product.id}
+                    href={'/category/' + item.product.gender[0].toLowerCase() + '/' + item.product.category[0].toLowerCase() + '/' + item.product.subcategory[0].toLowerCase() + '/' + item.product.id}
                     >
                         <div className='w-[50px]'>
                             <img

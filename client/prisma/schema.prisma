@@ -50,9 +50,9 @@ model Product {
   name        String
   description String
   image       String?
-  gender      String
-  category    String
-  subcategory String
+  gender      String[]
+  category    String[]
+  subcategory String[]
   price       Int
   sales       Int            @default(0)
   totalStock  Int            @default(0)
