@@ -65,7 +65,7 @@ export default function NavigationSettings() {
     }
 
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Navigation bar settings were updated.</div>
         :

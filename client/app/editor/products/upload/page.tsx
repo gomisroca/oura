@@ -8,6 +8,8 @@ import { getProducts } from "@/utils/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ProductSize, SizeColor } from "@prisma/client";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ProductUpload() {
     const cookieManager = new Cookies();
@@ -116,7 +118,7 @@ export default function ProductUpload() {
     }
 
     return (
-    <div className="flex flex-col m-auto w-2/3 mt-10 text-zinc-700 bg-zinc-200">
+    <div className="m-auto flex flex-col w-2/3 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Product was published.</div>
         :
@@ -125,18 +127,18 @@ export default function ProductUpload() {
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="p_name" className="uppercase font-bold">
                     Name
-                </label>
+                </Label>
                 <Input 
                 className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="p_name" 
                 type="text"/>
             </div>
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="price" className="uppercase font-bold">
                     Price
-                </label>
+                </Label>
                 <Input 
                 className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="price"
@@ -144,17 +146,17 @@ export default function ProductUpload() {
                 type="number"/> 
             </div>
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="description" className="uppercase font-bold">
                     Description
-                </label>
-                <textarea 
+                </Label>
+                <Textarea 
                 name="description"
-                className="rounded-md transition duration-200 p-2 bg-zinc-200 border border-zinc-400/80  hover:border-zinc-600" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label htmlFor="addSizes" className="uppercase font-bold mr-4">
                     Add Sizes?
-                </label>
+                </Label>
                 <input 
                 onChange={(e) => { setAddSizes(e.target.checked) }}
                 type="checkbox" 
@@ -166,9 +168,9 @@ export default function ProductUpload() {
             {addSizes &&
             <div className="flex flex-col gap-1">
                 <div className="flex flex-col gap-1">
-                    <label className="uppercase font-bold">
+                    <Label htmlFor="sizes" className="uppercase font-bold">
                         Sizes 
-                    </label>
+                    </Label>
                     <Autocomplete
                     onChange={(event, value) => setSelectedSizes(value)} 
                     id="sizes"
@@ -179,9 +181,9 @@ export default function ProductUpload() {
                     />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <label className="uppercase font-bold">
+                    <Label htmlFor="colors" className="uppercase font-bold">
                         Colors
-                    </label>
+                    </Label>
                     <Autocomplete
                     onChange={(event, value) => setSelectedColors(value)} 
                     id="colors"
@@ -193,18 +195,18 @@ export default function ProductUpload() {
                 </div>
             </div>}
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="stock" className="uppercase font-bold">
                     Total Stock
-                </label>
+                </Label>
                 <Input
                 className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 name="stock"
                 type="number" /> 
             </div>
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="gender" className="uppercase font-bold">
                     Genders
-                </label>
+                </Label>
                 <Autocomplete
                 onChange={(event, value) => setSelectedGenders(value)} 
                 id="gender"
@@ -215,9 +217,9 @@ export default function ProductUpload() {
                 />
             </div>            
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="category" className="uppercase font-bold">
                     Categories
-                </label>
+                </Label>
                 <Autocomplete
                 onChange={(event, value) => setSelectedCategories(value)} 
                 id="category"
@@ -228,9 +230,9 @@ export default function ProductUpload() {
                 />
             </div>
             <div className="flex flex-col gap-1">
-                <label className="uppercase font-bold">
+                <Label htmlFor="subcategory" className="uppercase font-bold">
                     Subcategory
-                </label>
+                </Label>
                 <Autocomplete
                 onChange={(event, value) => setSelectedSubcategories(value)} 
                 id="subcategory"
@@ -240,11 +242,12 @@ export default function ProductUpload() {
                 renderInput={(params) => <TextField {...params} />}
                 />
             </div>   
-            <div className="flex flex-col gap-1 ">
-                <label className="uppercase font-bold">
+            <div className="flex flex-col gap-1">
+                <Label htmlFor="image"  className="uppercase font-bold">
                     Image
-                </label>
+                </Label>
                 <Input 
+                id="image"
                 className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 type="file" 
                 onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)} />

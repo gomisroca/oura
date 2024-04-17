@@ -5,6 +5,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
 import { Cookies } from "react-cookie";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Params {
     id: string;
@@ -98,7 +101,7 @@ export default function UserEdit({ params } : { params: Params}) {
     }
 
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
             {successPrompt ?
             <div className='font-semibold text-center mt-2 mb-4'>User {userInfo?.firstName} {userInfo?.lastName} was updated.</div>
             :
@@ -107,45 +110,45 @@ export default function UserEdit({ params } : { params: Params}) {
                 method="post" 
                 onSubmit={handleSubmit} 
                 className="flex-col grid gap-y-4 p-4">
-                    <div className="flex flex-col">
-                        <label className="uppercase font-bold mb-2">
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="firstName" className="uppercase font-bold">
                             First Name
-                        </label>
-                        <input
+                        </Label>
+                        <Input 
+                        className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                         value={firstName || ''}
                         onChange={(e) => { setFirstName(e.target.value) }}
                         name="firstName" 
-                        type="text"
-                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                        type="text" /> 
                     </div>
-                    <div className="flex flex-col">
-                        <label className="uppercase font-bold mb-2">
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="lastName" className="uppercase font-bold">
                             Last Name
-                        </label>
-                        <input
+                        </Label>
+                        <Input 
+                        className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                         value={lastName || ''}
                         onChange={(e) => { setLastName(e.target.value) }}
                         name="lastName" 
-                        type="text"
-                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                        type="text" /> 
                     </div>
-                    <div className="flex flex-col">
-                        <label className="uppercase font-bold mb-2">
-                            Email
-                        </label>
-                        <input
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="email" className="uppercase font-bold">
+                            E-Mail
+                        </Label>
+                        <Input 
+                        className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                         value={email || ''}
                         onChange={(e) => { setEmail(e.target.value) }}
                         name="email" 
-                        type="text"
-                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                        type="text" /> 
                     </div>
-                    <div className="flex flex-col">
-                        <label className="uppercase font-bold mb-2">
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="role" className="uppercase font-bold">
                             Role
-                        </label>
+                        </Label>
                         <select 
-                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500"
+                        className="rounded-md transition duration-200 p-2 bg-zinc-200 border border-zinc-400  hover:border-zinc-500"
                         name="role"
                         value={role}
                         onChange={(e) => { setRole(e.target.value)}}
@@ -157,9 +160,9 @@ export default function UserEdit({ params } : { params: Params}) {
                         </select>
                     </div>
                     <div className="flex flex-row">
-                        <label className="uppercase font-bold mr-4">
+                        <Label className="uppercase font-bold mr-4">
                             Set New Password? This could critically impact the user.
-                        </label>
+                        </Label>
                         <input 
                         checked={passCheck || false}
                         onChange={(e) => { setPassCheck(e.target.checked) }}
@@ -169,27 +172,28 @@ export default function UserEdit({ params } : { params: Params}) {
                         />
                     </div>
                     {passCheck &&
-                    <div className="flex flex-col">
-                        <label className="uppercase font-bold mb-2">
-                            New Password
-                        </label>
-                        <input
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="password" className="uppercase font-bold">
+                            Password
+                        </Label>
+                        <Input 
+                        className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                         onChange={(e) => { setNewPassword(e.target.value) }}
                         name="newPassword" 
-                        type="text"
-                        className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                        type="password" /> 
                     </div>}
-                    <button 
-                    type="submit" 
-                    className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+                    <Button
+                    variant="outline"
+                    type="submit">
                         Update
-                    </button>
+                    </Button>
                 </form>
-                <button 
-                onClick={() => deleteUser()}
-                className="uppercase font-bold py-4 hover:bg-red-500 transition duration-200 w-1/3 m-auto">
-                    Delete
-                </button>
+                <Button 
+                className="w-[100px] border-red-500 m-auto"
+                variant="outline"
+                onClick={() => deleteUser()}>
+                    Delete User
+                </Button>
             </div>
             }
         </div>
