@@ -46,14 +46,14 @@ export async function POST(req: NextRequest) {
         }
 
         if(settings[0]){
-            if(image && settings[0].image){
-                fs.unlink(settings[0].image, (err: any) => {
-                    if(err){
-                        console.error(err.message);
-                        return;
-                    }
-                });
-            } 
+            // if(image && settings[0].image){
+            //     fs.unlink(settings[0].image, (err: any) => {
+            //         if(err){
+            //             console.error(err.message);
+            //             return;
+            //         }
+            //     });
+            // } 
             if(image){
                 await prisma.homepageSettings.update({
                     where: {
