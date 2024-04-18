@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
             //         }
             //     });
             // } 
-            if(image){
+            if(image && saleImage){
                 await prisma.homepageSettings.update({
                     where: {
                         id: settings[0].id
@@ -62,8 +62,19 @@ export async function POST(req: NextRequest) {
                     data:{
                         categories: categories,
                         sale: sale === 'true',
-                        saleText: saleText,
-                        saleImage: saleImage.url,
+                        saleText: saleText || null,
+                        image: image.url,
+                    }
+                })
+            } else if(image){
+                await prisma.homepageSettings.update({
+                    where: {
+                        id: settings[0].id
+                    },
+                    data:{
+                        categories: categories,
+                        sale: sale === 'true',
+                        saleText: saleText || null,
                         image: image.url,
                     }
                 })
@@ -92,14 +103,23 @@ export async function POST(req: NextRequest) {
                 })
             }
         } else{
-            if(image){
+            if(image && saleImage){
                 await prisma.homepageSettings.create({
                     data: {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
-                        image: image,
+                        image: image.url,
                         saleImage: saleImage.url
+                    }
+                })
+            } else if (image){
+                await prisma.homepageSettings.create({
+                    data: {
+                        categories: categories,
+                        sale: sale === 'true',
+                        saleText: saleText,
+                        image: image.url,
                     }
                 })
             } else if (saleImage){
