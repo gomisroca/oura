@@ -43,8 +43,6 @@ export async function POST(req: NextRequest) {
         if (sale_file) {
             const type = 'settings'
             saleImage = await handleImageUpload(sale_file, type)
-        } else{
-            saleImage = ''
         }
 
         if(settings[0]){
