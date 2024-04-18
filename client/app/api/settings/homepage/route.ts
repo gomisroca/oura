@@ -22,10 +22,12 @@ export async function POST(req: NextRequest) {
         const sale = formData.get('sale');
         const saleText = formData.get('saleText') as string;
         const categoriesString: string = formData.get('categories') as string;
-        const categories: string[] = categoriesString.split(',')
-        categories.forEach((category: string) => (
-            category = category.toLowerCase()
-        ))
+        const categories: string[] = categoriesString.split(',') || []
+        if(categories.length > 0){
+            categories.forEach((category: string) => (
+                category = category.toLowerCase()
+            ))
+        }
 
         const settings: HomepageSettings[] = await prisma.homepageSettings.findMany({});
 
@@ -67,7 +69,7 @@ export async function POST(req: NextRequest) {
                         image: image.url,
                     }
                 })
-            } else{
+            } else if (saleImage){
                 await prisma.homepageSettings.update({
                     where: {
                         id: settings[0].id
@@ -77,6 +79,17 @@ export async function POST(req: NextRequest) {
                         sale: sale === 'true',
                         saleText: saleText,
                         saleImage: saleImage.url
+                    }
+                })
+            } else{
+                await prisma.homepageSettings.update({
+                    where: {
+                        id: settings[0].id
+                    },
+                    data:{
+                        categories: categories,
+                        sale: sale === 'true',
+                        saleText: saleText,
                     }
                 })
             }
@@ -91,13 +104,21 @@ export async function POST(req: NextRequest) {
                         saleImage: saleImage.url
                     }
                 })
-            } else{
+            } else if (saleImage){
                 await prisma.homepageSettings.create({
                     data: {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
                         saleImage: saleImage.url
+                    }
+                })
+            } else{
+                await prisma.homepageSettings.create({
+                    data:{
+                        categories: categories,
+                        sale: sale === 'true',
+                        saleText: saleText
                     }
                 })
             }
