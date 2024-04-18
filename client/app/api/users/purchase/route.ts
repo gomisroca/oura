@@ -39,7 +39,7 @@ async function addProductToOrder(orderId: string, productId: string) {
 
 export async function POST(req: NextRequest) {
     try {
-        const user = verifyUser(req.headers);
+        const user = await verifyUser(req.headers);
         const order = await req.json();
         if(user){
             const orderId: string | undefined = await createOrder(user.id);

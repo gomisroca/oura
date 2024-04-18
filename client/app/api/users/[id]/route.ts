@@ -50,7 +50,7 @@ export async function POST(
         });
 
         if(user){
-            const session_user = verifyUser(req.headers);
+            const session_user = await verifyUser(req.headers);
 
             if(session_user && session_user.id !== user.id && session_user.role !== 'ADMIN'){
                 return NextResponse.json({ message: 'INVALID_CREDENTIALS'}, { status: 403 });
@@ -117,7 +117,7 @@ export async function DELETE(
         })
         
         if(user){
-            const session_user = verifyUser(req.headers);
+            const session_user = await verifyUser(req.headers);
 
             if(session_user && session_user.id !== user.id && session_user.role !== 'ADMIN'){
                 return NextResponse.json({ message: 'INVALID_CREDENTIALS'}, { status: 403 });

@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try{  
-        const user = verifyUser(req.headers)
+        const user = await verifyUser(req.headers)
         if(user && user.role !== 'BASIC'){
             const formData = await req.formData();
 

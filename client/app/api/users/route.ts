@@ -4,7 +4,7 @@ import { verifyUser } from "@/utils/auth";
 
 export async function GET(req: NextRequest) {
     try{ 
-        const user = verifyUser(req.headers);
+        const user = await verifyUser(req.headers);
         if (user && user.role == 'ADMIN'){
             const users: User[] = await prisma.user.findMany({});
             return NextResponse.json(users, { status: 200 })

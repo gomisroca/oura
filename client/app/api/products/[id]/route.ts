@@ -52,7 +52,7 @@ export async function POST(
     { params }: { params: { id: string } }
 ) {
     try{
-        const user = verifyUser(req.headers)
+        const user = await verifyUser(req.headers)
         if(user && user.role !== 'BASIC'){
             const formData = await req.formData();            
             const type = 'products';

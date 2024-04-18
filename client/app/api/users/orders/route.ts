@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
     try {
-        const user = verifyUser(req.headers)
+        const user = await verifyUser(req.headers)
         if(user){
             const orders = await prisma.order.findMany({
                 where: {
