@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
                         id: product.id,
                     },
                     data: {
-                        image: image
+                        image: image.url
                     },
                     include: {
                         sizes: {

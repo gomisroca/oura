@@ -121,7 +121,7 @@ export async function POST(
                             id: product.id,
                         },
                         data: {
-                            image: image
+                            image: image.url
                         },
                     });
                 }

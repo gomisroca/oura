@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
-                        saleImage: saleImage,
-                        image: image,
+                        saleImage: saleImage.url,
+                        image: image.url,
                     }
                 })
             } else{
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
-                        saleImage: saleImage
+                        saleImage: saleImage.url
                     }
                 })
             }
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
                         sale: sale === 'true',
                         saleText: saleText,
                         image: image,
-                        saleImage: saleImage
+                        saleImage: saleImage.url
                     }
                 })
             } else{
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
-                        saleImage: saleImage
+                        saleImage: saleImage.url
                     }
                 })
             }

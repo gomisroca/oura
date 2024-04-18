@@ -56,7 +56,7 @@ export async function POST(
                         id: settings.id,
                     },
                     data: {
-                        image: image
+                        image: image.url
                     },
                 });
             }
@@ -65,7 +65,7 @@ export async function POST(
                 await prisma.categorySettings.create({
                     data: {
                         category: params.category,
-                        image: image,
+                        image: image.url,
                     }
                 })
             }
