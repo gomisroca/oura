@@ -19,7 +19,7 @@ export default function FormAddress({ canProceed }: Props) {
 
     return (
         <div>
-            <div className='mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700'>
+            <div className='p-2 mx-2 md:mx-0 flex flex-col overflow-hidden border-2 border-zinc-400 text-zinc-700'>
                 <div className='text-sm text-red-600 my-2'>
                     This is a mock website. None of the data filled in these forms is stored or used in any way.
                 </div>
