@@ -20,7 +20,7 @@ export default function Checkout() {
         return (
             <>
             {cart.length > 0 ?
-            <div className='flex flex-col m-auto text-center items-center mt-5 md:mt-10'>
+            <div className='flex flex-col m-auto text-center items-center'>
                 {addressPassed ? 
                 <FormPayment />
                 :  
