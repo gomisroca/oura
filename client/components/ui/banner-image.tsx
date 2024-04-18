@@ -49,7 +49,7 @@ export function BannerImage({ type, gender, category, subcategory } : { type: st
     return (
         <>
         {src ?
-        <div className='rounded-b-full overflow-hidden w-screen h-[150px] sm:h-[400px] bg-zinc-200 items-center justify-center flex'>
+        <div className='rounded-b-full overflow-hidden w-screen h-[150px] sm:h-[400px] bg-zinc-300 items-center justify-center flex'>
             <img
             className='w-screen brightness-75'
             src={src}

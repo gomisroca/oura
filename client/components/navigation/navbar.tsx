@@ -3,7 +3,7 @@ import CategoryMenuWrapper from "@/components/navigation/navbar/category-menu-wr
 import Link from "next/link";
 import { Urbanist } from 'next/font/google'
 import { getHomepageSettings, getNavigationSettings } from "@/utils/settings";
-import { NavbarSettings } from "@prisma/client";
+import { HomepageSettings, NavbarSettings } from "@prisma/client";
 import { getCategories } from "@/utils/categories";
 import { Card } from "../ui/card";
  
