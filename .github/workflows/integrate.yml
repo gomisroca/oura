@@ -21,12 +21,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Install Dependencies Server
-      working-directory: ./api
-      run: npm ci
-    - name: Build Server
-      working-directory: ./api
-      run: npm run build --if-present
     - name: Install Dependencies Client
       working-directory: ./client
       run: npm ci
