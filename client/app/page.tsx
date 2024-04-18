@@ -46,7 +46,7 @@ async function Landing() {
                         {settings.saleText?.toUpperCase()}
                     </span>}
                     <div className='flex flex-row'>
-                        {settings.categories &&
+                        {settings.categories && settings.categories.length > 0 &&
                         settings.categories.map(gender => (
                         <Card className="flex hover:border-zinc-100 text-zinc-300 hover:text-zinc-100 bg-gradient-to-br from-zinc-600 via-zinc-400/20 to-zinc-300/10" style={{backgroundImage: `url(${settings.saleImage})`}}>
                             <Link 
