@@ -3,12 +3,13 @@
 import Image from "next/image"
 import PH from '@/public/images/ph_hbanner.png'
 import { useEffect, useState } from "react";
-import { getAboutSettings, getCategorySettings, getSidebarSettings } from "@/utils/settings";
+import { getAboutSettings, getCategorySettings, getHomepageSettings, getSidebarSettings } from "@/utils/settings";
 import { BannerSkeleton } from "../skeletons/banner-skeleton";
 
 export function BannerImage({ type, gender, category, subcategory } : { type: string, gender?: string, category?: string, subcategory?: string }) {
     const [src, setSrc] = useState<string>();
     const [alt, setAlt] = useState<string>();
+    const [saleText, setSaleText] = useState<string>();
 
     async function getCategory(gender: string){
         try{
@@ -28,18 +29,20 @@ export function BannerImage({ type, gender, category, subcategory } : { type: st
         }
     }
 
-    async function getSidebar() {
-        try{
-            const data = await getSidebarSettings()
-            setSrc(data.image)
-        } catch(err){
-            console.log(err)
+    async function getSaleText(){
+        const homepageSettings: HomepageSettings | null = await getHomepageSettings();
+        if(homepageSettings?.saleText){
+            setSaleText(homepageSettings?.saleText)
         }
     }
     useEffect(() => {
+        
         if(type == 'category' && gender){
             getCategory(gender)
             setAlt(gender + ' Banner')
+            if(category == 'season'){
+                getSaleText()
+            }
         } else if (type == 'about'){
             getAbout()
             setAlt('About Banner')
@@ -61,7 +64,7 @@ export function BannerImage({ type, gender, category, subcategory } : { type: st
                     {gender}
                 </div> 
                 <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
-                    {category}
+                    {category == 'season' ? saleText : category}
                 </div> 
                 <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 ml-1 md:ml-3 self-center justify-self-center mt-[65px] md:mt-[230px]'>
                     {subcategory}
