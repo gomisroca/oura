@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Card } from "../ui/card";
 
 interface Link {
     name: string;
@@ -13,27 +14,24 @@ export default function Footer() {
             url: 'about'
         },
         {
-            name: 'Legal Disclosure',
+            name: 'Disclosure',
             url: 'legal'
         }
     ]
 
     return (
         <>
-        <div id="sidebar" className="flex flex-row w-full bg-zinc-200 text-zinc-700 justify-end">
-            <nav>
-                <ul className="flex flex-row">
+        <Card id="sidebar" className="relative justify-end w-fit bg-zinc-500/30 hover:border-zinc-100 bg-gradient-to-r from-zinc-400/60 via-transparent to-zinc-400/60 flex flex-row m-2 text-zinc-100 hover:from-unset hover:to-unset">
+
                 {links.map(link => (
                     <Link 
                     key={link.name} 
-                    className="px-2 text-[0.8rem] cursor-pointer hover:text-zinc-800"
+                    className="px-2 text-[0.8rem] cursor-pointer hover:bg-zinc-100/30 drop-shadow-md"
                     href={`/${link.url}`}>
                         {link.name.toUpperCase()}
                     </Link>
                 ))}
-                </ul>
-            </nav>
-        </div>
+        </Card>
         </>
     );
 }

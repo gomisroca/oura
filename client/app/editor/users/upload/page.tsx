@@ -4,6 +4,9 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useUser } from "@/contexts/user";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function UserUpload() {
     const { user } = useUser();
@@ -35,7 +38,7 @@ export default function UserUpload() {
     }
     
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
             {successPrompt ?
             <div className='font-semibold text-center mt-2 mb-4'>User was uploaded.</div>
             :
@@ -43,47 +46,47 @@ export default function UserUpload() {
             method="post" 
             onSubmit={handleSubmit} 
             className="flex-col grid gap-y-4 p-4">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="firstName" className="uppercase font-bold">
                         First Name
-                    </label>
-                    <input
+                    </Label>
+                    <Input 
+                    className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                     name="firstName" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    type="text" /> 
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="lastName" className="uppercase font-bold">
                         Last Name
-                    </label>
-                    <input
+                    </Label>
+                    <Input 
+                    className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                     name="lastName" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    type="text"/> 
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Email
-                    </label>
-                    <input
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="email" className="uppercase font-bold">
+                        E-Mail
+                    </Label>
+                    <Input 
+                    className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                     name="email" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    type="text" /> 
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="password" className="uppercase font-bold">
                         Password
-                    </label>
-                    <input
+                    </Label>
+                    <Input 
+                    className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                     name="password" 
-                    type="text"
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                    type="text" /> 
                 </div>
-                <button 
-                type="submit" 
-                className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+                <Button
+                variant="outline" 
+                type="submit">
                     Update
-                </button>
+                </Button>
             </form>
             }
         </div>

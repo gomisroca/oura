@@ -8,15 +8,19 @@ export async function middleware(request: NextRequest) {
     const getUserInfo = async(): Promise<User | null> => {
         try {
             if(accessToken){
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/info`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken.value}`
+                try{
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/info`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken.value}`
+                        }
+                    });
+                    if(res.ok){
+                        return res.json();
                     }
-                });
-                if(res.ok){
-                    return res.json();
+                } catch(err){
+                    console.log(err)
                 }
             }
             return null
@@ -25,10 +29,10 @@ export async function middleware(request: NextRequest) {
             return err
         }
     }
+
     const user: User | null = await getUserInfo();
 
-    if ((user && user.role == 'BASIC' || !user) && request.nextUrl.pathname.startsWith('/editor')) {
-        console.log('hey')
+    if (((user && user.role == 'BASIC') || user == null) && request.nextUrl.pathname.startsWith('/editor')) {
         return Response.redirect(new URL('/', request.url))
     }
     
@@ -38,5 +42,5 @@ export async function middleware(request: NextRequest) {
 }
  
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/((?!_next/static|api|_next/image|.*\\.png$).*)'],
 }

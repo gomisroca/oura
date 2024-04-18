@@ -36,8 +36,17 @@ export async function POST(req: NextRequest) {
             image = await handleImageUpload(image_file, type)
         }
 
+        const sale_file: File | null = formData.get("saleImage") as File;
+        let saleImage;
+        if (sale_file) {
+            const type = 'settings'
+            saleImage = await handleImageUpload(sale_file, type)
+        } else{
+            saleImage = ''
+        }
+
         if(settings[0]){
-            if(settings[0].image){
+            if(image && settings[0].image){
                 fs.unlink(settings[0].image, (err: any) => {
                     if(err){
                         console.error(err.message);
@@ -54,7 +63,8 @@ export async function POST(req: NextRequest) {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
-                        image: image
+                        saleImage: saleImage,
+                        image: image,
                     }
                 })
             } else{
@@ -65,7 +75,8 @@ export async function POST(req: NextRequest) {
                     data:{
                         categories: categories,
                         sale: sale === 'true',
-                        saleText: saleText
+                        saleText: saleText,
+                        saleImage: saleImage
                     }
                 })
             }
@@ -77,6 +88,7 @@ export async function POST(req: NextRequest) {
                         sale: sale === 'true',
                         saleText: saleText,
                         image: image,
+                        saleImage: saleImage
                     }
                 })
             } else{
@@ -85,6 +97,7 @@ export async function POST(req: NextRequest) {
                         categories: categories,
                         sale: sale === 'true',
                         saleText: saleText,
+                        saleImage: saleImage
                     }
                 })
             }

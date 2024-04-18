@@ -5,22 +5,6 @@ import fs from 'fs';
 import { verifyUser } from "@/utils/auth";
 import { handleImageUpload } from "@/utils/image-upload";
 
-interface PartialProduct {
-    name: string;
-    description: string;
-    image: string;
-    gender: string;
-    category: string;
-    subcategory: string;
-    addSizes: string;
-    sizes?: string;
-    colors?: string;
-    price: number;
-    stock: number;
-    sales: number;
-    onSale: string;
-    onSeasonal: string;
-}
 interface PartialSizeColor{
     name: string;
     amount: number;
@@ -84,6 +68,25 @@ export async function POST(
             const onSale = formData.get('onSale');
             const onSeasonal = formData.get('onSeasonal');
 
+            let genderArray: string[] = [];
+            if(gender){
+                genderArray = JSON.parse(gender as string);
+                genderArray = genderArray.map(x => x.toLowerCase())
+            }
+
+            let categoryArray: string[] = [];
+            if(category){
+                categoryArray = JSON.parse(category as string);
+                categoryArray = categoryArray.map(x => x.toLowerCase())
+                console.log(categoryArray[0])
+            }
+
+            let subcategoryArray: string[] = [];
+            if(subcategory){
+                subcategoryArray = JSON.parse(subcategory as string);
+                subcategoryArray = subcategoryArray.map(x => x.toLowerCase())
+            }
+
             // Get Product
             const product: ProductWithSizes | null = await prisma.product.findUnique({ 
                 where: {
@@ -129,9 +132,9 @@ export async function POST(
                     data: {
                         name: name,
                         description: description,
-                        gender: gender.toLowerCase(),
-                        category: category.toLowerCase(),
-                        subcategory: subcategory.toLowerCase(),
+                        gender: genderArray,
+                        category: categoryArray,
+                        subcategory: subcategoryArray,
                         price: Number(price),
                         sales: Number(sales),
                         totalStock: Number(stock),
@@ -149,17 +152,25 @@ export async function POST(
                     })
                 } else {
                     // Size and Color Handling
-                    const sizes = formData.get('sizes') as string;
-                    const colors = formData.get('colors') as string;
-                    
-                    let splitSizes: string[] | undefined = sizes?.split(',');
-                    let splitColors: string[] | undefined = colors?.split(',');
+                    const sizes = formData.get('sizes');
+                    let sizesArray: string[] = [];
+                    if(sizes){
+                        sizesArray = JSON.parse(sizes as string);
+                        sizesArray = sizesArray.map(x => x.toUpperCase())
+                    }
+    
+                    const colors = formData.get('colors');
+                    let colorsArray: string[] = [];
+                    if(colors){
+                        colorsArray = JSON.parse(colors as string);
+                        colorsArray = colorsArray.map(x => x.toLowerCase())
+                    }
 
-                    let colorStock: number | undefined = Number(stock) / (splitColors!.length * splitSizes!.length);
+                    let colorStock: number | undefined = Number(stock) / (colorsArray!.length * sizesArray!.length);
                     
                     const newSizes: string[] = [];
                     // If the updated product has sizes, we iterate over them
-                    for(const size of splitSizes){
+                    for(const size of sizesArray){
                         // we check if the size already exists
                         const existingSize: SizeWithColors | null = await prisma.productSize.findFirst({
                             where: {
@@ -174,7 +185,7 @@ export async function POST(
                         if(existingSize){
                             // if the size exists, we iterate over updated product colors
                             const newColors: string[] = [];
-                            for(const color of splitColors){
+                            for(const color of colorsArray){
                                 // if the color doesn't exist in the size, we put them in the array to be added later
                                 const existingColor: SizeColor | null = await prisma.sizeColor.findFirst({
                                     where: {
@@ -211,6 +222,9 @@ export async function POST(
                                                 data: colorInputs as SizeColor[]
                                             })
                                         }
+                                    },
+                                    include: {
+                                        colors: true,
                                     }
                                 })
                             }
@@ -219,7 +233,7 @@ export async function POST(
                                 where: {
                                     NOT: {
                                         name: {
-                                            in: splitColors
+                                            in: colorsArray
                                         }
                                     }
                                 }
@@ -261,7 +275,7 @@ export async function POST(
                             }
                         })
                         // we add the color data to the new sizes
-                        const colorInputs: PartialSizeColor[] = splitColors.map((name) => ({
+                        const colorInputs: PartialSizeColor[] = colorsArray.map((name) => ({
                             name,
                             amount: colorStock,
                         }));
@@ -294,7 +308,7 @@ export async function POST(
                         where: {
                             NOT: {
                                 size: {
-                                    in: splitSizes as string[]
+                                    in: sizesArray as string[]
                                 }
                             }
                         }

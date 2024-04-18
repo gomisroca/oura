@@ -1,7 +1,7 @@
+'use client'
 interface Props {
     item: Product;
     size: string;
-    activeSize: string | null;
     onSizeSelection: (size: string) => void;
 }
 
@@ -17,24 +17,22 @@ function checkStock(item, size): boolean {
     return false
 }
 
-export default function Size({ item, size, activeSize, onSizeSelection }: Props) {
+export default function Size({ item, size, onSizeSelection }: Props) {
     let hasStock = checkStock(item, size);
-
+    function handleSelection(size){
+        onSizeSelection(size)
+    }
     return(
         item && size ?
-        <div className='flex justify-center'>
+        <div className='w-full flex justify-center'>
             {hasStock ?
             <span 
-            onClick={() => onSizeSelection(size)} 
-            className={
-            activeSize == size ? 
-            'w-[40px] text-center rounded border-zinc-400 bg-zinc-300 hover:bg-zinc-300 border-2 p-1 m-1 cursor-pointer'
-            :
-            'w-[40px] text-center rounded border-2 p-1 m-1 cursor-pointer border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300'}>
+            className="w-full text-black"
+            onClick={(e) => {e.preventDefault(); handleSelection(size)}}>
                 {size}
             </span>
             : 
-            <span className='w-[40px] text-center border-zinc-400 rounded border-2 p-1 m-1 opacity-30'>
+            <span className='w-full text-center rounded p-1 m-1 opacity-30 '>
                 {size}
             </span> 
             }

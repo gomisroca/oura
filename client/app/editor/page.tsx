@@ -1,5 +1,6 @@
 'use client'
 
+import { Card } from "@/components/ui/card";
 import { useUser } from "@/contexts/user";
 import Link from "next/link";
 
@@ -7,9 +8,9 @@ export default function EditorDashboard() {
     const { user } = useUser();
     return (
         <>
-            <div className="flex flex-col items-center gap-2 mt-5">
+            <div className="m-auto flex flex-col items-center gap-2">
                 {user?.role !== 'BASIC' &&
-                <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
+                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Products</span>
                     <div className="flex gap-2">
                         <Link 
@@ -23,9 +24,9 @@ export default function EditorDashboard() {
                             Add Product
                         </Link>
                     </div>
-                </div>}
+                </Card>}
                 {(user?.role == 'SUPER' || user?.role == 'ADMIN') &&
-                <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
+                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Display Settings</span>
                     <div className="grid grid-cols-2 gap-2">
                         <Link 
@@ -54,9 +55,9 @@ export default function EditorDashboard() {
                             About
                         </Link>
                     </div>
-                </div>}
+                </Card>}
                 {user?.role == 'ADMIN' &&
-                <div className="w-[500px] border border-zinc-400 flex flex-col items-center p-4 gap-2 hover:border-zinc-500">
+                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Users</span>
                     <div className="flex gap-2">
                         <Link 
@@ -70,7 +71,7 @@ export default function EditorDashboard() {
                             Edit User
                         </Link>
                     </div>
-                </div>}
+                </Card>}
             </div>
         </>
     )

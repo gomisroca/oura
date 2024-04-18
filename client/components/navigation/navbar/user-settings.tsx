@@ -1,9 +1,14 @@
+import { BannerImage } from '@/components/ui/banner-image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { SheetClose } from '@/components/ui/sheet';
 import { useUser } from '@/contexts/user';
 import { FormEvent, useState } from 'react';
-
-interface Props {
-    onSettingsToggle: () => void;
-}
+import FailurePrompt from './failure-prompt';
+import SuccessPrompt from './success-prompt';
+import { AdImage } from '@/components/ui/ad';
 
 interface FormData {
     firstName: string,
@@ -13,8 +18,9 @@ interface FormData {
     new_password?: string,
 }
 
-export default function UserSettings({ onSettingsToggle }: Props) {
+export default function UserSettings() {
     const { user, updateToken } = useUser();
+    const [failurePrompt, setFailurePrompt] = useState<boolean>(false);
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [firstName, setFirstName] = useState<string | undefined>(user?.firstName);
     const [lastName, setLastName] = useState<string | undefined>(user?.lastName);
@@ -42,9 +48,12 @@ export default function UserSettings({ onSettingsToggle }: Props) {
                 body: JSON.stringify(data)
             });
             if(res.ok){
+                setFailurePrompt(false);
                 setSuccessPrompt(true);
                 updateToken(await res.json())
-                setTimeout(() => { onSettingsToggle() }, 5000);
+            } else{
+                setFailurePrompt(true);
+                setSuccessPrompt(false);
             }
         } catch(err){
             console.log(err)
@@ -53,75 +62,80 @@ export default function UserSettings({ onSettingsToggle }: Props) {
 
     return (
         <>
-        <div className='w-[300px] text-zinc-700 flex flex-col mt-10 items-center'>
+        <div className='text-zinc-700 flex flex-col mt-10 items-center'>
             <span className='uppercase'>Account Details</span>
-            <form
-            method='post' 
-            onSubmit={handleSubmit} 
-            className="flex-col grid gap-y-4 p-4">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        First Name
-                    </label>
-                    <input 
-                    name="firstName" 
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => { setFirstName(e.target.value) }}
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Last Name
-                    </label>
-                    <input 
-                    name="lastName" 
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => { setLastName(e.target.value) }}
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        E-Mail
-                    </label>
-                    <input 
-                    name="email" 
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value) }}
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        Old Password
-                    </label>
-                    <input 
-                    name="old_password" 
-                    type="password"
-                    placeholder='*******'
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
-                </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
-                        New Password
-                    </label>
-                    <input 
-                    name="new_password" 
-                    type="password"
-                    placeholder='*******'
-                    className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+            <form className='w-full p-5 pt-0' method='post' onSubmit={handleSubmit}>
+                <div className='p-5 flex flex-col gap-4'>
+                    <div className='flex flex-col gap-1'>
+                        <Label htmlFor='firstName'>
+                            First Name
+                        </Label>
+                        <Input 
+                        name="firstName" 
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => { setFirstName(e.target.value) }}
+                        /> 
+                    </div>
+                    <div className='flex flex-col gap-1'>
+                        <Label htmlFor='lastName'>
+                            Last Name
+                        </Label>
+                        <Input 
+                        name="lastName" 
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => { setLastName(e.target.value) }}
+                        /> 
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor='email'>
+                            E-Mail
+                        </Label>
+                        <Input 
+                        name="email" 
+                        type="email"
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value) }}
+                        /> 
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor='old_password'>
+                            Old Password
+                        </Label>
+                        <Input 
+                        name="old_password" 
+                        type="password"
+                        placeholder='*******'
+                        /> 
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor='new_password'>
+                            New Password
+                        </Label>
+                        <Input 
+                        name="new_password" 
+                        type="password"
+                        placeholder='*******'
+                        /> 
+                    </div>
                 </div>
                 <div className='grid w-[200px] m-auto'>
-                    <input 
-                    value="Update"
-                    className='uppercase cursor-pointer font-semibold border-2 p-2 border-zinc-400 hover:border-zinc-500 rounded hover:bg-gradient-to-br hover:from-zinc-200 hover:to-zinc-300' 
-                    type="submit" />
+                    <SheetClose asChild>
+                        <Button 
+                        variant='outline'
+                        type="submit">
+                            Update
+                        </Button>
+                    </SheetClose>
                 </div>
             </form>
-            {successPrompt &&
-                <div>Your information was updated.</div>
-            }
+            <FailurePrompt active={failurePrompt} />
+            <SuccessPrompt active={successPrompt} />
+            <Separator />
+            <div className='p-5 flex items-center justify-center'>
+                <AdImage />
+            </div>
         </div>
         </>
     )
