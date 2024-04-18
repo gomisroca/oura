@@ -34,7 +34,7 @@ export default function CategoryMenu({ homepageSettings, gender, categories }: P
                         <MenubarItem 
                         style={{backgroundImage: `url(${homepageSettings.saleImage})`}} 
                         className="border text-lg p-0 rounded-t-md">
-                            <div className="rounded-t-md font-semibold py-2 px-1 w-full bg-gradient-to-br text-zinc-200 hover:text-zinc-100  from-zinc-600 via-zinc-400/20 to-zinc-300/10  hover:from-zinc-600 hover:via-zinc-400/10">
+                            <div className="rounded-t-md font-semibold py-2 px-1 w-full bg-gradient-to-br text-zinc-200 hover:text-zinc-100  from-zinc-800 via-zinc-600/20 to-zinc-300/10  hover:from-zinc-800 hover:via-zinc-600/10">
                                 {homepageSettings.saleText}
                             </div>
                         </MenubarItem>

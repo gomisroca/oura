@@ -51,7 +51,7 @@ async function Landing() {
                         <Card className="flex hover:border-zinc-100 text-zinc-300 hover:text-zinc-100 bg-gradient-to-br from-zinc-600 via-zinc-400/20 to-zinc-300/10" style={{backgroundImage: `url(${settings.saleImage})`}}>
                             <Link 
                             key={gender}
-                            className='rounded-md text-center px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-gradient-to-br from-zinc-600 via-zinc-400/20 to-zinc-300/10  hover:from-zinc-600 hover:via-zinc-400/10 font-semibold w-[300px] transition duration-200'
+                            className='rounded-md text-center px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-gradient-to-br from-zinc-800 via-zinc-600/20 to-zinc-300/10  hover:from-zinc-800 hover:via-zinc-600/10 font-semibold w-[300px] transition duration-200'
                             href={`/category/${gender.toLowerCase()}/season`}>
                                 {gender.toUpperCase()}
                             </Link>
