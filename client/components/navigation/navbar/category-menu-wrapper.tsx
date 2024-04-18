@@ -3,6 +3,7 @@
 import { HomepageSettings, NavbarSettings } from "@prisma/client"
 import CategoryMenu from "@/components/navigation/navbar/category-menu"
 import { useEffect, useState } from "react"
+import { CategoryMenuSkeleton } from "@/components/skeletons/category-menu-skeleton"
 
 interface Props {
     navigationSettings: NavbarSettings,
@@ -39,10 +40,13 @@ export default function CategoryMenuWrapper({ navigationSettings, homepageSettin
 
     return (
         <>
-            {filteredCategories &&
+            {navigationSettings && filteredCategories ?
             Object.entries(filteredCategories).map(([gender, categories]) => (
                 <CategoryMenu homepageSettings={homepageSettings} key={gender} gender={gender} categories={categories} />
-            ))}
+            ))
+            : navigationSettings && navigationSettings.categories.length > 0 ?
+                <CategoryMenuSkeleton />
+            : null}
         </>
     )
 }
