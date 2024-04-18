@@ -16,6 +16,7 @@ export default function HomepageSettings() {
         redirect('/')
     }
     
+    const [saleMedia, setSaleMedia] = useState<FileList>();
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [settings, setSettings] = useState<HomepageSettings>();
@@ -57,6 +58,9 @@ export default function HomepageSettings() {
         if(media){
             formData.append('image', media[0])
         }
+        if(saleMedia){
+            formData.append('saleImage', saleMedia[0])
+        }
         formData.append('categories', value);
         formData.append('sale', sale.toString()!);
         formData.append('saleText', saleText!);
@@ -76,7 +80,12 @@ export default function HomepageSettings() {
             setMedia(event.target.files);
         }
     }
-    
+
+    const uploadSaleMedia = (event: ChangeEvent<HTMLInputElement>) => {
+        if(event.target.files){
+            setSaleMedia(event.target.files);
+        }
+    }
     return (
         <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
         {successPrompt ?
@@ -125,6 +134,11 @@ export default function HomepageSettings() {
                 name="saleText" 
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                <Input 
+                id="saleImage"
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
+                type="file" 
+                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadSaleMedia(e)} />
             </div>}
             <div className="flex flex-col gap-1">
                 <Label htmlFor="image"  className="uppercase font-bold">

@@ -4,7 +4,7 @@ import LandingPlaceholder from '@/public/images/ph_landing.png'
 import { Antonio } from 'next/font/google'
 import { HomepageSettings } from "@prisma/client";
 import { getHomepageSettings } from "@/utils/settings";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card } from "@/components/ui/card";
  
 const antonio = Antonio({ subsets: ['latin'] })
 
@@ -40,7 +40,7 @@ async function Landing() {
                     OURA
                 </div>
                 {settings &&
-                <div className='absolute self-center mt-16 w-full grid justify-items-center'>
+                <div className='absolute self-center mt-[150px] w-full grid justify-items-center'>
                     {settings.sale &&
                     <span className='px-2 py-1 md:px-5 md:py-2 text-[1rem] md:text-[3rem] font-semibold'>
                         {settings.saleText?.toUpperCase()}
@@ -48,12 +48,14 @@ async function Landing() {
                     <div className='flex flex-row'>
                         {settings.categories &&
                         settings.categories.map(gender => (
-                        <Link 
-                        key={gender}
-                        className='rounded-md text-center border-2 border-zinc-200 hover:border-zinc-300 border-solid px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-zinc-800/40 hover:bg-zinc-800/60 hover:text-zinc-300 font-semibold w-[300px] transition duration-200'
-                        href={`/category/${gender.toLowerCase()}/season`}>
-                            {gender.toUpperCase()}
-                        </Link>
+                        <Card className="flex hover:border-zinc-100 text-zinc-300 hover:text-zinc-100 bg-gradient-to-br from-zinc-600 via-zinc-400/20 to-zinc-300/10" style={{backgroundImage: `url(${settings.saleImage})`}}>
+                            <Link 
+                            key={gender}
+                            className='rounded-md text-center px-2 py-1 md:px-5 text-[1rem] md:text-[3rem] bg-gradient-to-br from-zinc-600 via-zinc-400/20 to-zinc-300/10  hover:from-zinc-600 hover:via-zinc-400/10 font-semibold w-[300px] transition duration-200'
+                            href={`/category/${gender.toLowerCase()}/season`}>
+                                {gender.toUpperCase()}
+                            </Link>
+                        </Card>
                         ))}
                     </div>
                 </div>}

@@ -96,6 +96,7 @@ model HomepageSettings {
   categories String[]
   sale       Boolean
   saleText   String?
+  saleImage  String?
   image      String?
 }
 
