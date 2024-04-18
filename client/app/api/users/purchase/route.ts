@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { verifyUser } from "@/utils/auth";
 import prisma from "@/utils/db";
 import { Order, Prisma, ProductSize, SizeColor } from "@prisma/client";

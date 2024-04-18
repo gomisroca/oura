@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/db";
 import { Prisma, Product, ProductSize, SizeColor } from "@prisma/client";
