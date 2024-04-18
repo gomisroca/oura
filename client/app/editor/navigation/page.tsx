@@ -3,8 +3,9 @@
 import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getNavigationSettings } from "@/utils/settings";
 
 export default function NavigationSettings() {
     const { user } = useUser();
@@ -35,20 +36,13 @@ export default function NavigationSettings() {
     }
 
     const fetchNavigationSettings = async() => {
-        await axios.get<NavigationSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`)
-        .then((res) => {
-            setSettings(res.data);
-            setValue(res.data.categories);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        try{
+            const data = await getNavigationSettings()
+            setSettings(data);
+            setValue(data.categories);
+        }catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -57,16 +51,21 @@ export default function NavigationSettings() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`, value).then(res => {
-            if(res.status === 201){
+        try{
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/navigation`, {
+                method: 'POST',
+                body: JSON.stringify(value)
+            });
+            if(res.ok){
                 setSuccessPrompt(true);
             }
-        });
+        }catch(err){
+            console.log(err)
+        }
     }
 
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Navigation bar settings were updated.</div>
         :

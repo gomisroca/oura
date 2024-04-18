@@ -1,10 +1,12 @@
 'use client'
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { getProduct } from "@/utils/products";
 import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
-
 interface Params {
     id: string;
  }
@@ -25,69 +27,81 @@ export default function ProductUpdate({ params } : { params: Params }) {
     const [sales, setSales] = useState<string | undefined>('0');
     const [description, setDescription] = useState<string | undefined>();
     const [addSizes, setAddSizes] = useState<boolean>(false);
-    const [sizes, setSizes] = useState<any>([]);
-    const [colors, setColors] = useState<any>([]);
+    const [sizes, setSizes] = useState<string[]>([]);
+    const [colors, setColors] = useState<string[]>([]);
     const [colorData, setColorData] = useState<ColorWithSizeName[] | undefined>();
     const [stock, setStock] = useState<string | undefined>('0');
-    const [gender, setGender] = useState<string | undefined>();
-    const [category, setCategory] = useState<string | undefined>();
-    const [subcategory, setSubcategory] = useState<string | undefined>();
+    const [gender, setGender] = useState<string[]>([]);
+    const [category, setCategory] = useState<string[]>([]);
+    const [subcategory, setSubcategory] = useState<string[]>([]);
     const [onSeasonal, setOnSeasonal] = useState<boolean>(false);
     const [onSale, setOnSale] = useState<boolean>(false);
 
-    useEffect(() => {
-        axios.get<Product>(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
-        .then(res => {
-            console.log(res)
-            setProduct(res.data);
-            setName(res.data.name);
-            setPrice(res.data.price.toString());
-            setSales(res.data.sales.toString());
-            setDescription(res.data.description);
-            if(res.data.sizes.length > 0){
-                setAddSizes(true);
-                let totalAmount = 0;
-                let sizeArray: string[] = [];
-                let colorNameArray: string[] = [];
-                let colorArray: ColorWithSizeName[] = [];
-                res.data.sizes.forEach(size => {
-                    if (!sizeArray.includes(size.size.toUpperCase())) {
-                        sizeArray.push(size.size.toUpperCase());
-                    }
-                    size.colors.forEach(color => {
-                        let colorData = {
-                            ...color,
-                            size: size.size
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+    const [selectedColors, setSelectedColors] = useState<string[]>([]);
+    const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
+
+    async function assignProduct(id: string){
+        try{
+            const data = await getProduct(id);
+            if(data){
+                setProduct(data);
+                setName(data.name);
+                setPrice(data.price.toString());
+                setSales(data.sales.toString());
+                setDescription(data.description);
+                if(data.sizes.length > 0){
+                    setAddSizes(true);
+                    let totalAmount = 0;
+                    let sizeArray: string[] = [];
+                    let colorNameArray: string[] = [];
+                    let colorArray: ColorWithSizeName[] = [];
+                    data.sizes.forEach(size => {
+                        if (!sizeArray.includes(size.size.toUpperCase())) {
+                            sizeArray.push(size.size.toUpperCase());
                         }
-                        colorArray.push(colorData)
-                        console.log(colorData)
-                        if (!colorNameArray.includes(color.name.toLowerCase())) {
-                            colorNameArray.push(color.name.toLowerCase());
-                        }
-                        totalAmount += color.amount;
+                        size.colors.forEach(color => {
+                            let colorData = {
+                                ...color,
+                                size: size.size
+                            }
+                            colorArray.push(colorData)
+                            console.log(colorData)
+                            if (!colorNameArray.includes(color.name.toLowerCase())) {
+                                colorNameArray.push(color.name.toLowerCase());
+                            }
+                            totalAmount += color.amount;
+                        });
                     });
-                });
-                setSizes(sizeArray)
-                setColorData(colorArray)
-                setColors(colorNameArray);
-                setStock(totalAmount.toString());
+                    setSizes(sizeArray)
+                    setSelectedSizes(sizeArray)
+                    setColorData(colorArray)
+                    setSelectedColors(colorNameArray)
+                    setColors(colorNameArray);
+                    setStock(totalAmount.toString());
+                }
+                console.log(data.gender)
+                setGender(data.gender);
+                setSelectedGenders(data.gender);
+                setCategory(data.category);
+                setSelectedCategories(data.category);
+                setSubcategory(data.subcategory);
+                setSelectedSubcategories(data.subcategory);
+                setOnSeasonal(data.onSeasonal);
+                setOnSale(data.onSale);
             }
-            setGender(res.data.gender);
-            setCategory(res.data.category);
-            setSubcategory(res.data.subcategory);
-            setOnSeasonal(res.data.onSeasonal);
-            setOnSale(res.data.onSale);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
-    }, [id])
+        } catch(err){
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        if(!product){
+            assignProduct(id)
+        }
+    }, [])
     
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -95,7 +109,7 @@ export default function ProductUpdate({ params } : { params: Params }) {
 
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
         }
         formData.append('name', name!);
         formData.append('price', price!);
@@ -103,27 +117,27 @@ export default function ProductUpdate({ params } : { params: Params }) {
         formData.append('description', description!);
         formData.append('addSizes', addSizes.toString()!);
         if(addSizes){
-            formData.append('sizes', sizes!);
-            formData.append('colors', colors!);
+            formData.append('sizes', JSON.stringify(selectedSizes)!);
+            formData.append('colors', JSON.stringify(selectedColors)!);
         }
         formData.append('stock', stock!);
-        formData.append('gender', gender!);
-        formData.append('category', category!);
-        formData.append('subcategory', subcategory!);
+        formData.append('gender', JSON.stringify(selectedGenders)!);
+        formData.append('category', JSON.stringify(selectedCategories)!);
+        formData.append('subcategory', JSON.stringify(selectedSubcategories)!);
         formData.append('onSeasonal', onSeasonal.toString()!);
         formData.append('onSale', onSale.toString()!);
 
         if(accessToken){
-            const headers = {
-                'Authorization': `Bearer ${accessToken}`
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            })
+            if(res.ok){
+                setSuccessPrompt(true);
             }
-            await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/products/${product?.id}`, formData, {
-                headers: headers
-            }).then(res => {
-                if(res.status === 200){
-                    setSuccessPrompt(true);
-                }
-            });
         }
     }
 
@@ -134,7 +148,7 @@ export default function ProductUpdate({ params } : { params: Params }) {
     }
 
     return (
-    <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+    <div className="m-auto w-2/3 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Product {product?.name} was updated.</div>
         :
@@ -142,102 +156,96 @@ export default function ProductUpdate({ params } : { params: Params }) {
         method="post" 
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Name
-                </label>
-                <input
+                </Label>
+                <Input
                 value={name || ''}
                 onChange={(e) => { setName(e.target.value) }}
                 name="p_name" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                type="text" 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Price
-                </label>
-                <input 
+                </Label>
+                <Input 
                 value={price || 0}
                 onChange={(e) => { setPrice(e.target.value) }}
                 name="price"
                 step="0.01"
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Sales
-                </label>
-                <input 
+                </Label>
+                <Input 
                 value={sales || 0}
                 onChange={(e) => { setSales(e.target.value) }}
                 name="sales"
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-1">
+                <Label className="uppercase font-bold">
                     Description
-                </label>
-                <textarea 
+                </Label>
+                <Textarea 
                 value={description || ''}
                 onChange={(e) => { setDescription(e.target.value) }}
                 name="description"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Add Sizes?
-                </label>
+                </Label>
                 <input 
                 checked={addSizes || false}
                 onChange={(e) => { setAddSizes(e.target.checked) }}
                 type="checkbox" 
                 name="addSizes"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 />
             </div>
             {addSizes &&
-            <div className="flex flex-col">
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+            <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase font-bold">
                         Sizes
-                    </label>
-                    {sizes ?
+                    </Label>
                     <Autocomplete
-                    multiple
-                    value={sizes}
-                    onChange={(event: React.ChangeEvent<{}>, newSizes: string[]) => {
-                        setSizes(newSizes);
-                    }}
-                    id="size"
+                    onChange={(event, value) => setSelectedSizes(value)} 
+                    value={selectedSizes || sizes || ''}
+                    id="sizes"
                     freeSolo
-                    options={sizes}
-                    renderInput={(params) => <TextField {...params} />}
+                    multiple
+                    options={sizes && sizes.length > 0 ? sizes.map(size => size.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />} 
                     />
-                    : null }
                 </div>
-                <div className="flex flex-col">
-                    <label className="uppercase font-bold mb-2">
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase font-bold">
                         Colors
-                    </label>
-                    {colors ?
+                    </Label>
                     <Autocomplete
-                    multiple
-                    value={colors}
-                    onChange={(event: React.ChangeEvent<{}>, newColors: string[]) => {
-                        setColors(newColors);
-                    }}
+                    onChange={(event, value) => setSelectedColors(value)} 
                     id="colors"
+                    value={selectedColors || colors || ''}
                     freeSolo
-                    options={colors}
-                    renderInput={(params) => <TextField {...params} />}
+                    multiple
+                    options={colors && colors.length > 0 ? colors.map(color => color.toUpperCase()) : []}
+                    renderInput={(params) => <TextField {...params} />} 
                     />
-                    : null }
                 </div>
-                <div className="flex flex-col">
-                    <span className="uppercase text-sm">Current Stock</span>
+                <div className="flex flex-col gap-1">
+                    <Label className="uppercase text-sm">
+                        Current Stock
+                    </Label>
                     <div  className="gap-2 grid grid-cols-4">
                     {colorData && colorData.map(x => (
                     <div key={x.id} className="flex flex-row rounded-full px-2 bg-zinc-300 items-center text-black">
@@ -250,77 +258,86 @@ export default function ProductUpdate({ params } : { params: Params }) {
                 </div>
             </div>}
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Total Stock
-                </label>
+                </Label>
                 <input 
                 value={stock || 0}
                 name="stock"
                 onChange={(e) => { setStock(e.target.value) }}
                 type="number"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600" /> 
             </div>
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Gender
-                </label>
-                <input
-                value={gender || ''}
-                onChange={(e) => { setGender(e.target.value) }}
-                name="gender" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                </Label>
+                <Autocomplete
+                onChange={(event, value) => setSelectedGenders(value)} 
+                value={selectedGenders || gender || ''}
+                id="gender"
+                freeSolo
+                multiple
+                options={gender && gender.length > 0 ? gender.map(gender => gender.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>            
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Category
-                </label>
-                <input
-                value={category || ''}
-                onChange={(e) => { setCategory(e.target.value) }}
-                name="category" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                </Label>
+                <Autocomplete
+                onChange={(event, value) => setSelectedCategories(value)} 
+                value={selectedCategories || category || ''}
+                id="category"
+                freeSolo
+                multiple
+                options={category && category.length > 0 ? category.map(category => category.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Subcategory
-                </label>
-                <input
-                value={subcategory || ''}
-                onChange={(e) => { setSubcategory(e.target.value) }}
-                name="subcategory" 
-                type="text"
-                className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                </Label>
+                <Autocomplete
+                onChange={(event, value) => setSelectedSubcategories(value)} 
+                value={selectedSubcategories || subcategory || ''}
+                id="subcategory"
+                freeSolo
+                multiple
+                options={subcategory && subcategory.length > 0 ? subcategory.map(sub => sub.toUpperCase()) : []}
+                renderInput={(params) => <TextField {...params} />} 
+                />
             </div>   
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Seasonal?
-                </label>
+                </Label>
                 <input 
                 checked={onSeasonal || false}
                 onChange={(e) => { setOnSeasonal(e.target.checked) }}
                 type="checkbox" 
                 name="onSeasonal"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500" 
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500" 
                 />
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold">
                     Sale?
-                </label>
+                </Label>
                 <input 
                 checked={onSale || false}
                 onChange={(e) => { setOnSale(e.target.checked) }}
                 type="checkbox" 
                 name="onSale"
-                className="transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
+                className="ml-4 transition duration-200 p-6 rounded-md cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-zinc-500"
                 />
             </div>
             <div className="flex flex-col gap-2">
-                <label className="uppercase font-bold">
+                <Label className="uppercase font-bold">
                     Image
-                </label>
+                </Label>
                 {product?.image &&
                 <div className="p-2 border border-zinc-400">
                     <span className="text-sm uppercase">Current Image</span>

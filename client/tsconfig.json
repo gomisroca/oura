@@ -20,9 +20,16 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/utils/*": ["utils/*"],
+      "@/public/*": ["public/*"],
+    },
   },
   "include": [
+    "utils/*.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",

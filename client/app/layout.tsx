@@ -1,8 +1,13 @@
 import { Urbanist } from 'next/font/google'
-import Footer from './components/Navigation/Footer'
-import Navbar from './components/Navigation/Navbar'
-import { UserProvider } from './contexts/UserContext'
-import './index.css'
+import Footer from '@/components/navigation/footer'
+import Navbar from '@/components/navigation/navbar'
+import { UserProvider } from '@/contexts/user'
+import './globals.css'
+import { Metadata } from 'next'
+import { Toaster } from "@/components/ui/toaster"
+import bg from '@/public/images/bg.jpg'
+import { CartProvider } from '@/contexts/cart'
+
 
 const urbanist = Urbanist({
     subsets: ['latin'],
@@ -10,33 +15,34 @@ const urbanist = Urbanist({
     weight: '600'
 })
 
+export const metadata: Metadata = {
+    title: "OURA",
+    description: "Thoughtful Clothing",
+};
+
 export default function RootLayout({
     children
-}: {
-    children: React.ReactNode
 }) {
     return (
-        <html lang="en" className={urbanist.className}>
-            <head>
-                <title>OURA</title>
-                <meta name="description" content="Thoughtful Clothing" />
-            </head>
-            <body>
+        <html lang="en" className={urbanist.className} suppressHydrationWarning>
+            <body style={{backgroundImage: `url(${bg.src})`}}>
                 <UserProvider>
-                    <div className="absolute top-0 flex flex-col bg-gradient-to-br from-zinc-200 via-zinc-200 to-zinc-300 w-full min-h-full">
-                        <div className="absolute top-0 w-full left-0 z-10">
-                            <Navbar />
+                    <CartProvider>
+                        <div className="flex flex-col min-h-screen top-0 bg-gradient-to-br from-zinc-200/95 via-zinc-200/95 to-zinc-300/90 w-full">
+                            <div className="absolute w-full left-0 z-10">
+                                <Navbar />
+                            </div>
+                            <div className="flex-1 flex">
+                                {children}
+                            </div>        
+                            <div className="w-full left-0 z-10 flex justify-end">
+                                <Footer />
+                            </div>
                         </div>
-                        <div className="relative mt-[1.40rem] md:mt-7 flex items-center justify-center">
-                            {children}
-                        </div>        
-                        <div className="absolute bottom-0 w-full left-0 z-10">
-                            <Footer />
-                        </div>
-                    </div>
+                    <Toaster />
+                    </CartProvider>
                 </UserProvider>
             </body>
         </html>
-
     )
 }

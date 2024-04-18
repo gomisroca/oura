@@ -1,9 +1,12 @@
 'use client'
 
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getAboutSettings } from "@/utils/settings";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function AboutSettings() {
     const { user } = useUser();
@@ -16,19 +19,12 @@ export default function AboutSettings() {
     const [settings, setSettings] = useState<AboutSettings>();
 
     const fetchAboutSettings = async() => {
-        await axios.get<AboutSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        try{
+            setSettings(await getAboutSettings());
+        }
+        catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -41,14 +37,19 @@ export default function AboutSettings() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
-        }
-
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/about` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
+            formData.append('image', media[0])
+            try{
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/about`, {
+                    method: 'POST',
+                    body: formData
+                }); 
+                if(res.ok){
+                    setSuccessPrompt(true);
+                }
+            }catch(err){
+                console.log(err)
             }
-        });
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +59,7 @@ export default function AboutSettings() {
     }
     
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>About settings were updated.</div>
         :
@@ -66,25 +67,26 @@ export default function AboutSettings() {
         method="post" 
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
-                    Banner Image
-                </label>
+            <div className="flex flex-col gap-1">
+                <Label htmlFor="image"  className="uppercase font-bold">
+                    Image
+                </Label>
                 {settings?.image &&
                 <div className="p-2 border border-zinc-400">
                     <span className="text-sm uppercase">Current Image</span>
-                    <img src={settings.image} />
+                    <img className="m-auto max-w-[600px]" src={settings.image} />
                 </div>}
-                <input 
+                <Input 
+                id="image"
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 type="file" 
-                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)}
-                className="mt-2 block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" />
+                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)} />
             </div>
-            <button 
-            type="submit" 
-            className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+            <Button 
+            variant='outline'
+            type="submit">
                 Update
-            </button>
+            </Button>
         </form>
         }
     </div>

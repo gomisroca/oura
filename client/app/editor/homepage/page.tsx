@@ -1,10 +1,14 @@
 'use client'
 
 import { Autocomplete, TextField } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import { redirect } from "next/navigation";
+import { getHomepageSettings } from "@/utils/settings";
+import { getCategories } from "@/utils/categories";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function HomepageSettings() {
     const { user } = useUser();
@@ -12,6 +16,7 @@ export default function HomepageSettings() {
         redirect('/')
     }
     
+    const [saleMedia, setSaleMedia] = useState<FileList>();
     const [media, setMedia] = useState<FileList>();
     const [successPrompt, setSuccessPrompt] = useState<boolean>(false);
     const [settings, setSettings] = useState<HomepageSettings>();
@@ -20,40 +25,25 @@ export default function HomepageSettings() {
     const [sale, setSale] = useState<boolean>(false);
     const [saleText, setSaleText] = useState<string>();
 
-    const fetchCategories = async() => {
-        await axios.get<Category[]>(`${process.env.NEXT_PUBLIC_API_URL}/categories/`)
-        .then((res) => {
-            setCategories(res.data);
-            fetchHomepageSettings();
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+    const fetchCategories = async() =>  {
+        try{
+            setCategories(await getCategories());
+            fetchHomepageSettings()
+        } catch(err){
+            console.log(err)
+        }
     }
 
     const fetchHomepageSettings = async() => {
-        await axios.get<HomepageSettings>(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`)
-        .then((res) => {
-            setSettings(res.data);
-            setSale(res.data.sale);
-            setSaleText(res.data.saleText);
-            setValue(res.data.categories);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        try{
+            const data = await getHomepageSettings();
+            setSettings(data);
+            setSale(data.sale);
+            setSaleText(data.saleText);
+            setValue(data.categories)
+        } catch(err){
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -66,18 +56,23 @@ export default function HomepageSettings() {
         
         const formData = new FormData();
         if(media){
-            Array.from(media).forEach(file => formData.append('media', file))
+            formData.append('image', media[0])
+        }
+        if(saleMedia){
+            formData.append('saleImage', saleMedia[0])
         }
         formData.append('categories', value);
         formData.append('sale', sale.toString()!);
         formData.append('saleText', saleText!);
         console.log(formData)
 
-        await axios.post<void>(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage` , formData).then(res => {
-            if(res.status === 201){
-                setSuccessPrompt(true);
-            }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/homepage`, {
+            method: 'POST',
+            body: formData
         });
+        if(res.ok){
+            setSuccessPrompt(true);
+        }
     }
 
     const uploadMedia = (event: ChangeEvent<HTMLInputElement>) => {
@@ -85,9 +80,14 @@ export default function HomepageSettings() {
             setMedia(event.target.files);
         }
     }
-    
+
+    const uploadSaleMedia = (event: ChangeEvent<HTMLInputElement>) => {
+        if(event.target.files){
+            setSaleMedia(event.target.files);
+        }
+    }
     return (
-        <div className="w-1/2 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Homepage settings were updated.</div>
         :
@@ -96,9 +96,9 @@ export default function HomepageSettings() {
         onSubmit={handleSubmit} 
         className="flex-col grid gap-y-4 p-4">
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Categories Displayed
-                </label>
+                </Label>
                 {categories &&
                 <Autocomplete
                 multiple
@@ -112,9 +112,9 @@ export default function HomepageSettings() {
                 />}
             </div>
             <div className="flex flex-row">
-                <label className="uppercase font-bold mr-4">
+                <Label className="uppercase font-bold mr-4">
                     Sale/Season?
-                </label>
+                </Label>
                 <input 
                 checked={sale || false}
                 onChange={(e) => { setSale(e.target.checked) }}
@@ -125,36 +125,42 @@ export default function HomepageSettings() {
             </div>
             {sale &&
             <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
+                <Label className="uppercase font-bold mb-2">
                     Sale Text
-                </label>
-                <input 
+                </Label>
+                <Input 
                 value={saleText || ''}
                 onChange={(e) => { setSaleText(e.target.value) }}
                 name="saleText" 
                 type="text"
                 className="transition duration-200 p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" /> 
+                <Input 
+                id="saleImage"
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
+                type="file" 
+                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadSaleMedia(e)} />
             </div>}
-            <div className="flex flex-col">
-                <label className="uppercase font-bold mb-2">
-                    Background Image
-                </label>
+            <div className="flex flex-col gap-1">
+                <Label htmlFor="image"  className="uppercase font-bold">
+                    Image
+                </Label>
                 {settings?.image &&
                 <div className="p-2 border border-zinc-400">
                     <span className="text-sm uppercase">Current Image</span>
-                    <img src={settings.image} />
+                    <img className="m-auto max-w-[600px]" src={settings.image} />
                 </div>}
-                <input 
+                <Input 
+                id="image"
+                className="p-1 bg-zinc-200 border-zinc-400/80 border hover:border-zinc-600"
                 type="file" 
-                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)}
-                className="mt-2 block cursor-pointer p-2 bg-zinc-200 border-2 border-zinc-400 hover:bg-zinc-300 hover:border-zinc-500" />
+                onChange={(e: ChangeEvent<HTMLInputElement>) => uploadMedia(e)} />
             </div>
-            <button 
-            type="submit" 
-            className="uppercase font-bold py-4 hover:bg-zinc-300 transition duration-200 w-full m-auto">
+            <Button 
+            variant='outline'
+            type="submit">
                 Update
-            </button>
-        </form>
+            </Button>
+    </form>
         }
     </div>
     )

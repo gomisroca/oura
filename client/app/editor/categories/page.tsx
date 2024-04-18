@@ -2,9 +2,11 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useUser } from "app/contexts/UserContext";
+import { useUser } from "@/contexts/user";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getCategorySettings } from "@/utils/settings";
+import { Card } from "@/components/ui/card";
 
 export default function CategoriesSettings() {
     const { user } = useUser();
@@ -33,19 +35,7 @@ export default function CategoriesSettings() {
     }
 
     const fetchCategorySettings = async() => {
-        await axios.get<CategorySettings[]>(`${process.env.NEXT_PUBLIC_API_URL}/settings/categories`)
-        .then((res) => {
-            setSettings(res.data);
-        })
-        .catch(error => {
-            if(error.response){
-                console.log(error.response)
-            } else if(error.request){
-                console.log(error.request)
-            } else{
-                console.log(error.message)
-            }
-        })
+        setSettings(await getCategorySettings());
     }
 
     useEffect(() => {
@@ -55,29 +45,30 @@ export default function CategoriesSettings() {
     
     return (
         <>
-        <div className="mt-5 flex grid-cols-4 gap-2">
+        <div className="m-auto flex grid-cols-4 gap-2">
             {categories &&
             Object.entries(categories).map(([gender, categories]) => (
-                <Link 
-                href={'categories/' + gender}
-                key={gender} 
-                className="flex flex-col p-2 border border-zinc-400 hover:border-zinc-500 bg-zinc-200 hover:bg-zinc-300 cursor-pointer">
-                    <div className="uppercase text-sm py-2">Gender: {gender}</div>
-                    {Object.entries(categories).map(category => (
-                        <div 
-                        key={category[0]}
-                        className="border-t border-zinc-400">
-                            <div className="uppercase text-sm py-2">Category: {category[0]}</div>
-                            {category[1].map((subcategory: string) => (
-                                <div 
-                                key={subcategory}
-                                className="border-t border-zinc-400">
-                                    <div className="uppercase text-sm py-2">Subcategory: {subcategory}</div>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </Link>
+                <Card className="p-4">
+                    <Link 
+                    href={'categories/' + gender}
+                    key={gender}>
+                        <div className="uppercase text-sm py-2">Gender: {gender}</div>
+                        {Object.entries(categories).map(category => (
+                            <div 
+                            key={category[0]}
+                            className="border-t border-zinc-400">
+                                <div className="uppercase text-sm py-2">Category: {category[0]}</div>
+                                {category[1].map((subcategory: string) => (
+                                    <div 
+                                    key={subcategory}
+                                    className="border-t border-zinc-400">
+                                        <div className="uppercase text-sm py-2">Subcategory: {subcategory}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </Link>
+                </Card>
             ))}
         </div>
         </>
