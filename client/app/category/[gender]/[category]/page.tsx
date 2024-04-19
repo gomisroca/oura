@@ -10,7 +10,7 @@ interface Params {
 
 export default async function Catalog({ params } : { params: Params }) {    
     const categories: Category | null = await getCategory(params.gender);
-    if(!categories || !(params.category in categories)){
+    if(categories && !(params.category in categories)){
         redirect('/')
     }
     const gender = params.gender;
