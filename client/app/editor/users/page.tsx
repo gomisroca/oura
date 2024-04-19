@@ -38,14 +38,13 @@ export default function UserEditList() {
     }, [])
     
     return (
-        <div className="m-auto flex grid-cols-5 gap-2">
+        <div className="m-auto flex grid-cols-2 lg:grid-cols-5 gap-2">
         {users &&
         users.map((user: User) => (
-            <Card className="p-4">
+            <Card className="p-2 lg:p-4">
                 <Link 
                 href={'users/' +user.id}
-                key={user.id} 
-                className="w-[250px]">
+                key={user.id} >
                     <span className="border-b border-zinc-400 p-2">{user.firstName} {user.lastName}</span>
                     <div className="flex flex-col p-2">
                         <span>{user.email}</span>

@@ -49,7 +49,7 @@ export default function Cart() {
         <>
             <Menubar>
                 <MenubarMenu>
-                    <MenubarTrigger onClick={() => fetchProducts()} className='h-full md:px-4 hover:bg-zinc-100/30'>
+                    <MenubarTrigger onClick={() => fetchProducts()} className='py-2 drop-shadow-[1px_1px_5px_black] hover:drop-shadow-none h-full md:px-4 hover:bg-zinc-100/30'>
                         <ShoppingCart />
                     </MenubarTrigger>
                     <MenubarContent className='w-[300px]'>

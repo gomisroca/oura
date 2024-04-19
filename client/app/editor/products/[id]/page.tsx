@@ -148,7 +148,7 @@ export default function ProductUpdate({ params } : { params: Params }) {
     }
 
     return (
-    <div className="m-auto w-2/3 flex flex-col  mt-10 text-zinc-700 bg-zinc-200">
+    <div className="m-auto w-full lg:w-2/3 flex flex-col mt-10 text-zinc-700 bg-zinc-200">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Product {product?.name} was updated.</div>
         :

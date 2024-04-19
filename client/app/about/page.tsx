@@ -83,9 +83,7 @@ async function About() {
     
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='rounded-b-full overflow-hidden h-[100px] md:h-[400px]'>
-                <BannerImage type='about' />
-            </div>
+            <BannerImage type='about' />
             <div className="flex flex-col justify-evenly mx-auto my-4 px-2">
                 {values && 
                 <div className="flex flex-col md:p-5 first:mt-0 border-b-2 border-zinc-400 last:border-b-0 text-zinc-700">
@@ -93,11 +91,11 @@ async function About() {
                     className="text-xl uppercase font-bold underline underline-offset-4 decoration-zinc-400 self-center">
                         Our Values
                     </span>
-                    <ul className="grid md:grid-cols-2 gap-2 mt-3 self-center">
+                    <ul className="grid lg:grid-cols-2 gap-2 mt-3 self-center">
                     {values.map((value: Value) => (
                         <Card key={value.title}>
                             <div 
-                            className="flex flex-col cursor-default w-[90vw] sm:w-[500px] sm:h-[250px] p-4 ">
+                            className="flex flex-col cursor-default  p-4 ">
                                 <div className="text-xl border-b border-zinc-400 uppercase">
                                     {value.icon} {value.title}
                                 </div>

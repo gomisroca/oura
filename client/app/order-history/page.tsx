@@ -30,7 +30,7 @@ export default async function OrderHistory() {
     const orders = await getData();
     
     return (
-        <Card className='m-auto flex flex-col overflow-hidden w-2/3 gap-2 p-2 min-h-[600px]'>
+        <Card className='m-auto flex flex-col overflow-hidden w-3/4 xl:w-2/3 gap-2 p-2 min-h-[400px] mt-16'>
             <span className="text-center text-lg uppercase">Order History</span>
             <Separator />
             {orders && orders.length > 0 ? 

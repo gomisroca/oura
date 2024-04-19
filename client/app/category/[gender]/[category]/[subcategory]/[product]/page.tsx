@@ -17,7 +17,7 @@ async function Product({ params } : { params: Params }) {
     return (
         <div className='m-auto flex flex-col overflow-hidden w-full h-full text-gray-700'>
             {product &&
-            <Card className="bg-zinc-200/30 flex flex-col md:flex-row p-4 sm:p-10 w-[95vw] min-h-[600px] sm:w-4/5 cursor-default mt-8 self-center">
+            <Card className="bg-zinc-200/30 flex flex-col xl:flex-row p-2 xl:p-6 w-[95vw] xl:min-h-[600px] cursor-default m-auto self-center">
                 <ProductData id={params.product} />
             </Card>}
             {catalog && product && params.gender && params.category &&

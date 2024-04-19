@@ -33,12 +33,10 @@ export function ProductCatalog({ gender, category, subcategory } : { gender: str
     return (
         <>
             {products ?
-            <div className='mx-auto p-1 sm:p-5 mb-5'>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1 sm:gap-2">
-                    {products.sort(({sales:a}, {sales:b}) => b-a).map((item) => (
-                    <CardProduct item={item} />
-                    ))}
-                </div>
+            <div className="m-auto p-3 sm:p-6 lg:p-12 xl:p-16 w-screen grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-1 sm:gap-2">
+                {products.sort(({sales:a}, {sales:b}) => b-a).map((item) => (
+                <CardProduct item={item} />
+                ))}
             </div>
             : <CatalogSkeleton />}
         </>

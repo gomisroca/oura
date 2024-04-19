@@ -39,7 +39,7 @@ export default function SizeMenu({ item }: Props) {
                     {item.sizes.map(size => (
                         checkStock(size) ?
                         <ToggleGroupItem 
-                        className='w-[60px] p-0 border border-zinc-300 data-[state=on]:border-zinc-400 text-black data-[state=on]:bg-zinc-300 hover:bg-zinc-300 bg-zinc-200' 
+                        className='w-[60px] p-0 border border-zinc-300 data-[state=on]:border-zinc-400 text-zinc-700 data-[state=on]:bg-zinc-300 hover:bg-zinc-300 bg-zinc-200' 
                         value={size.size} 
                         key={size.size}> 
                             <Size 

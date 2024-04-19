@@ -118,7 +118,7 @@ export default function ProductUpload() {
     }
 
     return (
-    <div className="m-auto flex flex-col w-2/3 text-zinc-700 bg-zinc-200">
+    <div className="m-auto flex flex-col w-full lg:w-2/3 text-zinc-700 bg-zinc-200 mt-10">
         {successPrompt ?
         <div className='font-semibold text-center mt-2 mb-4'>Product was published.</div>
         :

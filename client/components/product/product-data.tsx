@@ -30,7 +30,7 @@ export function ProductData({ id } : { id: string}){
     if(product){
     return(
         <>
-            <Card className="overflow-hidden m-auto h-fit w-1/2 items-center justify-center flex">
+            <Card className="overflow-hidden m-auto h-fit w-full xl:w-1/2 items-center justify-center flex">
                 <AspectRatio ratio={3/2}>
                 {product.image ?
                 <Image
@@ -48,17 +48,17 @@ export function ProductData({ id } : { id: string}){
                 />}
                 </AspectRatio>
             </Card>
-            <div className="md:pl-10 md:w-1/2 mt-2 md:mt-0">
-                <div className="border-zinc-400">
+            <div className="xl:pl-10 xl:w-1/2 text-zinc-700 xl:mt-8">
+                <div className="my-2 border-zinc-400">
                     {product.sizes.length > 0 ? 
                     <SizeMenu item={product} /> 
                     : 
                     <AddToCart item={product} /> 
                     }
                 </div>
-                <div className="justify-between p-2 flex text-lg font-bold border-t-2 border-zinc-400 md:mt-4 md:pt-4">
-                    <div>{product.name}</div>
-                    <div>
+                <div className="justify-between p-2 flex font-bold border-t-2 border-zinc-400">
+                    <div className="text-[1.1rem] md:text-[1.3rem]">{product.name}</div>
+                    <div className="text-[1.05rem] md:text-[1.2rem]">
                         {product.onSale ?
                         <div className="flex gap-x-2">
                             <span className="font-bold text-red-600">
@@ -73,7 +73,7 @@ export function ProductData({ id } : { id: string}){
                         }
                     </div>
                 </div>
-                <div className="p-2 overflow-clip text-justify">
+                <div className="p-2 overflow-clip text-justify text-[1.025rem] md:text-[1.1rem]">
                     {product.description}
                 </div>
             </div>

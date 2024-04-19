@@ -20,17 +20,17 @@ export default async function Navbar() {
     
     return (
         <>
-        <Card className={urbanist.className + " bg-gradient-to-r from-zinc-400/60 via-transparent to-zinc-400/60 sticky flex flex-row m-2 text-zinc-100 hover:from-unset hover:to-unset hover:border-zinc-100"}>
-            <Link 
-            className="px-2 font-semibold subpixel-antialiased text-[0.9rem] md:text-[1.2rem] hover:text-zinc-100 hover:bg-zinc-100/30 drop-shadow-md cursor-pointer"
-            href={'/'}>
-                OURA
-            </Link>
+        <Card className={urbanist.className + " sticky justify-between bg-gradient-to-r from-zinc-400/60 via-transparent to-zinc-400/60 flex flex-row m-2 text-zinc-100 hover:from-unset hover:to-unset hover:border-zinc-100"}>
+            <div className="items-center flex text-shadow px-2 font-semibold subpixel-antialiased text-lg hover:text-zinc-100 hover:bg-zinc-100/30 cursor-pointer">
+                <Link href={'/'}>
+                    OURA
+                </Link>
+            </div>
             {navigationSettings && homepageSettings && categories &&
             <div className="flex flex-row items-center">
                 <CategoryMenuWrapper navigationSettings={navigationSettings} homepageSettings={homepageSettings} categories={categories} />
             </div>}
-            <div className="absolute flex flex-row right-0 h-full items-center">
+            <div className="flex flex-row right-0 h-full items-center">
                 <UserWrapper />
             </div>
         </Card>

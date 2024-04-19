@@ -10,7 +10,7 @@ export default function EditorDashboard() {
         <>
             <div className="m-auto flex flex-col items-center gap-2">
                 {user?.role !== 'BASIC' &&
-                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
+                <Card className="w-full lg:w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Products</span>
                     <div className="flex gap-2">
                         <Link 
@@ -26,7 +26,7 @@ export default function EditorDashboard() {
                     </div>
                 </Card>}
                 {(user?.role == 'SUPER' || user?.role == 'ADMIN') &&
-                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
+                <Card className="w-full lg:w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Display Settings</span>
                     <div className="grid grid-cols-2 gap-2">
                         <Link 
@@ -57,7 +57,7 @@ export default function EditorDashboard() {
                     </div>
                 </Card>}
                 {user?.role == 'ADMIN' &&
-                <Card className="w-[500px] p-4 gap-2 flex flex-col items-center">
+                <Card className="w-full lg:w-[500px] p-4 gap-2 flex flex-col items-center">
                     <span className="uppercase">Users</span>
                     <div className="flex gap-2">
                         <Link 

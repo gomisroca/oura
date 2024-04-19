@@ -101,7 +101,7 @@ export default function UserEdit({ params } : { params: Params}) {
     }
 
     return (
-        <div className="m-auto w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
+        <div className="m-auto w-3/4 lg:w-2/3 flex flex-col text-zinc-700 bg-zinc-200">
             {successPrompt ?
             <div className='font-semibold text-center mt-2 mb-4'>User {userInfo?.firstName} {userInfo?.lastName} was updated.</div>
             :

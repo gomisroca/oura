@@ -18,11 +18,10 @@ export default function UserMenu() {
 
     return (
         <>
-        <Menubar className="h-full flex items-center">
+        <Menubar>
             {user ?
                 <MenubarMenu>
-
-                    <MenubarTrigger className='h-full md:px-4 hover:bg-zinc-100/30'>
+                    <MenubarTrigger className='text-shadow h-full md:px-4 hover:bg-zinc-100/30 text-lg'>
                         {user.firstName.toUpperCase()}
                     </MenubarTrigger>
                     <MenubarContent>
@@ -51,7 +50,7 @@ export default function UserMenu() {
                 </MenubarMenu>
             :   
                 <MenubarMenu>
-                    <MenubarTrigger className='h-full md:px-4 hover:bg-zinc-100/30'>
+                    <MenubarTrigger className='drop-shadow-[1px_1px_5px_black] hover:drop-shadow-none h-full md:px-4 hover:bg-zinc-100/30'>
                         <MenuIcon />
                     </MenubarTrigger>
                     <MenubarContent>

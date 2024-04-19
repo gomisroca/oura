@@ -22,19 +22,7 @@ export default async function Catalog({ params } : { params: Params }) {
 
     return (
         <div className='flex flex-col overflow-hidden h-full text-zinc-700'>
-            <div className='rounded-b-full overflow-hidden w-screen h-[150px] sm:h-[400px] bg-zinc-200 items-center justify-center flex'>
-                <BannerImage type='category' gender={gender} category={category} subcategory={subcategory} />
-                <div className='cursor-default absolute uppercase text-[20px] md:text-[50px] ml-1 md:ml-4 text-zinc-200 self-center justify-self-center mb-[50px] md:mb-[180px]'>
-                    {gender}
-                </div> 
-                <div className='cursor-default absolute uppercase text-[50px] md:text-[200px] text-zinc-200 self-center justify-self-center'>
-                    {category}
-                </div> 
-                <div className='absolute uppercase text-[35px] md:text-[100px] text-zinc-200 ml-1 md:ml-3 self-center justify-self-center mt-[65px] md:mt-[230px]'>
-                    {subcategory}
-                </div> 
-            </div>
-
+            <BannerImage type='category' gender={gender} category={category} subcategory={subcategory} />
             <ProductCatalog gender={gender} category={category} subcategory={subcategory} />
         </div>
     )

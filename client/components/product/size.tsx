@@ -27,7 +27,7 @@ export default function Size({ item, size, onSizeSelection }: Props) {
         <div className='w-full flex justify-center'>
             {hasStock ?
             <span 
-            className="w-full text-black"
+            className="w-full text-zinc-700"
             onClick={(e) => {e.preventDefault(); handleSelection(size)}}>
                 {size}
             </span>

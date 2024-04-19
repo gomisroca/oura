@@ -24,7 +24,7 @@ export default function CategoryMenu({ homepageSettings, gender, categories }: P
         <>
         <Menubar className="h-full">
             <MenubarMenu>
-                <MenubarTrigger className="hover:bg-zinc-100/30 h-full"> 
+                <MenubarTrigger className="text-shadow hover:bg-zinc-100/30 h-full text-lg"> 
                     {gender}
                 </MenubarTrigger>
                 <MenubarContent>

@@ -6,6 +6,7 @@ import FormAddress from '@/components/shop/form-address';
 import FormPayment from '@/components/shop/form-payment';
 import CheckoutList from '@/components/shop/checkout-list';
 import { useUser } from '@/contexts/user';
+import { Card } from '@/components/ui/card';
 
 export default function Checkout() {
     const { user } = useUser();
@@ -20,7 +21,7 @@ export default function Checkout() {
         return (
             <>
             {cart.length > 0 ?
-            <div className='flex flex-col m-auto text-center items-center'>
+            <div className='flex flex-col m-auto text-center items-center mt-16'>
                 {addressPassed ? 
                 <FormPayment />
                 :  
@@ -35,9 +36,9 @@ export default function Checkout() {
     } else {
         return(
             <>
-            <div className='flex flex-col items-center gap-2 m-auto mt-5 md:mt-10'>
+            <Card className='flex flex-col items-center gap-2 m-auto w-2/3 p-4'>
                 <span className='uppercase'>You must be logged in to proceed with the purchase.</span>
-            </div>
+            </Card>
             </>
         )
     }
