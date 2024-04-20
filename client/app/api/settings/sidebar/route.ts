@@ -29,14 +29,14 @@ export async function POST(req: NextRequest) {
         }
 
         if(settings[0]){
-            if(settings[0].image){
-                fs.unlink(settings[0].image, (err: any) => {
-                    if(err){
-                        console.error(err.message);
-                        return;
-                    }
-                });
-            } 
+            // if(settings[0].image){
+            //     fs.unlink(settings[0].image, (err: any) => {
+            //         if(err){
+            //             console.error(err.message);
+            //             return;
+            //         }
+            //     });
+            // } 
             if(image){
                 await prisma.sidebarSettings.update({
                     where: {
