@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                         id: settings[0].id
                     },
                     data:{
-                        image: image
+                        image: image.url
                     }
                 })
             }
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
             if(image){
                 await prisma.sidebarSettings.create({
                     data: {
-                        image: image,
+                        image: image.url,
                     }
                 })
             }
