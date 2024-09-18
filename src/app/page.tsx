@@ -3,6 +3,7 @@ import SignInButton from './_components/SignInButton';
 import SignOutButton from './_components/SignOutButton';
 import { FaGoogle } from 'react-icons/fa6';
 import { MdMailOutline } from 'react-icons/md';
+import ThemeButton from './_components/ThemeButton';
 
 const providers: Provider[] = [
   {
@@ -20,6 +21,7 @@ export default async function Home() {
   if (!session) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
+        <ThemeButton />
         {providers.map((provider) => (
           <SignInButton key={provider.name} provider={provider} />
         ))}

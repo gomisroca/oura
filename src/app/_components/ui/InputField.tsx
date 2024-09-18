@@ -20,7 +20,7 @@ function InputField({ name, type, placeholder, handleValueChange }: InputFieldPr
     placeholder={placeholder} 
     value={value} 
     onChange={(e) => setValue(e.target.value)} 
-    className="w-full rounded-full px-4 py-2 text-neutral-800" />
+    className="w-full rounded-full px-4 py-2" />
   )
 }
 
