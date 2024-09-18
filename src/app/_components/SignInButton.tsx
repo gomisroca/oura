@@ -24,7 +24,7 @@ function SignInButton({ provider }: { provider: Provider }) {
     </Button>
   ) : (
     <div className="flex flex-col items-center gap-2">
-      <InputField name="email" placeholder="Email" handleValueChange={(value) => setEmail(value as string)} />
+      <InputField name="email" placeholder="Email" handleValueChange={(value: string) => setEmail(value)} />
       <Button name="email-signin" onClick={() => signIn('email', { redirect: false, email: email })}>
         {provider.icon} Email
       </Button>
