@@ -1,0 +1,52 @@
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { expect, vi } from 'vitest';
+import Button from '../app/_components/ui/Button';
+
+describe('Button component', () => {
+  it('renders with default props', () => {
+    const { getByRole } = render(<Button name="default-button">Click me</Button>);
+    expect(getByRole('button')).toBeInTheDocument();
+    expect(getByRole('button')).toHaveClass(
+      'rounded-full bg-neutral-200/30 px-10 py-3 shadow-md font-semibold transition'
+    );
+  });
+
+  it('renders with custom className', () => {
+    const { getByRole } = render(
+      <Button name="custom-button" className="custom-class">
+        Click me
+      </Button>
+    );
+    expect(getByRole('button')).toHaveClass('custom-class');
+  });
+
+  it('calls onClick handler when clicked', () => {
+    const onClick = vi.fn();
+    const { getByRole } = render(
+      <Button name="click-button" onClick={onClick}>
+        Click me
+      </Button>
+    );
+    fireEvent.click(getByRole('button'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('is disabled when disabled prop is true', () => {
+    const { getByRole } = render(
+      <Button name="disabled-button" disabled={true}>
+        Click me
+      </Button>
+    );
+    expect(getByRole('button')).toBeDisabled();
+  });
+
+  it('renders children', () => {
+    const { getByText } = render(
+      <Button name="children-button">
+        Click <span>me</span>
+      </Button>
+    );
+    expect(getByText('me')).toBeInTheDocument();
+  });
+});
