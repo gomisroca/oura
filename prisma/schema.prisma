@@ -87,8 +87,8 @@ model Product {
     sport       String[]
     category    String[]
     subcategory String[]
-    basePrice   Int
-    onSalePrice Int
+    basePrice   Float
+    onSalePrice Float
     amountSold  Int      @default(0)
     sizes       Size[]
     orders      Order[]
