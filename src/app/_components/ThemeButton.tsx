@@ -17,8 +17,14 @@ function ThemeButton() {
 
   return (
     <Button name="theme-button" onClick={() => (theme === 'dark' ? setTheme('light') : setTheme('dark'))}>
-      <FaSun className="size-[1.2rem] rotate-0 scale-100 text-neutral-800 transition-all dark:-rotate-90 dark:scale-0" />
-      <FaMoon className="absolute size-[1.2rem] rotate-90 scale-0 text-neutral-200 transition-all dark:rotate-0 dark:scale-100" />
+      <FaSun
+        name="light"
+        className="size-[1.2rem] rotate-0 scale-100 text-slate-800 transition-all dark:-rotate-90 dark:scale-0"
+      />
+      <FaMoon
+        name="dark"
+        className="absolute size-[1.2rem] rotate-90 scale-0 text-slate-200 transition-all dark:rotate-0 dark:scale-100"
+      />
       <span className="sr-only">Theme</span>
     </Button>
   );
