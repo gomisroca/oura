@@ -1,10 +1,11 @@
 import '@/styles/globals.css';
 
-import { GeistSans } from 'geist/font/sans';
+import { Work_Sans } from 'next/font/google';
 import { type Metadata } from 'next';
 
 import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from 'next-themes';
+import Navbar from './_components/Navbar';
 
 export const metadata: Metadata = {
   title: 'OURA Clothing',
@@ -12,14 +13,19 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
+const worksans = Work_Sans({
+  subsets: ['latin'],
+});
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={worksans.className}>
       <body>
         <ThemeProvider attribute="class">
           <TRPCReactProvider>
             <div style={{ backgroundImage: "url('/bg.jpg')" }} className="bg-cover bg-fixed bg-center bg-no-repeat">
-              <main className="min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-slate-100/80 via-70% to-slate-100/20 text-neutral-800 dark:from-slate-900 dark:via-slate-900/80 dark:to-slate-900/20 dark:text-neutral-200">
+              <Navbar />
+              <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-slate-200/90 to-slate-800/40 text-slate-800 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-900/60 dark:text-slate-200">
                 {children}
               </main>
             </div>
