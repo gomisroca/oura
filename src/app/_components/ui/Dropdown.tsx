@@ -62,7 +62,7 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
     <div className="relative inline-block">
       {/* Renders the button with the provided name and onClick event handler */}
       <Button
-        name={button.name ?? 'dropdown-button'}
+        name={button.name ?? 'Dropdown'}
         className={`${button.className ? button.className : ''}`}
         onClick={() => setIsOpen(!isOpen)}>
         {button.text}

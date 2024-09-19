@@ -34,12 +34,12 @@ function EmailSignInButton({ provider }: { provider: Provider }) {
 
   return (
     <div className="flex w-full flex-col items-center gap-2">
-      <Button name="email-modal-open" className="w-full" onClick={openModal}>
+      <Button name="Email Modal" className="w-full" onClick={openModal}>
         {provider.icon} Email
       </Button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <InputField name="email" placeholder="Email" handleValueChange={(value: string) => setEmail(value)} />
-        <Button name="email-signin" onClick={() => handleSignIn()}>
+        <Button name="email" onClick={() => handleSignIn()}>
           Sign In
         </Button>
         {checkEmailPrompt && (
@@ -54,7 +54,7 @@ function EmailSignInButton({ provider }: { provider: Provider }) {
 
 function SignInButton({ provider }: { provider: Provider }) {
   return provider.name !== 'email' ? (
-    <Button name="signin" onClick={() => signIn(provider.name)}>
+    <Button name={provider.name} onClick={() => signIn(provider.name)}>
       <span>{provider.icon}</span>
       <span>{provider.name[0]!.toUpperCase() + provider.name.slice(1)}</span>
     </Button>

@@ -12,7 +12,7 @@ import Button from './ui/Button';
 
 function SignOutButton() {
   return (
-    <Button name="signout" onClick={() => signOut()}>
+    <Button name="Sign Out" onClick={() => signOut()}>
       <span>Sign Out</span>
     </Button>
   );

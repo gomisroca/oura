@@ -24,8 +24,8 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
     <div 
     className="fixed inset-0 bg-black/20 flex items-center justify-center z-50" 
     onClick={onClose} 
-    role="dialog" 
-    aria-labelledby='modal-title'>
+    role="dialog"
+    aria-label='modal-title'>
       <div
         className="rounded-md bg-slate-200/30 dark:bg-slate-800/30 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 backdrop-blur-sm p-6 shadow-md relative w-full"
         onClick={(e) => e.stopPropagation()}

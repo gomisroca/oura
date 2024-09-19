@@ -47,7 +47,7 @@ describe('SignInButton', () => {
     render(<SignInButton provider={mockEmailProvider} />);
 
     // Ensure the email modal button is rendered
-    const emailButton = screen.getByRole('button', { name: /email/i });
+    const emailButton = screen.getByRole('button', { name: /email modal/i });
     expect(emailButton).toBeInTheDocument();
 
     // Open the modal
@@ -55,11 +55,11 @@ describe('SignInButton', () => {
 
     // Ensure the modal content is rendered
     expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'email' })).toBeInTheDocument();
 
     // Simulate email input and submit
     fireEvent.change(screen.getByPlaceholderText(/email/i), { target: { value: 'test@example.com' } });
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'email' }));
 
     // Wait for the async signIn to complete
     await waitFor(() => {

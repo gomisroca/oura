@@ -83,8 +83,8 @@ const LogoIcons = () => {
   ];
 
   return (
-    <Link href="/">
-      <Button name="logo-button" className={textColors[Math.floor(Math.random() * textColors.length)]}>
+    <Link href="/" aria-label="home">
+      <Button name="Logo" className={textColors[Math.floor(Math.random() * textColors.length)]}>
         {icons[Math.floor(Math.random() * icons.length)]}
       </Button>
     </Link>
@@ -108,6 +108,7 @@ async function SignInOutDropdown() {
     return (
       <Dropdown
         button={{
+          name: 'Logged In',
           text: <FaUser />,
         }}
         className="right-0"
@@ -121,6 +122,7 @@ async function SignInOutDropdown() {
     return (
       <Dropdown
         button={{
+          name: 'Logged Out',
           text: session.user.image ? <Image src={session.user.image} alt="user" width={20} height={20} /> : <FaUser />,
         }}
         className="right-0 w-max"

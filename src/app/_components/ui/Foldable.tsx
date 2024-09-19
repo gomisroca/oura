@@ -45,7 +45,7 @@ function Foldable({ children }: FoldableProps) {
 
   return (
     <div className="relative" ref={foldableRef} data-testid="foldable">
-      <Button name="foldable-button" onClick={toggleOpen}>
+      <Button name="Foldable" onClick={toggleOpen}>
         {!isOpen ? <FaCaretDown size={20}  /> : <FaCaretUp size={20} />}
       </Button>
       {isOpen && (
