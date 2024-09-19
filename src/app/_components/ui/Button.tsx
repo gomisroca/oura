@@ -1,7 +1,18 @@
+/**
+ * Button component that displays a button with a specified name and optional className.
+ *
+ * @param {{ name: string; type?: "button" | "submit" | "reset"; onClick?: () => void; className?: string; children: React.ReactNode; disabled?: boolean; }} props - The props for the Button component.
+ *
+ * @example
+ * <Button name="Submit" onClick={handleSubmit}>
+ *   Submit
+ * </Button>
+ */
+
 import React from 'react'
 
 interface ButtonProps {
-  name: string
+  name?: string
   type?: "button" | "submit" | "reset"
   onClick?: () => void
   className?: string;
@@ -12,13 +23,15 @@ interface ButtonProps {
 function Button({ name, type = 'button', disabled = false, onClick, className, children }: ButtonProps) {
   return (
     <button 
-    name={name} 
+    name={name || 'button'}
     type={type} 
     onClick={onClick} 
-    className={`${className} rounded-full bg-neutral-200/30 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/60 px-10 py-3 shadow-md font-semibold transition hover:bg-neutral-200/60 ${disabled ? 'cursor-not-allowed' : ''} flex flex-row gap-2 items-center`} disabled={disabled}>
+    className={`${className} border dark:border-slate-400/10 border-slate-600/10 rounded-full bg-slate-200/30 dark:bg-slate-800/30 dark:hover:bg-slate-700/30 px-10 py-3 shadow-md font-semibold transition hover:bg-slate-300/30 ${disabled ? 'cursor-not-allowed' : ''} flex flex-row gap-2 items-center`} disabled={disabled}>
       {children}
     </button>	
   )
 }
+
+Button.displayName = 'Button'
 
 export default Button

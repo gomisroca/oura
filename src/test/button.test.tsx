@@ -3,12 +3,12 @@ import '@testing-library/jest-dom';
 import { expect, vi } from 'vitest';
 import Button from '../app/_components/ui/Button';
 
-describe('Button component', () => {
+describe('Button', () => {
   it('renders with default props', () => {
     const { getByRole } = render(<Button name="default-button">Click me</Button>);
     expect(getByRole('button')).toBeInTheDocument();
     expect(getByRole('button')).toHaveClass(
-      'rounded-full bg-neutral-200/30 px-10 py-3 shadow-md font-semibold transition'
+      'rounded-full bg-slate-200/30 px-10 py-3 shadow-md font-semibold transition'
     );
   });
 

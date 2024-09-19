@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import InputField from '../app/_components/ui/InputField';
 import { expect, vi } from 'vitest';
 
-describe('InputField component', () => {
+describe('Input Field', () => {
   it('renders with default props', () => {
     const handleValueChange = vi.fn();
     const { getByRole } = render(<InputField name="default-input" handleValueChange={handleValueChange} />);
