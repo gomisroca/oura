@@ -33,8 +33,8 @@ function EmailSignInButton({ provider }: { provider: Provider }) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <Button name="email-modal-open" onClick={openModal}>
+    <div className="flex w-full flex-col items-center gap-2">
+      <Button name="email-modal-open" className="w-full" onClick={openModal}>
         {provider.icon} Email
       </Button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
