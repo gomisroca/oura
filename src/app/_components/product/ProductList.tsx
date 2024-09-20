@@ -1,3 +1,10 @@
+/**
+ * Renders a product list component.
+ *
+ * @example
+ * <ProductList />
+ */
+
 import { api } from '@/trpc/server';
 import React from 'react';
 import ProductCard from './ProductCard';

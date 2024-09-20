@@ -1,5 +1,12 @@
 'use client';
 
+/**
+ * Renders a product form component.
+ *
+ * @example
+ * <ProductForm />
+ */
+
 import { useState } from 'react';
 
 import { api } from '@/trpc/react';
@@ -7,7 +14,7 @@ import InputField from '../ui/InputField';
 import Button from '../ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 
-export function ProductForm() {
+export default function ProductForm() {
   const utils = api.useUtils();
 
   const [formMessage, setFormMessage] = useState('');
