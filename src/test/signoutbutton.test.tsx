@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, vi, expect } from 'vitest';
 import { signOut } from 'next-auth/react';
-import SignOutButton from '../app/_components/SignOutButton';
+import SignOutButton from '../app/_components/navbar/SignOutButton';
 
 // Mock the signOut function from next-auth/react
 vi.mock('next-auth/react', () => ({

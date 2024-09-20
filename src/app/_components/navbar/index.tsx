@@ -13,9 +13,9 @@ import { FaGoogle, FaUser } from 'react-icons/fa6';
 import ThemeButton from './ThemeButton';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
-import Foldable from './ui/Foldable';
-import Button from './ui/Button';
-import Dropdown from './ui/Dropdown';
+import Foldable from '../ui/Foldable';
+import Button from '../ui/Button';
+import Dropdown from '../ui/Dropdown';
 
 const LogoIcons = () => {
   const icons = [
@@ -84,8 +84,9 @@ const LogoIcons = () => {
 
   return (
     <Link href="/" aria-label="home">
-      <Button name="Logo" className={textColors[Math.floor(Math.random() * textColors.length)]}>
-        {icons[Math.floor(Math.random() * icons.length)]}
+      <Button name="Logo" className={textColors[Math.floor(Math.random() * textColors.length)] + ' px-5'}>
+        <span>{icons[Math.floor(Math.random() * icons.length)]}</span>
+        <span>oura</span>
       </Button>
     </Link>
   );
