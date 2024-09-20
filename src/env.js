@@ -20,9 +20,6 @@ export const env = createEnv({
     ),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    SUPABASE_ANON_KEY: z.string(),
-    SUPABASE_PROJECT_URL: z.string(),
-    IMAGE_PROXY_HOSTNAME: z.string(),
     EMAIL_SERVER: z.string(),
     EMAIL_FROM: z.string(),
   },
@@ -33,7 +30,9 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+    NEXT_PUBLIC_SUPABASE_PROJECT_URL: z.string(),
+    NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME: z.string(),
   },
 
   /**
@@ -48,9 +47,9 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-    SUPABASE_PROJECT_URL: process.env.SUPABASE_PROJECT_URL,
-    IMAGE_PROXY_HOSTNAME: process.env.IMAGE_PROXY_HOSTNAME,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_PROJECT_URL: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL,
+    NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME: process.env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
     EMAIL_FROM: process.env.EMAIL_FROM,
   },
