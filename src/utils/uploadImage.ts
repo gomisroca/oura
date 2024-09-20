@@ -1,34 +1,24 @@
 import supabase from '@/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
-export function checkFileType(file: File) {
-  const fileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  const fileType = file.type;
-  if (!fileTypes.includes(fileType)) {
-    return false;
-  }
-  return true;
-}
-
-export function checkFileSize(file: File) {
-  const fileSize = file.size;
-  if (fileSize > 1024 * 1024 * 2) {
-    return false;
-  }
-  return true;
-}
-
 async function getToken(id: string) {
   const { data } = await supabase.storage.from('products').createSignedUploadUrl(`${id}.png`);
   return data?.token;
 }
 
-async function uploadImage(image: File) {
+async function convertBase64ToFile(dataUrl: string, id: string) {
+  const res: Response = await fetch(dataUrl);
+  const blob: Blob = await res.blob();
+  return new File([blob], id + '.png', { type: 'image/png' });
+}
+
+async function uploadImage(image: string) {
   const id = uuidv4();
+  const file = await convertBase64ToFile(image, id);
 
   const token = await getToken(id);
   if (token) {
-    const { data } = await supabase.storage.from('products').uploadToSignedUrl(`${id}.png`, token, image);
+    const { data } = await supabase.storage.from('products').uploadToSignedUrl(`${id}.png`, token, file);
     if (data) {
       return data?.fullPath as string;
     }

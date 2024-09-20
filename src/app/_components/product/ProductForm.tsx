@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { api } from '@/trpc/react';
 import InputField from '../ui/InputField';
 import Button from '../ui/Button';
-import uploadImage, { checkFileSize, checkFileType } from '@/utils/uploadImage';
+import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 
 export function ProductForm() {
   const utils = api.useUtils();
@@ -15,7 +15,7 @@ export function ProductForm() {
   const [description, setDescription] = useState('');
   const [basePrice, setBasePrice] = useState(0);
   const [onSalePrice, setOnSalePrice] = useState(0);
-  const [image, setImage] = useState<File | undefined>();
+  const [image, setImage] = useState<string>();
 
   const createProduct = api.product.create.useMutation({
     onError: () => {
@@ -29,32 +29,37 @@ export function ProductForm() {
     },
   });
 
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files![0];
+
+    if (selectedFile) {
+      setFormMessage('');
+      // Validate file type and size
+      const isValidFileType = checkFileType(selectedFile);
+      if (!isValidFileType) {
+        setFormMessage('Please upload a valid image file');
+        return;
+      }
+      const isValidFileSize = checkFileSize(selectedFile);
+      if (!isValidFileSize) {
+        setFormMessage('Please upload a file smaller than 2MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = e.target!.result;
+        setImage(imageData as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setFormMessage('');
     e.preventDefault();
 
-    let imageLink;
-    if (image) {
-      // Validate file type and size
-      const isValidFileType = checkFileType(image);
-      if (!isValidFileType) {
-        setFormMessage('Please upload a valid image file');
-        setTimeout(() => {
-          setFormMessage('');
-        }, 5000);
-        return;
-      }
-      const isValidFileSize = checkFileSize(image);
-      if (!isValidFileSize) {
-        setFormMessage('Please upload a file smaller than 2MB');
-        setTimeout(() => {
-          setFormMessage('');
-        }, 5000);
-        return;
-      }
-      imageLink = await uploadImage(image);
-    }
-    createProduct.mutate({ name, description, basePrice, onSalePrice, image: imageLink ?? undefined });
+    createProduct.mutate({ name, description, basePrice, onSalePrice, image });
   };
 
   return (
@@ -92,7 +97,7 @@ export function ProductForm() {
         type="file"
         name="image"
         accept="image/png, image/jpeg, image/jpg"
-        onChange={(e) => setImage(e.target.files![0])}
+        onChange={(e) => handleImage(e)}
       />
       <Button type="submit" disabled={createProduct.isPending}>
         {createProduct.isPending ? 'Submitting...' : 'Submit'}

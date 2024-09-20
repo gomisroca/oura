@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
+import uploadImage from '@/utils/uploadImage';
 
 const productSchema = z.object({
   name: z.string().min(1),
@@ -18,8 +19,12 @@ export const productRouter = createTRPCRouter({
   }),
 
   create: publicProcedure.input(productSchema).mutation(async ({ ctx, input }) => {
+    let imageLink;
+    if (input.image) {
+      imageLink = await uploadImage(input.image);
+    }
     return ctx.db.product.create({
-      data: input,
+      data: { ...input, image: imageLink },
     });
   }),
 
