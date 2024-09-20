@@ -1,7 +1,11 @@
 /**
  * Input field component that displays an input field with a specified name, type, placeholder, and handleValueChange function.
  * 
- * @param {{ name: string; type?: string; placeholder?: string; handleValueChange: (value: string) => void; }} props - The props for the InputField component.
+ * @param name - The name of the input field.
+ * @param type - The type of the input field (e.g., "text", "email", "number").
+ * @param placeholder - The placeholder text to display when the input field is empty.
+ * @param required - Whether the input field is required.
+ * @param handleValueChange - A function that is called when the input field's value changes.
  *
  * @example 
  * <InputField name="Email" type="email" placeholder="Enter email" handleValueChange={handleValueChange} />
@@ -13,10 +17,11 @@ interface InputFieldProps {
   name: string
   type?: string
   placeholder?: string
+  required?: boolean
   handleValueChange: (value: string) => void
 }
 
-function InputField({ name, type, placeholder, handleValueChange }: InputFieldProps) {
+function InputField({ name, type, placeholder, required = false, handleValueChange }: InputFieldProps) {
   const [value, setValue] = React.useState('')
   React.useEffect(() => {
     handleValueChange(value)
@@ -26,6 +31,7 @@ function InputField({ name, type, placeholder, handleValueChange }: InputFieldPr
     <input 
     name={name} 
     type={type} 
+    required={required}
     placeholder={placeholder} 
     value={value} 
     onChange={(e) => setValue(e.target.value)} 
