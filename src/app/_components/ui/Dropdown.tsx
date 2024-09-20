@@ -74,7 +74,7 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
           className={`absolute z-50 mt-2 rounded-md border border-slate-200/30 drop-shadow-md backdrop-blur-sm dark:border-slate-800/30 ${className ? className : ''}`}>
           <ul
             onClick={closeOnChildClick ? handleChildClick : undefined}
-            className="flex flex-wrap items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 dark:text-slate-200">
+            className="flex flex-wrap items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">
             {children}
           </ul>
         </div>
