@@ -71,7 +71,7 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
       {isOpen && (
         <div
           ref={dropdownRef}
-          className={`absolute z-50 mt-2 rounded-md border border-slate-200/30 drop-shadow-md backdrop-blur-sm dark:border-slate-800/30 ${className ? className : ''}`}>
+          className={`absolute z-50 mt-2 rounded-md border border-slate-200/30 drop-shadow-md dark:shadow-slate-500/10 backdrop-blur-sm dark:border-slate-800/30 ${className ? className : ''}`}>
           <ul
             onClick={closeOnChildClick ? handleChildClick : undefined}
             className="flex flex-wrap items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">

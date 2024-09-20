@@ -27,7 +27,7 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
     role="dialog"
     aria-label='modal-title'>
       <div
-        className="rounded-md bg-slate-200/30 dark:bg-slate-800/30 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 backdrop-blur-sm p-6 shadow-md relative w-full gap-2 flex flex-col"
+        className="rounded-md bg-slate-200/30 dark:bg-slate-800/30 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 backdrop-blur-sm p-6 shadow-md dark:shadow-slate-500/10 relative w-full gap-2 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
