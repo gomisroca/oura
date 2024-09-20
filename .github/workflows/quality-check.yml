@@ -18,7 +18,7 @@ jobs:
       EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
       SUPABASE_PROJECT_URL: ${{ secrets.SUPABASE_PROJECT_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      IMAGE_PROXY_HOSTNAME: ${{ secrets.IMAGE_PROXY_HOSTNAME }}
+      NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME: ${{ secrets.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
