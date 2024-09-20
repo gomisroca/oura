@@ -76,23 +76,51 @@ model Order {
     products  Product[]
 }
 
+enum GENDER {
+    MALE
+    FEMALE
+    OTHER
+}
+
 model Product {
-    id          String   @id @default(uuid())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    name        String
-    description String
-    image       String?
-    gender      String[]
-    sport       String[]
-    category    String[]
-    subcategory String[]
-    basePrice   Float
-    onSalePrice Float
-    amountSold  Int      @default(0)
-    sizes       Size[]
-    orders      Order[]
-    sales       Sale[]
+    id            String       @id @default(uuid())
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
+    name          String
+    description   String
+    image         String?
+    gender        GENDER[]     @default([MALE, FEMALE, OTHER])
+    subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+    subcategoryId String?
+    basePrice     Float
+    onSalePrice   Float
+    amountSold    Int          @default(0)
+    sizes         Size[]
+    orders        Order[]
+    sales         Sale[]
+}
+
+model Sport {
+    id         String     @id @default(cuid())
+    name       String
+    categories Category[]
+}
+
+// Could be Jackets > Bomber jacket, leather jacket, etc.
+model Category {
+    id            String        @id @default(cuid())
+    name          String
+    sport         Sport         @relation(fields: [sportId], references: [id])
+    sportId       String
+    subcategories Subcategory[]
+}
+
+model Subcategory {
+    id         String    @id @default(cuid())
+    name       String
+    Category   Category  @relation(fields: [categoryId], references: [id])
+    categoryId String
+    products   Product[]
 }
 
 model Sale {
