@@ -14,6 +14,7 @@ import { env } from '@/env';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { type ProductWithSizes } from 'types';
+import ColorBubble from '../ui/ColorBubble';
 
 function ProductCard({ product }: { product: ProductWithSizes }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -38,18 +39,16 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
         {/* Basic Information */}
         <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <p>Base Price: {product.basePrice}</p>
-        <p>On Sale Price: {product.onSalePrice}</p>
+        <p>Base Price: {product.basePrice}€</p>
+        <p>On Sale Price: {product.onSalePrice}€</p>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (
             <div key={size.name} className="flex flex-row items-center gap-2">
               <p className="font-bold">{size.name}</p>
-              <div className="flex flex-row items-center">
+              <div className="flex flex-row items-center gap-2">
                 {size.colors.map((color) => (
-                  <span
-                    key={color.name}
-                    className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${color.name === 'black' ? 'bg-black' : color.name === 'white' ? 'bg-white' : `bg-${color.name}-500`} `}></span>
+                  <ColorBubble key={color.name} color={color.name} stock={color.stock} />
                 ))}
               </div>
             </div>

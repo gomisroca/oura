@@ -13,6 +13,7 @@ import { api } from '@/trpc/react';
 import InputField from '../ui/InputField';
 import Button from '../ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
+import ColorBubble from '../ui/ColorBubble';
 
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -98,8 +99,7 @@ function StockInput({
       <p>{sizeObj.name} Color Stock</p>
       {sizeObj.colors.map((colorObj, colorIndex) => (
         <div key={colorObj.name} className="flex items-center gap-2">
-          <span
-            className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${colorObj.name === 'black' ? 'bg-black' : colorObj.name === 'white' ? 'bg-white' : `bg-${colorObj.name}-500`} `}></span>
+          <ColorBubble color={colorObj.name} />
           <input
             name="stock"
             type="number"
@@ -154,9 +154,8 @@ function ColorSelection({
             multiple
             required>
             {COLORS.map((color) => (
-              <option key={color} value={color}>
-                <span
-                  className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`} `}></span>
+              <option key={color} value={color} className="flex flex-row items-center gap-2">
+                <ColorBubble color={color} />
                 <span>{color}</span>
               </option>
             ))}
@@ -296,6 +295,7 @@ export default function ProductForm() {
         placeholder="Base Price"
         required
         min={0}
+        step={0.01}
         handleValueChange={(value: string) => setBasePrice(Number(value))}
       />
       <InputField
@@ -304,6 +304,7 @@ export default function ProductForm() {
         placeholder="On Sale Price"
         required
         min={0}
+        step={0.01}
         handleValueChange={(value: string) => setOnSalePrice(Number(value))}
       />
       <SizeSelection inventory={inventory} setInventory={setInventory} />
