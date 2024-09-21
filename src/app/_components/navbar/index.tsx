@@ -16,6 +16,7 @@ import SignOutButton from './SignOutButton';
 import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import Dropdown from '../ui/Dropdown';
+import { type Provider } from 'types';
 
 const LogoIcons = () => {
   const icons = [
