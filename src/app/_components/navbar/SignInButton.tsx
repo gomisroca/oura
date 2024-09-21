@@ -14,6 +14,7 @@ import { signIn } from 'next-auth/react';
 import InputField from '../ui/InputField';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
+import { type Provider } from 'types';
 
 function EmailSignInButton({ provider }: { provider: Provider }) {
   const [email, setEmail] = useState('');
