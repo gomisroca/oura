@@ -23,9 +23,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <ThemeProvider attribute="class">
           <TRPCReactProvider>
-            <div style={{ backgroundImage: "url('/bg.jpg')" }} className="bg-cover bg-fixed bg-center bg-no-repeat">
+            <div
+              style={{ backgroundImage: "url('/bg.jpg')" }}
+              className="min-h-screen bg-cover bg-fixed bg-center bg-no-repeat">
               <Navbar />
-              <main className="flex items-center justify-center bg-gradient-to-br from-slate-50 via-slate-200/90 to-slate-800/40 px-4 pb-10 pt-20 text-slate-800 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-900/60 dark:text-slate-200 xl:px-32">
+              <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-slate-200/90 to-slate-800/40 px-4 pb-10 pt-20 text-slate-800 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-900/60 dark:text-slate-200 xl:px-32">
                 {children}
               </main>
             </div>
