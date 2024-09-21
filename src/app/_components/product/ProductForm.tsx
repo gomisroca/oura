@@ -84,6 +84,140 @@ interface InventoryItem {
   }[];
 }
 
+function StockInput({
+  sizeObj,
+  setInventory,
+  index,
+}: {
+  sizeObj: InventoryItem;
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  index: number;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p>{sizeObj.name} Color Stock</p>
+      {sizeObj.colors.map((colorObj, colorIndex) => (
+        <div key={colorObj.name} className="flex items-center gap-2">
+          <span
+            className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${colorObj.name === 'black' ? 'bg-black' : colorObj.name === 'white' ? 'bg-white' : `bg-${colorObj.name}-500`} `}></span>
+          <input
+            name="stock"
+            type="number"
+            placeholder="Stock"
+            required
+            min="0"
+            step="1"
+            value={colorObj.stock}
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            onChange={(e) => {
+              setInventory((prevInventory) => {
+                const updatedInventory = [...prevInventory];
+                if (updatedInventory[index]?.colors[colorIndex]) {
+                  updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
+                }
+                return updatedInventory;
+              });
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ColorSelection({
+  inventory,
+  setInventory,
+}: {
+  inventory: InventoryItem[];
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+}) {
+  return (
+    <>
+      {inventory.map((sizeObj, index) => (
+        <div key={sizeObj.name} className="flex flex-col gap-2">
+          <p>{sizeObj.name}</p>
+          <select
+            onChange={(e) => {
+              const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
+              setInventory((prevInventory) => {
+                const updatedInventory = [...prevInventory];
+
+                if (updatedInventory[index]) {
+                  updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
+                }
+                return updatedInventory;
+              });
+            }}
+            name="color"
+            className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            multiple
+            required>
+            {COLORS.map((color) => (
+              <option key={color} value={color}>
+                <span
+                  className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`} `}></span>
+                <span>{color}</span>
+              </option>
+            ))}
+          </select>
+          {/* If there are colors for the selected size, require a stock amount for each color */}
+          {sizeObj.colors && sizeObj.colors.length > 0 && (
+            <StockInput sizeObj={sizeObj} setInventory={setInventory} index={index} />
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function SizeSelection({
+  inventory,
+  setInventory,
+}: {
+  inventory: InventoryItem[];
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+}) {
+  return (
+    <>
+      {/* Multiselect for sizes */}
+      <select
+        onChange={(e) => {
+          const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
+          setInventory(
+            selectedSizes.map((name) => ({
+              name,
+              colors: [],
+            }))
+          );
+        }}
+        name="size"
+        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        multiple
+        required>
+        <option value="" disabled>
+          Cloth Sizes
+        </option>
+        {SIZES.CLOTH.map((size) => (
+          <option key={size} value={size}>
+            {size}
+          </option>
+        ))}
+        <option value="" disabled>
+          Shoe Sizes
+        </option>
+        {SIZES.SHOE.map((size) => (
+          <option key={size} value={size}>
+            {size}
+          </option>
+        ))}
+      </select>
+      {/* If there are sizes, render a selection of colors for each size */}
+      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setInventory={setInventory} />}
+    </>
+  );
+}
+
 export default function ProductForm() {
   const utils = api.useUtils();
 
@@ -161,6 +295,7 @@ export default function ProductForm() {
         type="number"
         placeholder="Base Price"
         required
+        min={0}
         handleValueChange={(value: string) => setBasePrice(Number(value))}
       />
       <InputField
@@ -168,100 +303,10 @@ export default function ProductForm() {
         type="number"
         placeholder="On Sale Price"
         required
+        min={0}
         handleValueChange={(value: string) => setOnSalePrice(Number(value))}
       />
-      <select
-        onChange={(e) => {
-          const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
-          setInventory(
-            selectedSizes.map((name) => ({
-              name,
-              colors: [],
-            }))
-          );
-        }}
-        name="size"
-        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        multiple
-        required>
-        <option value="" disabled>
-          Cloth Sizes
-        </option>
-        {SIZES.CLOTH.map((size) => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
-        <option value="" disabled>
-          Shoe Sizes
-        </option>
-        {SIZES.SHOE.map((size) => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
-      </select>
-      {/* If there are sizes, render a selection of colors for each size */}
-      {inventory &&
-        inventory.length > 0 &&
-        inventory.map((sizeObj, index) => (
-          <div key={sizeObj.name} className="flex flex-col gap-2">
-            <p>{sizeObj.name}</p>
-            <select
-              onChange={(e) => {
-                const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
-                setInventory((prevInventory) => {
-                  const updatedInventory = [...prevInventory];
-
-                  if (updatedInventory[index]) {
-                    updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
-                  }
-                  return updatedInventory;
-                });
-              }}
-              name="color"
-              className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
-              multiple
-              required>
-              {COLORS.map((color) => (
-                <option key={color} value={color}>
-                  <span
-                    className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`} `}></span>
-                  <span>{color}</span>
-                </option>
-              ))}
-            </select>
-            {/* If there are colors for the selected size, require a stock amount for each color */}
-            {sizeObj.colors && sizeObj.colors.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <p>{sizeObj.name} Color Stock</p>
-                {sizeObj.colors.map((colorObj, colorIndex) => (
-                  <div key={colorObj.name} className="flex items-center gap-2">
-                    <span
-                      className={`mr-2 inline-block h-4 w-4 rounded-full border border-slate-800/50 ${colorObj.name === 'black' ? 'bg-black' : colorObj.name === 'white' ? 'bg-white' : `bg-${colorObj.name}-500`} `}></span>
-                    <input
-                      name="stock"
-                      type="number"
-                      placeholder="Stock"
-                      required
-                      value={colorObj.stock}
-                      className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-                      onChange={(e) => {
-                        setInventory((prevInventory) => {
-                          const updatedInventory = [...prevInventory];
-                          if (updatedInventory[index]?.colors[colorIndex]) {
-                            updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
-                          }
-                          return updatedInventory;
-                        });
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+      <SizeSelection inventory={inventory} setInventory={setInventory} />
       <input
         className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
         type="file"
