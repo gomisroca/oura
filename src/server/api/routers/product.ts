@@ -8,10 +8,12 @@ const productSchema = z.object({
   description: z.string().min(1),
   basePrice: z.number().multipleOf(0.01),
   onSalePrice: z.number().multipleOf(0.01),
-  image: z.string().optional(),
+  gender: z.array(z.enum(['MALE', 'FEMALE', 'OTHER'])),
+  subcategory: z.string(),
   inventory: z.array(
     z.object({ name: z.string(), colors: z.array(z.object({ name: z.string(), stock: z.number() })) })
   ),
+  image: z.string().optional(),
 });
 
 export const productRouter = createTRPCRouter({
@@ -27,6 +29,8 @@ export const productRouter = createTRPCRouter({
         description: input.description,
         basePrice: input.basePrice,
         onSalePrice: input.onSalePrice,
+        gender: input.gender,
+        subcategoryId: input.subcategory,
         image: imageLink,
       },
     });

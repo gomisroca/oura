@@ -38,6 +38,7 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
         className={`absolute bottom-[-10rem] z-10 flex w-full flex-col items-center justify-center gap-2 bg-slate-200 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
         {/* Basic Information */}
         <h2>{product.name}</h2>
+        <p>{product.gender}</p>
         <p>{product.description}</p>
         <p>Base Price: {product.basePrice}€</p>
         <p>On Sale Price: {product.onSalePrice}€</p>

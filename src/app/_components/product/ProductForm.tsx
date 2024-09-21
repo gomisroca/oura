@@ -77,12 +77,20 @@ const COLORS = [
   'rose',
 ];
 
+const GENDERS = ['MALE', 'FEMALE', 'OTHER'];
+
 interface InventoryItem {
   name: string;
   colors: {
     name: string;
     stock: number;
   }[];
+}
+
+interface Category {
+  name: string;
+  subcategory?: Category[];
+  id: string;
 }
 
 function StockInput({
@@ -217,6 +225,157 @@ function SizeSelection({
   );
 }
 
+function SubcategorySelection({
+  category,
+  setSubcategory,
+}: {
+  category: Category;
+  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const subcategories = api.category.getSubcategories.useQuery({ categoryId: category.id });
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
+
+  return (
+    <>
+      <p>{category.name} Subcategories</p>
+      <select
+        name="subcategory"
+        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        onChange={(e) => {
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          if (!selectedOption) return;
+          setSelectedSubcategory({ name: selectedOption.text, id: selectedOption.value });
+          setSubcategory(selectedOption.value);
+        }}>
+        {subcategories.isLoading && (
+          <option value="" disabled>
+            Loading...
+          </option>
+        )}
+        <option value="" disabled selected={!selectedSubcategory}>
+          Select Subcategory
+        </option>
+        {subcategories.data?.map((subcategory) => (
+          <option key={subcategory.id} value={subcategory.id}>
+            {subcategory.name}
+          </option>
+        ))}
+      </select>
+    </>
+  );
+}
+
+function CategorySelection({
+  sport,
+  setSubcategory,
+}: {
+  sport: Category;
+  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const categories = api.category.getCategories.useQuery({ sportId: sport.id });
+
+  const [selectedCategory, setSelectedCategory] = useState<Category>();
+
+  return (
+    <>
+      <p>{sport.name} Categories</p>
+      <select
+        name="category"
+        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        onChange={(e) => {
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          if (!selectedOption) return;
+          setSelectedCategory({ name: selectedOption.text, id: selectedOption.value });
+        }}>
+        {categories.isLoading && (
+          <option value="" disabled>
+            Loading...
+          </option>
+        )}
+        <option value="" disabled selected={!selectedCategory}>
+          Select Category
+        </option>
+        {categories.data?.map((category) => (
+          <option key={category.id} value={category.id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
+      {selectedCategory && (
+        <SubcategorySelection key={selectedCategory.id} category={selectedCategory} setSubcategory={setSubcategory} />
+      )}
+    </>
+  );
+}
+
+function SportSelection({ setSubcategory }: { setSubcategory: React.Dispatch<React.SetStateAction<string>> }) {
+  const sports = api.category.getSports.useQuery();
+
+  const [selectedSport, setSelectedSport] = useState<Category>();
+
+  return (
+    <>
+      <p>Sport</p>
+      <select
+        name="sport"
+        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        onChange={(e) => {
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          if (!selectedOption) return;
+          setSelectedSport({ name: selectedOption.text, id: selectedOption.value });
+        }}>
+        {sports.isLoading && (
+          <option value="" disabled>
+            Loading...
+          </option>
+        )}
+        <option value="" disabled selected={!selectedSport}>
+          Select Sport
+        </option>
+        {sports.data?.map((sport) => (
+          <option key={sport.id} value={sport.id}>
+            {sport.name}
+          </option>
+        ))}
+      </select>
+      {selectedSport && (
+        <CategorySelection key={selectedSport.id} sport={selectedSport} setSubcategory={setSubcategory} />
+      )}
+    </>
+  );
+}
+
+function GenderSelection({
+  setGender,
+}: {
+  setGender: React.Dispatch<React.SetStateAction<('MALE' | 'FEMALE' | 'OTHER')[]>>;
+}) {
+  return (
+    <>
+      <p>Gender</p>
+      <select
+        name="gender"
+        className="h-20 w-full overflow-hidden rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        multiple
+        onChange={(e) => {
+          const selectedOptions = Array.from(e.target.selectedOptions);
+          const selectedGenders = selectedOptions
+            .map((option) => option.value)
+            .filter((value): value is 'MALE' | 'FEMALE' | 'OTHER' =>
+              GENDERS.includes(value as 'MALE' | 'FEMALE' | 'OTHER')
+            );
+          setGender(selectedGenders);
+        }}>
+        {GENDERS.map((gender) => (
+          <option key={gender} value={gender}>
+            {gender}
+          </option>
+        ))}
+      </select>
+    </>
+  );
+}
+
 export default function ProductForm() {
   const utils = api.useUtils();
 
@@ -227,6 +386,8 @@ export default function ProductForm() {
   const [onSalePrice, setOnSalePrice] = useState(0);
   const [image, setImage] = useState<string>();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [subcategory, setSubcategory] = useState<string>('');
+  const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
 
   const createProduct = api.product.create.useMutation({
     onError: () => {
@@ -270,7 +431,7 @@ export default function ProductForm() {
     setFormMessage('');
     e.preventDefault();
 
-    createProduct.mutate({ name, description, basePrice, onSalePrice, image, inventory });
+    createProduct.mutate({ name, description, basePrice, onSalePrice, gender, subcategory, inventory, image });
   };
 
   return (
@@ -307,6 +468,8 @@ export default function ProductForm() {
         step={0.01}
         handleValueChange={(value: string) => setOnSalePrice(Number(value))}
       />
+      <GenderSelection setGender={setGender} />
+      <SportSelection setSubcategory={setSubcategory} />
       <SizeSelection inventory={inventory} setInventory={setInventory} />
       <input
         className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
