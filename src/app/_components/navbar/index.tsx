@@ -17,6 +17,7 @@ import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import Dropdown from '../ui/Dropdown';
 import { type Provider } from 'types';
+import SportFoldable from './SportFoldable';
 
 const LogoIcons = () => {
   const icons = [
@@ -139,10 +140,13 @@ function Navbar() {
   return (
     <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
       <LogoIcons />
-      <Foldable>
-        <SignInOutDropdown />
-        <ThemeButton />
-      </Foldable>
+      <div className="flex flex-row items-start gap-2">
+        <SportFoldable />
+        <Foldable>
+          <SignInOutDropdown />
+          <ThemeButton />
+        </Foldable>
+      </div>
     </div>
   );
 }
