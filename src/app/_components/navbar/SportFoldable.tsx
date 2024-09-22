@@ -7,6 +7,7 @@ import { FaSearch } from 'react-icons/fa';
 import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import { FaCaretLeft } from 'react-icons/fa6';
+import Link from 'next/link';
 
 interface SportWithCategories extends Sport {
   categories: Category[];
@@ -34,8 +35,8 @@ function SportFoldable() {
   }, []);
 
   return (
-    <div ref={foldableRef} className="absolute right-32">
-      <Foldable button={{ name: 'Sports', text: <FaSearch size={20} /> }} addCaret={false}>
+    <div ref={foldableRef} className="absolute right-20 xl:right-32">
+      <Foldable button={{ name: 'Sports', text: <FaSearch size={20} />, className: 'px-4 xl:px-10' }} addCaret={false}>
         {sports &&
           sports.data?.map((sport: SportWithCategories) => (
             <Button
@@ -52,9 +53,11 @@ function SportFoldable() {
             {sports.data
               ?.find((sport: SportWithCategories) => sport.id === activeSport)
               ?.categories.map((category) => (
-                <Button key={category.id} name={category.name} className="z-50">
-                  {category.name}
-                </Button>
+                <Link key={category.id} href={`/sport/${activeSport}/${category.id}`} className="w-full">
+                  <Button name={category.name} className="z-50 w-full">
+                    {category.name}
+                  </Button>
+                </Link>
               ))}
             <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
               <FaCaretLeft />
