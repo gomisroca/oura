@@ -41,7 +41,7 @@ function SportFoldable() {
             <Button
               key={sport.id}
               name={sport.name}
-              className={`z-50 w-full justify-end whitespace-nowrap ${activeSport ? 'hidden' : ''}`}
+              className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
               disabled={activeSport ? true : false}
               onClick={() => setActiveSport(sport.id)}>
               {sport.name}
@@ -52,11 +52,11 @@ function SportFoldable() {
             {sports.data
               ?.find((sport: SportWithCategories) => sport.id === activeSport)
               ?.categories.map((category) => (
-                <Button key={category.id} name={category.name} className="z-50 justify-end whitespace-nowrap">
+                <Button key={category.id} name={category.name} className="z-50">
                   {category.name}
                 </Button>
               ))}
-            <Button name="Back" className="z-50 justify-center" onClick={() => setActiveSport(null)}>
+            <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
               <FaCaretLeft />
             </Button>
           </div>
