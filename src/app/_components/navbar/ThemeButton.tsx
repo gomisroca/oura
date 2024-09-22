@@ -19,11 +19,13 @@ function ThemeButton() {
     <Button name="Theme" onClick={() => (theme === 'dark' ? setTheme('light') : setTheme('dark'))}>
       <FaSun
         name="light"
-        className="size-[1.2rem] rotate-0 scale-100 text-slate-800 transition-all dark:-rotate-90 dark:scale-0"
+        size={20}
+        className="rotate-0 scale-100 text-slate-800 transition-all dark:-rotate-90 dark:scale-0"
       />
       <FaMoon
         name="dark"
-        className="absolute size-[1.2rem] rotate-90 scale-0 text-slate-200 transition-all dark:rotate-0 dark:scale-100"
+        size={20}
+        className="absolute rotate-90 scale-0 text-slate-200 transition-all dark:rotate-0 dark:scale-100"
       />
       <span className="sr-only">Theme</span>
     </Button>

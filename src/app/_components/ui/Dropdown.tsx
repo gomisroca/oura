@@ -35,28 +35,10 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
   // State variable to track whether the dropdown is open or closed
   const [isOpen, setIsOpen] = useState(false);
 
-  // Reference to the dropdown menu element for click outside detection
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Closes the dropdown if a click occurs outside the menu
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
-    }
-  };
-
   // Closes the dropdown when a child item is clicked
   const handleChildClick = () => {
     setIsOpen(false);
   };
-
-  // Effect to attach and remove a click event listener to the document body
-  useEffect(() => {
-    document.body.addEventListener('click', handleClickOutside);
-    return () => {
-      document.body.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="relative inline-block">
@@ -70,11 +52,10 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
       {/* Renders the dropdown menu if isOpen is true */}
       {isOpen && (
         <div
-          ref={dropdownRef}
-          className={`absolute z-50 mt-2 rounded-md border border-slate-200/30 drop-shadow-md dark:shadow-slate-500/10 backdrop-blur-sm dark:border-slate-800/30 ${className ? className : ''}`}>
+          className={`absolute z-50 mt-2 ${className ? className : ''}`}>
           <ul
             onClick={closeOnChildClick ? handleChildClick : undefined}
-            className="flex flex-wrap items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">
+            className="flex flex-col items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">
             {children}
           </ul>
         </div>

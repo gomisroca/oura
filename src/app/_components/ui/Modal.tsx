@@ -22,12 +22,12 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
 
   return (
     <div 
-    className="fixed inset-0 bg-black/20 flex items-center justify-center z-50" 
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" 
     onClick={onClose} 
     role="dialog"
     aria-label='modal-title'>
       <div
-        className="rounded-md bg-slate-200/30 dark:bg-slate-800/30 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 backdrop-blur-sm p-6 shadow-md dark:shadow-slate-500/10 relative w-full gap-2 flex flex-col"
+        className="rounded-lg absolute w-72 bg-slate-200/30 dark:bg-slate-800/30 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 backdrop-blur-sm p-6 shadow-md dark:shadow-slate-500/10 gap-2 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button

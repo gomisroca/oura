@@ -34,7 +34,7 @@ function SportFoldable() {
   }, []);
 
   return (
-    <div ref={foldableRef}>
+    <div ref={foldableRef} className="absolute right-32">
       <Foldable button={{ name: 'Sports', text: <FaSearch size={20} /> }} addCaret={false}>
         {sports &&
           sports.data?.map((sport: SportWithCategories) => (

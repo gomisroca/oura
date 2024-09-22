@@ -112,7 +112,7 @@ async function SignInOutDropdown() {
       <Dropdown
         button={{
           name: 'Logged In',
-          text: <FaUser />,
+          text: <FaUser size={20} />,
         }}
         className="right-0"
         closeOnChildClick={false}>
@@ -126,7 +126,11 @@ async function SignInOutDropdown() {
       <Dropdown
         button={{
           name: 'Logged Out',
-          text: session.user.image ? <Image src={session.user.image} alt="user" width={20} height={20} /> : <FaUser />,
+          text: session.user.image ? (
+            <Image src={session.user.image} alt="user" width={20} height={20} />
+          ) : (
+            <FaUser size={20} />
+          ),
         }}
         className="right-0 w-max"
         closeOnChildClick={false}>
