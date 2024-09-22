@@ -92,6 +92,8 @@ model Product {
     gender        GENDER[]     @default([MALE, FEMALE, OTHER])
     subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
     subcategoryId String?
+    categoryId    String?
+    sportId       String?
     basePrice     Float
     onSalePrice   Float
     amountSold    Int          @default(0)

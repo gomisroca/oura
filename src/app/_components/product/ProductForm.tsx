@@ -268,9 +268,11 @@ function SubcategorySelection({
 function CategorySelection({
   sport,
   setSubcategory,
+  setCategory,
 }: {
   sport: Category;
   setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const categories = api.category.getCategories.useQuery({ sportId: sport.id });
 
@@ -285,6 +287,7 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
+          setCategory(selectedOption.value);
           setSelectedCategory({ name: selectedOption.text, id: selectedOption.value });
         }}>
         {categories.isLoading && (
@@ -308,7 +311,15 @@ function CategorySelection({
   );
 }
 
-function SportSelection({ setSubcategory }: { setSubcategory: React.Dispatch<React.SetStateAction<string>> }) {
+function SportSelection({
+  setSubcategory,
+  setCategory,
+  setSport,
+}: {
+  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  setSport: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const sports = api.category.getSports.useQuery();
 
   const [selectedSport, setSelectedSport] = useState<Category>();
@@ -322,6 +333,7 @@ function SportSelection({ setSubcategory }: { setSubcategory: React.Dispatch<Rea
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
+          setSport(selectedOption.value);
           setSelectedSport({ name: selectedOption.text, id: selectedOption.value });
         }}>
         {sports.isLoading && (
@@ -339,7 +351,12 @@ function SportSelection({ setSubcategory }: { setSubcategory: React.Dispatch<Rea
         ))}
       </select>
       {selectedSport && (
-        <CategorySelection key={selectedSport.id} sport={selectedSport} setSubcategory={setSubcategory} />
+        <CategorySelection
+          key={selectedSport.id}
+          sport={selectedSport}
+          setSubcategory={setSubcategory}
+          setCategory={setCategory}
+        />
       )}
     </>
   );
@@ -387,6 +404,8 @@ export default function ProductForm() {
   const [image, setImage] = useState<string>();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [subcategory, setSubcategory] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
+  const [sport, setSport] = useState<string>('');
   const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
 
   const createProduct = api.product.create.useMutation({
@@ -431,7 +450,18 @@ export default function ProductForm() {
     setFormMessage('');
     e.preventDefault();
 
-    createProduct.mutate({ name, description, basePrice, onSalePrice, gender, subcategory, inventory, image });
+    createProduct.mutate({
+      name,
+      description,
+      basePrice,
+      onSalePrice,
+      gender,
+      subcategory,
+      category,
+      sport,
+      inventory,
+      image,
+    });
   };
 
   return (
@@ -469,7 +499,7 @@ export default function ProductForm() {
         handleValueChange={(value: string) => setOnSalePrice(Number(value))}
       />
       <GenderSelection setGender={setGender} />
-      <SportSelection setSubcategory={setSubcategory} />
+      <SportSelection setSubcategory={setSubcategory} setCategory={setCategory} setSport={setSport} />
       <SizeSelection inventory={inventory} setInventory={setInventory} />
       <input
         className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
