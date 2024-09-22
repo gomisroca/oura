@@ -12,6 +12,8 @@ import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import SportFoldable from './SportFoldable';
 import UserDropdown from './UserDropdown';
+import SubcategoryFoldable from '../product/SubcategoryFoldable';
+import { FaBars } from 'react-icons/fa6';
 
 const LogoIcons = () => {
   const icons = [
@@ -92,9 +94,12 @@ function Navbar() {
   return (
     <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
       <LogoIcons />
-      <div className="flex flex-row items-start gap-2">
+      <div className="flex flex-row items-start justify-end gap-2">
+        <SubcategoryFoldable />
         <SportFoldable />
-        <Foldable>
+        <Foldable
+          button={{ name: 'Categories', text: <FaBars size={20} />, className: 'px-4 xl:px-10' }}
+          addCaret={false}>
           <UserDropdown />
           <ThemeButton />
         </Foldable>
