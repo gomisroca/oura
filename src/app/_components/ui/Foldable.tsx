@@ -18,10 +18,17 @@ import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Button from './Button';
 
 interface FoldableProps {
+  button?: {
+    text: string | React.ReactNode;
+    className?: string;
+    name?: string;
+  };
+  addCaret?: boolean;
   children: React.ReactNode;
+  className?: string;
 }
 
-function Foldable({ children }: FoldableProps) {
+function Foldable({ button, addCaret = true, children, className }: FoldableProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
@@ -44,17 +51,22 @@ function Foldable({ children }: FoldableProps) {
   }, []);
 
   return (
-    <div className="relative" ref={foldableRef} data-testid="foldable">
-      <Button name="Foldable" onClick={toggleOpen}>
-        {!isOpen ? <FaCaretDown size={20}  /> : <FaCaretUp size={20} />}
+    <div className="relative flex flex-col items-end w-full" ref={foldableRef} data-testid="foldable">
+      <Button 
+      name={button?.name ?? 'Foldable Button'}
+      className={`${button?.className ? button.className : ''}`}
+      onClick={toggleOpen}
+      >
+        {button?.text}
+        {addCaret && !isOpen ? <FaCaretDown size={20}  /> : addCaret ? <FaCaretUp size={20} /> : null}
       </Button>
       {isOpen && (
         <div 
-        className="mt-2 items-center justify-center flex flex-col gap-2">
+        className={`mt-2 items-end justify-center flex flex-col gap-2 ${className ? className : ''}`}>
           {React.Children.map(children, (child, index) => (
-            <div key={index} className="flex">
+            <>
               {child}
-            </div>
+            </>
           ))}
         </div>
       )}
