@@ -19,16 +19,21 @@ import { type Provider } from 'types';
 function EmailSignInButton({ provider }: { provider: Provider }) {
   const [email, setEmail] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkEmailPrompt, setCheckEmailPrompt] = useState(false);
+  const [prompt, setPrompt] = useState<string | null>(null);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleSignIn = async () => {
-    await signIn('email', { redirect: false, email: email });
-    setCheckEmailPrompt(true);
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    setPrompt(null);
+    e.preventDefault();
+    const res = await signIn('email', { redirect: false, email: email });
+    if (res?.error) {
+      setPrompt(res.error);
+    }
+    setPrompt('Check your email for a sign in link.');
     setTimeout(() => {
-      setCheckEmailPrompt(false);
+      setPrompt(null);
       closeModal();
     }, 5000);
   };
@@ -39,15 +44,19 @@ function EmailSignInButton({ provider }: { provider: Provider }) {
         {provider.icon} Email
       </Button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <InputField name="email" placeholder="Email" handleValueChange={(value: string) => setEmail(value)} />
-        <Button name="email" onClick={() => handleSignIn()}>
-          Sign In
-        </Button>
-        {checkEmailPrompt && (
-          <div className="text-center text-sm text-slate-800 dark:text-slate-200">
-            Check your email for a sign in link.
-          </div>
-        )}
+        <form onSubmit={(e) => handleSignIn(e)} className="flex flex-col gap-2">
+          <InputField
+            name="email"
+            placeholder="Email"
+            handleValueChange={(value: string) => setEmail(value)}
+            type="email"
+            required
+          />
+          <Button type="submit" name="email">
+            Sign In
+          </Button>
+          {prompt && <div className="text-center text-sm text-slate-800 dark:text-slate-200">{prompt}</div>}
+        </form>
       </Modal>
     </div>
   );
