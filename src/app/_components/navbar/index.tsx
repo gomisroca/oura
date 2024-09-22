@@ -4,20 +4,14 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { getServerAuthSession } from '@/server/auth';
-import { MdMailOutline, MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
+import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
 import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } from 'react-icons/gi';
 import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
-import { FaGoogle, FaUser } from 'react-icons/fa6';
 import ThemeButton from './ThemeButton';
-import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
 import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
-import Dropdown from '../ui/Dropdown';
-import { type Provider } from 'types';
 import SportFoldable from './SportFoldable';
+import UserDropdown from './UserDropdown';
 
 const LogoIcons = () => {
   const icons = [
@@ -94,52 +88,6 @@ const LogoIcons = () => {
   );
 };
 
-const providers: Provider[] = [
-  {
-    name: 'google',
-    icon: <FaGoogle className="mr-2 h-5 w-5" />,
-  },
-  {
-    name: 'email',
-    icon: <MdMailOutline className="mr-2 h-5 w-5" />,
-  },
-];
-
-async function SignInOutDropdown() {
-  const session = await getServerAuthSession();
-  if (!session) {
-    return (
-      <Dropdown
-        button={{
-          name: 'Logged In',
-          text: <FaUser size={20} />,
-        }}
-        className="right-0"
-        closeOnChildClick={false}>
-        {providers.map((provider) => (
-          <SignInButton key={provider.name} provider={provider} />
-        ))}
-      </Dropdown>
-    );
-  } else {
-    return (
-      <Dropdown
-        button={{
-          name: 'Logged Out',
-          text: session.user.image ? (
-            <Image src={session.user.image} alt="user" width={20} height={20} />
-          ) : (
-            <FaUser size={20} />
-          ),
-        }}
-        className="right-0 w-max"
-        closeOnChildClick={false}>
-        <SignOutButton />
-      </Dropdown>
-    );
-  }
-}
-
 function Navbar() {
   return (
     <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
@@ -147,7 +95,7 @@ function Navbar() {
       <div className="flex flex-row items-start gap-2">
         <SportFoldable />
         <Foldable>
-          <SignInOutDropdown />
+          <UserDropdown />
           <ThemeButton />
         </Foldable>
       </div>
