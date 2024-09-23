@@ -10,9 +10,9 @@ const productSchema = z.object({
   basePrice: z.number().multipleOf(0.01),
   onSalePrice: z.number().multipleOf(0.01),
   gender: z.array(z.enum(['MALE', 'FEMALE', 'OTHER'])),
-  subcategory: z.string(),
-  category: z.string(),
-  sport: z.string(),
+  subcategory: z.number(),
+  category: z.number(),
+  sport: z.number(),
   inventory: z.array(
     z.object({ name: z.string(), colors: z.array(z.object({ name: z.string(), stock: z.number() })) })
   ),
@@ -64,14 +64,14 @@ export const productRouter = createTRPCRouter({
     return ctx.db.product.findMany({ include: { sizes: { include: { colors: true } } } });
   }),
 
-  getByCategory: publicProcedure.input(z.object({ categoryId: z.string() })).query(async ({ ctx, input }) => {
+  getByCategory: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findMany({
       where: { categoryId: input.categoryId },
       include: { sizes: { include: { colors: true } } },
     });
   }),
 
-  getBySubcategory: publicProcedure.input(z.object({ subcategoryId: z.string() })).query(async ({ ctx, input }) => {
+  getBySubcategory: publicProcedure.input(z.object({ subcategoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findMany({
       where: { subcategoryId: input.subcategoryId },
       include: { sizes: { include: { colors: true } } },

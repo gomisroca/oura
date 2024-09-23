@@ -15,7 +15,7 @@ export const categoryRouter = createTRPCRouter({
     });
   }),
 
-  getCategories: publicProcedure.input(z.object({ sportId: z.string() })).query(async ({ ctx, input }) => {
+  getCategories: publicProcedure.input(z.object({ sportId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.category.findMany({
       where: {
         sportId: input.sportId,
@@ -26,7 +26,7 @@ export const categoryRouter = createTRPCRouter({
     });
   }),
 
-  getSubcategories: publicProcedure.input(z.object({ categoryId: z.string() })).query(async ({ ctx, input }) => {
+  getSubcategories: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.subcategory.findMany({ where: { categoryId: input.categoryId } });
   }),
 });
