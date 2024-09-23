@@ -10,10 +10,10 @@
 import { useState } from 'react';
 
 import { api } from '@/trpc/react';
-import InputField from '../ui/InputField';
-import Button from '../ui/Button';
+import InputField from '../_components/ui/InputField';
+import Button from '../_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
-import ColorBubble from '../ui/ColorBubble';
+import ColorBubble from '../_components/ui/ColorBubble';
 
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -90,7 +90,7 @@ interface InventoryItem {
 interface Category {
   name: string;
   subcategory?: Category[];
-  id: string;
+  id: number;
 }
 
 function StockInput({
@@ -230,9 +230,9 @@ function SubcategorySelection({
   setSubcategory,
 }: {
   category: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const subcategories = api.category.getSubcategories.useQuery({ categoryId: category.id });
+  const subcategories = api.category.getSubcategories.useQuery({ categoryId: Number(category.id) });
   const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
 
   return (
@@ -244,8 +244,8 @@ function SubcategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setSelectedSubcategory({ name: selectedOption.text, id: selectedOption.value });
-          setSubcategory(selectedOption.value);
+          setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
+          setSubcategory(Number(selectedOption.value));
         }}>
         {subcategories.isLoading && (
           <option value="" disabled>
@@ -271,10 +271,10 @@ function CategorySelection({
   setCategory,
 }: {
   sport: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
+  setCategory: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const categories = api.category.getCategories.useQuery({ sportId: sport.id });
+  const categories = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
 
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
@@ -287,8 +287,8 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setCategory(selectedOption.value);
-          setSelectedCategory({ name: selectedOption.text, id: selectedOption.value });
+          setCategory(Number(selectedOption.value));
+          setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         {categories.isLoading && (
           <option value="" disabled>
@@ -316,9 +316,9 @@ function SportSelection({
   setCategory,
   setSport,
 }: {
-  setSubcategory: React.Dispatch<React.SetStateAction<string>>;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
-  setSport: React.Dispatch<React.SetStateAction<string>>;
+  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
+  setCategory: React.Dispatch<React.SetStateAction<number>>;
+  setSport: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const sports = api.category.getSports.useQuery();
 
@@ -333,8 +333,8 @@ function SportSelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setSport(selectedOption.value);
-          setSelectedSport({ name: selectedOption.text, id: selectedOption.value });
+          setSport(Number(selectedOption.value));
+          setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         {sports.isLoading && (
           <option value="" disabled>
@@ -403,9 +403,9 @@ export default function ProductForm() {
   const [onSalePrice, setOnSalePrice] = useState(0);
   const [image, setImage] = useState<string>();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [subcategory, setSubcategory] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [sport, setSport] = useState<string>('');
+  const [subcategory, setSubcategory] = useState<number>(0);
+  const [category, setCategory] = useState<number>(0);
+  const [sport, setSport] = useState<number>(0);
   const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
 
   const createProduct = api.product.create.useMutation({

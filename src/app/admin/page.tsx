@@ -1,5 +1,5 @@
 import { getServerAuthSession } from '@/server/auth';
-import ProductForm from '../_components/product/ProductForm';
+import ProductForm from './ProductForm';
 import { redirect } from 'next/navigation';
 
 export default async function Admin() {
