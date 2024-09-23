@@ -15,7 +15,7 @@ interface SportWithCategories extends Sport {
 
 function SportFoldable() {
   const sports = api.category.getSports.useQuery();
-  const [activeSport, setActiveSport] = React.useState<string | null>(null);
+  const [activeSport, setActiveSport] = React.useState<number | null>(null);
 
   // Reference to the foldable element for click outside detection
   const foldableRef = useRef<HTMLDivElement>(null);
@@ -35,8 +35,10 @@ function SportFoldable() {
   }, []);
 
   return (
-    <div ref={foldableRef} className="absolute right-20 xl:right-32">
-      <Foldable button={{ name: 'Sports', text: <FaSearch size={20} />, className: 'px-4 xl:px-10' }} addCaret={false}>
+    <div ref={foldableRef}>
+      <Foldable
+        button={{ name: 'Sports', text: <FaSearch size={20} />, className: 'px-[0.75rem] xl:px-10' }}
+        addCaret={false}>
         {sports &&
           sports.data?.map((sport: SportWithCategories) => (
             <Button

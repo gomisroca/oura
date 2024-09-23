@@ -13,22 +13,25 @@ function SubcategoryFoldable() {
     return null;
   }
 
-  const subcategories = api.category.getSubcategories.useQuery({ categoryId: params.category as string });
+  const categoryId = Number(params.category);
+  const subcategoryId = Number(params.subcategory);
+
+  const subcategories = api.category.getSubcategories.useQuery({ categoryId: categoryId });
   return (
-    <div className="absolute right-36 xl:right-[15rem]">
+    <div>
       <Foldable
-        button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-4 xl:px-10' }}
+        button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
         {subcategories.data?.map((subcategory) => (
           <Link
             key={subcategory.id}
             className="w-full self-start"
-            href={`/sport/${params.sport as string}/${params.category as string}/${subcategory.id}`}>
+            href={`/sport/${params.sport as string}/${categoryId}/${subcategory.id}`}>
             <Button
               key={subcategory.id}
               name={subcategory.name}
-              className={`w-full ${params.subcategory === subcategory.id ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''}`}
-              disabled={params.subcategory === subcategory.id}>
+              className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''}`}
+              disabled={subcategoryId === subcategory.id}>
               {subcategory.name}
             </Button>
           </Link>
