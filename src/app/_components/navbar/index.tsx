@@ -9,7 +9,7 @@ import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } fro
 import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
 import Button from '../ui/Button';
 import SportFoldable from './SportFoldable';
-import SubcategoryFoldable from '../product/SubcategoryFoldable';
+import SubcategoryFoldable from './SubcategoryFoldable';
 import GeneralMenuFoldable from './GeneralMenuFoldable';
 
 const LogoIcons = () => {
