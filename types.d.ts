@@ -1,4 +1,4 @@
-import { type Product, type Color, type Size } from '@prisma/client';
+import { type Product, type Color, type Size, type Sport, type Category } from '@prisma/client';
 
 interface Provider {
   name: string;
@@ -11,4 +11,12 @@ interface SizeWithColors extends Size {
 
 interface ProductWithSizes extends Product {
   sizes: SizeWithColors[];
+}
+
+interface SportWithCategories extends Sport {
+  categories: CategoryWithSubcategories[];
+}
+
+interface CategoryWithSubcategories extends Category {
+  subcategories: Subcategory[];
 }
