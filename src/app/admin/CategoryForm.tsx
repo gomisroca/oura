@@ -5,9 +5,9 @@ import React, { useState } from 'react';
 import { type CategoryWithSubcategories, type SportWithCategories } from 'types';
 import Button from '../_components/ui/Button';
 import InputField from '../_components/ui/InputField';
-import { type Category, type Subcategory } from '@prisma/client';
+import { type Sport, type Category, type Subcategory } from '@prisma/client';
 
-function SportForm() {
+function SportForm({ sports }: { sports: SportWithCategories[] }) {
   const [newSport, setNewSport] = useState<string>('');
   const [message, setMessage] = useState('');
 
@@ -28,6 +28,18 @@ function SportForm() {
 
   return (
     <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+      {sports.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span>Existing Sports</span>
+          <div className="flex flex-row gap-2">
+            {sports.map((sport: Sport) => (
+              <span className="rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700" key={sport.id}>
+                {sport.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
       <InputField
         type="text"
         name="Sport"
@@ -43,8 +55,7 @@ function SportForm() {
   );
 }
 
-function CategoryForm() {
-  const sports = api.category.getSports.useQuery();
+function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
   const [selectedSport, setSelectedSport] = useState<SportWithCategories>();
   const [newCategory, setNewCategory] = useState<string>('');
   const [message, setMessage] = useState('');
@@ -66,7 +77,7 @@ function CategoryForm() {
   };
 
   return (
-    sports.data && (
+    sports && (
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
         <select
           id="sport"
@@ -74,12 +85,12 @@ function CategoryForm() {
           className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
           required
           onChange={(e) => {
-            setSelectedSport(sports.data.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
+            setSelectedSport(sports.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
           }}>
           <option value="" className="hidden">
             Select Sport
           </option>
-          {sports.data.map((sport) => (
+          {sports.map((sport) => (
             <option key={sport.id} value={sport.id}>
               {sport.name}
             </option>
@@ -117,8 +128,7 @@ function CategoryForm() {
   );
 }
 
-function SubcategoryForm() {
-  const sports = api.category.getSports.useQuery();
+function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
   const [selectedSport, setSelectedSport] = useState<SportWithCategories>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryWithSubcategories>();
   const [newSubcategory, setNewSubcategory] = useState<string>('');
@@ -141,7 +151,7 @@ function SubcategoryForm() {
   };
 
   return (
-    sports.data && (
+    sports && (
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
         <select
           id="sport"
@@ -149,12 +159,12 @@ function SubcategoryForm() {
           className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
           required
           onChange={(e) => {
-            setSelectedSport(sports.data.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
+            setSelectedSport(sports.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
           }}>
           <option value="" className="hidden">
             Select Sport
           </option>
-          {sports.data.map((sport) => (
+          {sports.map((sport) => (
             <option key={sport.id} value={sport.id}>
               {sport.name}
             </option>
@@ -215,6 +225,7 @@ function SubcategoryForm() {
 }
 
 function FormSelection() {
+  const sports = api.category.getSports.useQuery();
   const [selectedForm, setSelectedForm] = useState<'SPORT' | 'CATEGORY' | 'SUBCATEGORY'>('SPORT');
   return (
     <div className="flex flex-col gap-2">
@@ -244,9 +255,9 @@ function FormSelection() {
           Create Subcategory
         </Button>
       </div>
-      {selectedForm === 'SPORT' && <SportForm />}
-      {selectedForm === 'CATEGORY' && <CategoryForm />}
-      {selectedForm === 'SUBCATEGORY' && <SubcategoryForm />}
+      {selectedForm === 'SPORT' && <SportForm sports={sports.data as SportWithCategories[]} />}
+      {selectedForm === 'CATEGORY' && <CategoryForm sports={sports.data as SportWithCategories[]} />}
+      {selectedForm === 'SUBCATEGORY' && <SubcategoryForm sports={sports.data as SportWithCategories[]} />}
     </div>
   );
 }
