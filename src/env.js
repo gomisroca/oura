@@ -24,6 +24,8 @@ export const env = createEnv({
     EMAIL_FROM: z.string(),
     SUPABASE_ANON_KEY: z.string(),
     SUPABASE_PROJECT_URL: z.string(),
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -33,6 +35,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME: z.string(),
+    NEXT_PUBLIC_STRIPE_PUBLIC_KEY: z.string(),
   },
 
   /**
@@ -50,6 +53,9 @@ export const env = createEnv({
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
     SUPABASE_PROJECT_URL: process.env.SUPABASE_PROJECT_URL,
     NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME: process.env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME,
+    NEXT_PUBLIC_STRIPE_PUBLIC_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
     EMAIL_FROM: process.env.EMAIL_FROM,
   },

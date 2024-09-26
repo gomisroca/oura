@@ -69,11 +69,13 @@ model User {
 }
 
 model Order {
-    id        String    @id @default(cuid())
-    createdAt DateTime  @default(now())
-    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId    String
-    products  Product[]
+    id              String         @id @default(cuid())
+    createdAt       DateTime       @default(now())
+    user            User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId          String
+    stripeSessionId String?
+    confirmed       Boolean        @default(false)
+    products        OrderProduct[]
 }
 
 enum GENDER {
@@ -83,23 +85,36 @@ enum GENDER {
 }
 
 model Product {
-    id            String       @id @default(uuid())
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
+    id            String         @id @default(uuid())
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
     name          String
     description   String
     image         String?
-    gender        GENDER[]     @default([MALE, FEMALE, OTHER])
-    subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+    gender        GENDER[]       @default([MALE, FEMALE, OTHER])
+    subcategory   Subcategory?   @relation(fields: [subcategoryId], references: [id])
     subcategoryId Int?
     categoryId    Int?
     sportId       Int?
     basePrice     Float
     onSalePrice   Float
-    amountSold    Int          @default(0)
+    amountSold    Int            @default(0)
     sizes         Size[]
-    orders        Order[]
+    orders        OrderProduct[]
     sales         Sale[]
+}
+
+model OrderProduct {
+    id        Int     @id @default(autoincrement())
+    price     Float
+    orderId   String
+    order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    sizeId    String
+    size      Size    @relation(fields: [sizeId], references: [id])
+    colorId   String
+    color     Color   @relation(fields: [colorId], references: [id])
 }
 
 model Sport {
@@ -135,19 +150,21 @@ model Sale {
 }
 
 model Size {
-    id        String  @id @default(cuid())
+    id        String         @id @default(cuid())
     name      String
     colors    Color[]
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     productId String
+    orders    OrderProduct[]
 }
 
 model Color {
-    id     String @id @default(cuid())
+    id     String         @id @default(cuid())
     name   String
     stock  Int
-    size   Size   @relation(fields: [sizeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    size   Size           @relation(fields: [sizeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     sizeId String
+    orders OrderProduct[]
 
     @@unique([sizeId, name])
 }
