@@ -3,8 +3,8 @@
 import { api } from '@/trpc/react';
 import React, { useState } from 'react';
 import { type CategoryWithSubcategories, type SportWithCategories } from 'types';
-import Button from '../_components/ui/Button';
-import InputField from '../_components/ui/InputField';
+import Button from '@/app/_components/ui/Button';
+import InputField from '@/app/_components/ui/InputField';
 import { type Sport, type Category, type Subcategory } from '@prisma/client';
 
 function SportForm({ sports }: { sports: SportWithCategories[] }) {

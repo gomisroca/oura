@@ -1,17 +1,12 @@
 import { getServerAuthSession } from '@/server/auth';
-import ProductForm from './ProductForm';
 import { redirect } from 'next/navigation';
+import AdminPanel from './AdminPanel';
 
 export default async function Admin() {
   const session = await getServerAuthSession();
   if (!session || session?.user?.role !== 'ADMIN') {
     return redirect('/');
   } else if (session?.user?.role === 'ADMIN') {
-    return (
-      <div className="flex w-full flex-col gap-2">
-        Welcome, {session.user.name}!
-        <ProductForm />
-      </div>
-    );
+    return <AdminPanel />;
   }
 }

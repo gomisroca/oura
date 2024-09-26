@@ -10,10 +10,10 @@
 import { useState } from 'react';
 
 import { api } from '@/trpc/react';
-import InputField from '../_components/ui/InputField';
-import Button from '../_components/ui/Button';
+import InputField from '@/app/_components/ui/InputField';
+import Button from '@/app/_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
-import ColorBubble from '../_components/ui/ColorBubble';
+import ColorBubble from '@/app/_components/ui/ColorBubble';
 
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
