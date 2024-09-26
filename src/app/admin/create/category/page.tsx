@@ -28,7 +28,7 @@ function SportForm({ sports }: { sports: SportWithCategories[] }) {
 
   return (
     <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-      {sports.length > 0 && (
+      {sports && sports.length > 0 && (
         <div className="flex flex-col gap-2">
           <span>Existing Sports</span>
           <div className="flex flex-row gap-2">
@@ -98,7 +98,7 @@ function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
         </select>
         {selectedSport && (
           <>
-            {selectedSport.categories.length > 0 && (
+            {selectedSport.categories && selectedSport.categories.length > 0 && (
               <div className="flex flex-col gap-2">
                 <span>Existing Categories</span>
                 <div className="flex flex-row gap-2">
@@ -194,7 +194,7 @@ function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
         )}
         {selectedCategory && (
           <>
-            {selectedCategory.subcategories.length > 0 && (
+            {selectedCategory.subcategories && selectedCategory.subcategories.length > 0 && (
               <div className="flex flex-col gap-2">
                 <span>Existing Subcategories</span>
                 <div className="flex flex-row gap-2">
