@@ -6,45 +6,75 @@ import { TRPCError } from '@trpc/server';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-const createSchema = z.object({
-  items: z.array(
-    z.object({
-      name: z.string().min(1),
-      price: z.number().min(0.01),
-      productId: z.string().min(1),
-      sizeId: z.string().min(1),
-      colorId: z.string().min(1),
-    })
-  ),
-});
-
 export const checkoutRouter = createTRPCRouter({
-  createCheckoutSession: publicProcedure.input(createSchema).mutation(async ({ input, ctx }) => {
-    if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED' });
-
-    // Init an order with the user and product details
-    const order = await ctx.db.order.create({
-      data: {
-        userId: ctx.session.user.id,
+  // Get the order for future viewing
+  getOrder: protectedProcedure.input(z.object({ orderId: z.string() })).query(async ({ input, ctx }) => {
+    const order = await ctx.db.order.findUnique({
+      where: { id: input.orderId },
+      include: {
         products: {
-          create: input.items.map((item) => ({
-            price: item.price,
-            product: { connect: { id: item.productId } },
-            size: { connect: { id: item.sizeId } },
-            color: { connect: { id: item.colorId } },
-          })),
+          include: {
+            product: true,
+            size: true,
+            color: true,
+          },
         },
       },
     });
 
+    if (!order) throw new TRPCError({ code: 'NOT_FOUND' });
+    if (!ctx.session?.user?.id || ctx.session.user.id !== order.userId) throw new TRPCError({ code: 'UNAUTHORIZED' });
+
+    return order;
+  }),
+
+  // Using the user's cart, start a cart and checkout session
+  createSession: publicProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED' });
+    // Get the user cart using the user id
+    const cart = await ctx.db.cart.findUnique({
+      where: { userId: ctx.session.user.id },
+      include: {
+        products: {
+          include: {
+            product: true,
+            size: true,
+            color: true,
+          },
+        },
+      },
+    });
+
+    // Check if the cart exists and has products, otherwise error
+    if (!cart || !cart.products.length) throw new TRPCError({ code: 'NOT_FOUND' });
+
+    // And then we use those products to create the order
+    const order = await ctx.db.order.create({
+      data: {
+        userId: ctx.session.user.id,
+      },
+    });
+
+    for (const product of cart?.products) {
+      await ctx.db.orderProduct.update({
+        where: {
+          id: product.id,
+        },
+        data: {
+          orderId: order.id,
+          cartId: null,
+        },
+      });
+    }
+
     // Give shape to the line items used during the checkout session
-    const lineItems = input.items.map((item) => ({
+    const lineItems = cart.products.map((item) => ({
       price_data: {
         currency: 'eur',
         product_data: {
-          name: item.name,
+          name: item.product.name,
         },
-        unit_amount: item.price * 100,
+        unit_amount: Math.ceil(item.price * 100),
       },
       quantity: 1,
     }));
@@ -57,13 +87,14 @@ export const checkoutRouter = createTRPCRouter({
       cancel_url: `${env.NEXTAUTH_URL}`,
       metadata: {
         orderId: order.id,
-        productIds: JSON.stringify(input.items.map((item) => item.productId)), // Store productIds in metadata
+        productIds: JSON.stringify(cart.products.map((item) => item.productId)), // Store productIds in metadata
       },
     });
 
     return { sessionId: session.id, orderId: order.id };
   }),
 
+  // After the checkout session is completed, confirm the order and attach the stripe session id to it
   confirmOrder: protectedProcedure
     .input(z.object({ sessionId: z.string(), orderId: z.string() }))
     .mutation(async ({ input, ctx }) => {
@@ -99,29 +130,4 @@ export const checkoutRouter = createTRPCRouter({
 
       return order;
     }),
-
-  getCheckoutSession: protectedProcedure.input(z.object({ sessionId: z.string() })).query(async ({ input }) => {
-    const session = await stripe.checkout.sessions.retrieve(input.sessionId, { expand: ['line_items'] });
-    return session;
-  }),
-
-  getOrder: protectedProcedure.input(z.object({ orderId: z.string() })).query(async ({ input, ctx }) => {
-    const order = await ctx.db.order.findUnique({
-      where: { id: input.orderId },
-      include: {
-        products: {
-          include: {
-            product: true,
-            size: true,
-            color: true,
-          },
-        },
-      },
-    });
-
-    if (!order) throw new TRPCError({ code: 'NOT_FOUND' });
-    if (!ctx.session?.user?.id || ctx.session.user.id !== order.userId) throw new TRPCError({ code: 'UNAUTHORIZED' });
-
-    return order;
-  }),
 });
