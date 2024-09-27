@@ -20,7 +20,7 @@ function CartList({
 }: {
   products: OrderItem[];
   orderView?: boolean;
-  handleUpdateCart: () => void;
+  handleUpdateCart?: () => void;
 }) {
   if (!products) return <div>No products in cart</div>;
   return (

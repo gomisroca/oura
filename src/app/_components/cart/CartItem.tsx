@@ -26,11 +26,11 @@ function CartItem({
 }: {
   product: OrderItem;
   orderView?: boolean;
-  handleUpdateCart: () => void;
+  handleUpdateCart?: () => void;
 }) {
   const remove = api.cart.remove.useMutation({
     onSuccess: () => {
-      handleUpdateCart();
+      handleUpdateCart?.();
     },
   });
 
