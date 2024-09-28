@@ -20,10 +20,11 @@ const mockItems = [
   },
 ];
 
-function MockAddToCart({ handleUpdateCart }: { handleUpdateCart: () => void }) {
+function MockAddToCart() {
+  const utils = api.useUtils();
   const addToCart = api.cart.add.useMutation({
-    onSuccess: () => {
-      handleUpdateCart();
+    onSuccess: async () => {
+      await utils.cart.get.invalidate();
     },
   });
 

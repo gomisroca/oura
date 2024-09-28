@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Renders a cart list component.
  *
@@ -9,25 +11,34 @@
  * <CartList />
  */
 
-import React from 'react';
-import { type OrderItem } from 'types';
+import React, { useMemo } from 'react';
 import CartItem from './CartItem';
+import { api } from '@/trpc/react';
+import Spinner from '../ui/Spinner';
+import Message from '../ui/Message';
+import Button from '../ui/Button';
+import { useRouter } from 'next/navigation';
 
-function CartList({
-  products,
-  orderView = false,
-  handleUpdateCart,
-}: {
-  products: OrderItem[];
-  orderView?: boolean;
-  handleUpdateCart?: () => void;
-}) {
-  if (!products) return <div>No products in cart</div>;
-  return (
-    <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2" role="list">
-      {products.map((product) => (
-        <CartItem key={product.id} product={product} orderView={orderView} handleUpdateCart={handleUpdateCart} />
-      ))}
+function CartList({ orderView = false, foldableView = false }: { orderView?: boolean; foldableView?: boolean }) {
+  const router = useRouter();
+  const { data: cart, status } = api.cart.get.useQuery();
+
+  const products = useMemo(() => cart?.products, [cart?.products]);
+
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch your cart at this time</Message>
+  ) : (
+    <div
+      className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 ${foldableView ? 'flex-col' : ''}`}
+      role="list">
+      {products ? (
+        products.map((product) => <CartItem key={product.id} product={product} orderView={orderView} />)
+      ) : (
+        <div>No products in cart</div>
+      )}
+      {foldableView && <Button onClick={() => router.push('/checkout')}>Go to Checkout</Button>}
     </div>
   );
 }

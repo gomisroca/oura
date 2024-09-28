@@ -11,26 +11,25 @@
  */
 
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { type OrderItem } from 'types';
 import ColorBubble from '../ui/ColorBubble';
 import { env } from '@/env';
 import Button from '../ui/Button';
 import { api } from '@/trpc/react';
 import { FaTrash } from 'react-icons/fa6';
+import Message from '../ui/Message';
 
-function CartItem({
-  product,
-  orderView,
-  handleUpdateCart,
-}: {
-  product: OrderItem;
-  orderView?: boolean;
-  handleUpdateCart?: () => void;
-}) {
+function CartItem({ product, orderView }: { product: OrderItem; orderView?: boolean }) {
+  const [error, setError] = useState<string | null>(null);
+  const utils = api.useUtils();
+
   const remove = api.cart.remove.useMutation({
-    onSuccess: () => {
-      handleUpdateCart?.();
+    onSuccess: async () => {
+      await utils.cart.get.invalidate();
+    },
+    onError: (error) => {
+      setError(error.message);
     },
   });
 
@@ -39,7 +38,9 @@ function CartItem({
   };
 
   return (
-    <div key={product.id} className="flex flex-row gap-2 rounded-lg border p-5">
+    <div
+      key={product.id}
+      className="flex flex-row gap-2 rounded-lg border bg-slate-200/90 p-5 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90">
       <Image
         src={
           product.product.image
@@ -54,7 +55,7 @@ function CartItem({
       <div className="flex flex-row items-start gap-4">
         <div className="flex flex-col gap-2">
           <p>{product.product.name}</p>
-          <p>${product.price.toFixed(2)}</p>
+          <p>${product.price.toFixed(2)} EUR</p>
           <div className="flex flex-row items-center gap-2">
             {product.size?.name && <p>{product.size.name}</p>}
             {product.color?.name && <ColorBubble color={product.color.name} />}
@@ -66,6 +67,7 @@ function CartItem({
           </Button>
         )}
       </div>
+      {error && <Message>{error}</Message>}
     </div>
   );
 }
