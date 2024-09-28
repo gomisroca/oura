@@ -6,18 +6,20 @@ import { type CategoryWithSubcategories, type SportWithCategories } from 'types'
 import Button from '@/app/_components/ui/Button';
 import InputField from '@/app/_components/ui/InputField';
 import { type Sport, type Category, type Subcategory } from '@prisma/client';
+import Message from '@/app/_components/ui/Message';
+import Spinner from '@/app/_components/ui/Spinner';
 
 function SportForm({ sports }: { sports: SportWithCategories[] }) {
   const [newSport, setNewSport] = useState<string>('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ error: true, message: '' });
 
   const create = api.category.createSport.useMutation({
     onSuccess: async () => {
-      setMessage('Sport created successfully!');
+      setMessage({ error: false, message: 'Sport created successfully!' });
       setNewSport('');
     },
     onError: (error) => {
-      setMessage('Error creating sport: ' + error.message);
+      setMessage({ error: true, message: 'Error creating sport: ' + error.message });
       setNewSport('');
     },
   });
@@ -50,7 +52,7 @@ function SportForm({ sports }: { sports: SportWithCategories[] }) {
       <Button type="submit" disabled={!newSport}>
         Submit
       </Button>
-      {message && <div className="text-center font-semibold">{message}</div>}
+      {message.message && <Message error={message.error}>{message.message}</Message>}
     </form>
   );
 }
@@ -58,15 +60,15 @@ function SportForm({ sports }: { sports: SportWithCategories[] }) {
 function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
   const [selectedSport, setSelectedSport] = useState<SportWithCategories>();
   const [newCategory, setNewCategory] = useState<string>('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ error: true, message: '' });
 
   const create = api.category.createCategory.useMutation({
     onSuccess: async () => {
-      setMessage('Category created successfully!');
+      setMessage({ error: false, message: 'Category created successfully!' });
       setNewCategory('');
     },
     onError: (error) => {
-      setMessage('Error creating category: ' + error.message);
+      setMessage({ error: true, message: 'Error creating category: ' + error.message });
       setNewCategory('');
     },
   });
@@ -122,7 +124,7 @@ function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
             </Button>
           </>
         )}
-        {message && <div className="text-center font-semibold">{message}</div>}
+        {message.message && <Message error={message.error}>{message.message}</Message>}
       </form>
     )
   );
@@ -132,15 +134,15 @@ function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
   const [selectedSport, setSelectedSport] = useState<SportWithCategories>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryWithSubcategories>();
   const [newSubcategory, setNewSubcategory] = useState<string>('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({ error: true, message: '' });
 
   const create = api.category.createSubcategory.useMutation({
     onSuccess: async () => {
-      setMessage('Subcategory created successfully!');
+      setMessage({ error: false, message: 'Subcategory created successfully!' });
       setNewSubcategory('');
     },
     onError: (error) => {
-      setMessage('Error creating subcategory: ' + error.message);
+      setMessage({ error: true, message: 'Error creating subcategory: ' + error.message });
       setNewSubcategory('');
     },
   });
@@ -218,16 +220,21 @@ function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
             </Button>
           </>
         )}
-        {message && <div className="text-center font-semibold">{message}</div>}
+        {message.message && <Message error={message.error}>{message.message}</Message>}
       </form>
     )
   );
 }
 
 function FormSelection() {
-  const sports = api.category.getSports.useQuery();
+  const { data: sports, status } = api.category.getSports.useQuery();
   const [selectedForm, setSelectedForm] = useState<'SPORT' | 'CATEGORY' | 'SUBCATEGORY'>('SPORT');
-  return (
+
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch sports at this time</Message>
+  ) : (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
         <Button
@@ -255,9 +262,9 @@ function FormSelection() {
           Create Subcategory
         </Button>
       </div>
-      {selectedForm === 'SPORT' && <SportForm sports={sports.data as SportWithCategories[]} />}
-      {selectedForm === 'CATEGORY' && <CategoryForm sports={sports.data as SportWithCategories[]} />}
-      {selectedForm === 'SUBCATEGORY' && <SubcategoryForm sports={sports.data as SportWithCategories[]} />}
+      {selectedForm === 'SPORT' && <SportForm sports={sports as SportWithCategories[]} />}
+      {selectedForm === 'CATEGORY' && <CategoryForm sports={sports as SportWithCategories[]} />}
+      {selectedForm === 'SUBCATEGORY' && <SubcategoryForm sports={sports as SportWithCategories[]} />}
     </div>
   );
 }

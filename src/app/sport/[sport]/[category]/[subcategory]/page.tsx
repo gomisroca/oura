@@ -6,6 +6,10 @@ export default async function SubcategoryList({
 }: {
   params: { sport: string; category: string; subcategory: string };
 }) {
-  const products = await api.product.getBySubcategory({ subcategoryId: Number(params.subcategory) });
-  return <ProductList products={products} />;
+  try {
+    const products = await api.product.getBySubcategory({ subcategoryId: Number(params.subcategory) });
+    return <ProductList products={products} />;
+  } catch (_error) {
+    return <div>Unable to fetch products at this time</div>;
+  }
 }

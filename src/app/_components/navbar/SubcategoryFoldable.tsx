@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { FaFilter } from 'react-icons/fa6';
 import Foldable from '../ui/Foldable';
 import { api } from '@/trpc/react';
+import Spinner from '../ui/Spinner';
+import Message from '../ui/Message';
 
 function SubcategoryFoldable() {
   const params = useParams();
@@ -16,13 +18,18 @@ function SubcategoryFoldable() {
   const categoryId = Number(params.category);
   const subcategoryId = Number(params.subcategory);
 
-  const subcategories = api.category.getSubcategories.useQuery({ categoryId: categoryId });
-  return (
+  const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: categoryId });
+
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch subcategories at this time</Message>
+  ) : (
     <div>
       <Foldable
         button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
-        {subcategories.data?.map((subcategory) => (
+        {subcategories.map((subcategory) => (
           <Link
             key={subcategory.id}
             className="w-full self-start"

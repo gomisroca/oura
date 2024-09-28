@@ -14,6 +14,8 @@ import InputField from '@/app/_components/ui/InputField';
 import Button from '@/app/_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 import ColorBubble from '@/app/_components/ui/ColorBubble';
+import Message from '@/app/_components/ui/Message';
+import Spinner from '@/app/_components/ui/Spinner';
 
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -232,10 +234,14 @@ function SubcategorySelection({
   category: Category;
   setSubcategory: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const subcategories = api.category.getSubcategories.useQuery({ categoryId: Number(category.id) });
+  const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: Number(category.id) });
   const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
 
-  return (
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch subcategories at this time</Message>
+  ) : (
     <>
       <p>{category.name} Subcategories</p>
       <select
@@ -247,15 +253,10 @@ function SubcategorySelection({
           setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
           setSubcategory(Number(selectedOption.value));
         }}>
-        {subcategories.isLoading && (
-          <option value="" disabled>
-            Loading...
-          </option>
-        )}
         <option value="" disabled selected={!selectedSubcategory}>
           Select Subcategory
         </option>
-        {subcategories.data?.map((subcategory) => (
+        {subcategories.map((subcategory) => (
           <option key={subcategory.id} value={subcategory.id}>
             {subcategory.name}
           </option>
@@ -274,11 +275,15 @@ function CategorySelection({
   setSubcategory: React.Dispatch<React.SetStateAction<number>>;
   setCategory: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const categories = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
+  const { data: categories, status } = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
 
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
-  return (
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch categories at this time</Message>
+  ) : (
     <>
       <p>{sport.name} Categories</p>
       <select
@@ -290,15 +295,10 @@ function CategorySelection({
           setCategory(Number(selectedOption.value));
           setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
-        {categories.isLoading && (
-          <option value="" disabled>
-            Loading...
-          </option>
-        )}
         <option value="" disabled selected={!selectedCategory}>
           Select Category
         </option>
-        {categories.data?.map((category) => (
+        {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
           </option>
@@ -320,11 +320,14 @@ function SportSelection({
   setCategory: React.Dispatch<React.SetStateAction<number>>;
   setSport: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const sports = api.category.getSports.useQuery();
-
+  const { data: sports, status } = api.category.getSports.useQuery();
   const [selectedSport, setSelectedSport] = useState<Category>();
 
-  return (
+  return status === 'pending' ? (
+    <Spinner />
+  ) : status === 'error' ? (
+    <Message>Unable to fetch sports at this time</Message>
+  ) : (
     <>
       <p>Sport</p>
       <select
@@ -336,15 +339,10 @@ function SportSelection({
           setSport(Number(selectedOption.value));
           setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
-        {sports.isLoading && (
-          <option value="" disabled>
-            Loading...
-          </option>
-        )}
         <option value="" disabled selected={!selectedSport}>
           Select Sport
         </option>
-        {sports.data?.map((sport) => (
+        {sports.map((sport) => (
           <option key={sport.id} value={sport.id}>
             {sport.name}
           </option>
@@ -396,7 +394,7 @@ function GenderSelection({
 export default function ProductForm() {
   const utils = api.useUtils();
 
-  const [formMessage, setFormMessage] = useState('');
+  const [formMessage, setFormMessage] = useState({ error: true, message: '' });
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [basePrice, setBasePrice] = useState(0);
@@ -410,9 +408,9 @@ export default function ProductForm() {
 
   const createProduct = api.product.create.useMutation({
     onError: () => {
-      setFormMessage('Something went wrong. Please try again.');
+      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
       setTimeout(() => {
-        setFormMessage('');
+        setFormMessage({ error: false, message: 'Product created successfully!' });
       }, 5000);
     },
     onSuccess: async () => {
@@ -424,16 +422,16 @@ export default function ProductForm() {
     const selectedFile = e.target.files![0];
 
     if (selectedFile) {
-      setFormMessage('');
+      setFormMessage({ error: false, message: '' });
       // Validate file type and size
       const isValidFileType = checkFileType(selectedFile);
       if (!isValidFileType) {
-        setFormMessage('Please upload a valid image file');
+        setFormMessage({ error: true, message: 'Please upload a valid image file' });
         return;
       }
       const isValidFileSize = checkFileSize(selectedFile);
       if (!isValidFileSize) {
-        setFormMessage('Please upload a file smaller than 2MB');
+        setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
         return;
       }
 
@@ -447,7 +445,7 @@ export default function ProductForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setFormMessage('');
+    setFormMessage({ error: false, message: '' });
     e.preventDefault();
 
     createProduct.mutate({
@@ -511,7 +509,7 @@ export default function ProductForm() {
       <Button type="submit" disabled={createProduct.isPending}>
         {createProduct.isPending ? 'Submitting...' : 'Submit'}
       </Button>
-      {formMessage && <p className="m-auto text-red-500">{formMessage}</p>}
+      {formMessage.message && <Message error={formMessage.error}>{formMessage.message}</Message>}
     </form>
   );
 }
