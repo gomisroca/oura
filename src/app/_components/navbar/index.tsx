@@ -11,6 +11,7 @@ import Button from '../ui/Button';
 import SportFoldable from './SportFoldable';
 import SubcategoryFoldable from './SubcategoryFoldable';
 import GeneralMenuFoldable from './GeneralMenuFoldable';
+import CartFoldable from './CartFoldable';
 
 const LogoIcons = () => {
   const icons = [
@@ -94,6 +95,7 @@ function Navbar() {
       <div className="relative flex flex-row items-start justify-end gap-2">
         <SubcategoryFoldable />
         <SportFoldable />
+        <CartFoldable />
         <GeneralMenuFoldable />
       </div>
     </div>
