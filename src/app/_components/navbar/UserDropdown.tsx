@@ -25,7 +25,7 @@ const SignedInDropdown = () => {
   return (
     <Dropdown
       button={{
-        name: 'Sing In',
+        name: 'Sign In',
         text: <FaUser size={20} />,
       }}
       className="right-0"

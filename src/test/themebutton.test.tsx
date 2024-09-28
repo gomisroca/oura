@@ -19,8 +19,8 @@ describe('Theme Button', () => {
     render(<ThemeButton />);
 
     // Check if button and icon are rendered
-    expect(screen.getByRole('button', { name: /theme/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /theme/i })).toContainHTML('svg');
+    expect(screen.getByRole('button', { name: /dark/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /dark/i })).toContainHTML('svg');
   });
 
   it('toggles the theme from light to dark when clicked', () => {
@@ -34,7 +34,7 @@ describe('Theme Button', () => {
 
     render(<ThemeButton />);
 
-    const button = screen.getByRole('button', { name: /theme/i });
+    const button = screen.getByRole('button', { name: /dark/i });
 
     // Simulate clicking the button
     fireEvent.click(button);
@@ -54,7 +54,7 @@ describe('Theme Button', () => {
 
     render(<ThemeButton />);
 
-    const button = screen.getByRole('button', { name: /theme/i });
+    const button = screen.getByRole('button', { name: /light/i });
 
     // Simulate clicking the button
     fireEvent.click(button);
