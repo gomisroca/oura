@@ -36,40 +36,44 @@ function SportFoldable() {
     };
   }, []);
 
-  return status === 'pending' ? (
-    <Spinner />
-  ) : status === 'error' ? (
-    <Message>Unable to fetch sports at this time</Message>
-  ) : (
+  return (
     <div ref={foldableRef}>
       <Foldable
         button={{ name: 'Sports', text: <FaSearch size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
-        {sports.map((sport: SportWithCategories) => (
-          <Button
-            key={sport.id}
-            name={sport.name}
-            className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
-            disabled={activeSport ? true : false}
-            onClick={() => setActiveSport(sport.id)}>
-            {sport.name}
-          </Button>
-        ))}
-        {activeSport && (
-          <div className="flex flex-col gap-2">
-            {sports
-              .find((sport: SportWithCategories) => sport.id === activeSport)
-              ?.categories.map((category) => (
-                <Link key={category.id} href={`/sport/${activeSport}/${category.id}`} className="w-full">
-                  <Button name={category.name} className="z-50 w-full">
-                    {category.name}
-                  </Button>
-                </Link>
-              ))}
-            <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
-              <FaCaretLeft />
-            </Button>
-          </div>
+        {status === 'pending' ? (
+          <Spinner />
+        ) : status === 'error' ? (
+          <Message>Unable to fetch sports at this time</Message>
+        ) : (
+          <>
+            {sports.map((sport: SportWithCategories) => (
+              <Button
+                key={sport.id}
+                name={sport.name}
+                className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
+                disabled={activeSport ? true : false}
+                onClick={() => setActiveSport(sport.id)}>
+                {sport.name}
+              </Button>
+            ))}
+            {activeSport && (
+              <div className="flex flex-col gap-2">
+                {sports
+                  .find((sport: SportWithCategories) => sport.id === activeSport)
+                  ?.categories.map((category) => (
+                    <Link key={category.id} href={`/sport/${activeSport}/${category.id}`} className="w-full">
+                      <Button name={category.name} className="z-50 w-full">
+                        {category.name}
+                      </Button>
+                    </Link>
+                  ))}
+                <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
+                  <FaCaretLeft />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </Foldable>
     </div>

@@ -19,30 +19,31 @@ function SubcategoryFoldable() {
   const subcategoryId = Number(params.subcategory);
 
   const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: categoryId });
-
-  return status === 'pending' ? (
-    <Spinner />
-  ) : status === 'error' ? (
-    <Message>Unable to fetch subcategories at this time</Message>
-  ) : (
+  return (
     <div>
       <Foldable
         button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
-        {subcategories.map((subcategory) => (
-          <Link
-            key={subcategory.id}
-            className="w-full self-start"
-            href={`/sport/${params.sport as string}/${categoryId}/${subcategory.id}`}>
-            <Button
+        {status === 'pending' ? (
+          <Spinner />
+        ) : status === 'error' ? (
+          <Message>Unable to fetch subcategories at this time</Message>
+        ) : (
+          subcategories.map((subcategory) => (
+            <Link
               key={subcategory.id}
-              name={subcategory.name}
-              className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''}`}
-              disabled={subcategoryId === subcategory.id}>
-              {subcategory.name}
-            </Button>
-          </Link>
-        ))}
+              className="w-full self-start"
+              href={`/sport/${params.sport as string}/${categoryId}/${subcategory.id}`}>
+              <Button
+                key={subcategory.id}
+                name={subcategory.name}
+                className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''}`}
+                disabled={subcategoryId === subcategory.id}>
+                {subcategory.name}
+              </Button>
+            </Link>
+          ))
+        )}
       </Foldable>
     </div>
   );
