@@ -1,4 +1,5 @@
 'use client';
+
 /**
  * Renders a cart item component.
  *
@@ -11,25 +12,31 @@
  */
 
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 import { type OrderItem } from 'types';
 import ColorBubble from '../ui/ColorBubble';
 import { env } from '@/env';
 import Button from '../ui/Button';
 import { api } from '@/trpc/react';
 import { FaTrash } from 'react-icons/fa6';
-import Message from '../ui/Message';
+import { useMessage } from '@/context/MessageContext';
 
 function CartItem({ product, orderView }: { product: OrderItem; orderView?: boolean }) {
-  const [error, setError] = useState<string | null>(null);
+  const { setMessage, setError, setPopup } = useMessage();
   const utils = api.useUtils();
+
+  const handleError = (message: string) => {
+    setMessage(message);
+    setError(true);
+    setPopup(true);
+  };
 
   const remove = api.cart.remove.useMutation({
     onSuccess: async () => {
       await utils.cart.get.invalidate();
     },
     onError: (error) => {
-      setError(error.message);
+      handleError(error.message);
     },
   });
 
@@ -58,7 +65,9 @@ function CartItem({ product, orderView }: { product: OrderItem; orderView?: bool
           <p>${product.price.toFixed(2)} EUR</p>
           <div className="flex flex-row items-center gap-2">
             {product.size?.name && <p>{product.size.name}</p>}
-            {product.color?.name && <ColorBubble color={product.color.name} />}
+            {product.color?.name && (
+              <ColorBubble clickable={false} color={product.color} product={product.product} sizeId={product.size.id} />
+            )}
           </div>
         </div>
         {!orderView && (
@@ -67,7 +76,6 @@ function CartItem({ product, orderView }: { product: OrderItem; orderView?: bool
           </Button>
         )}
       </div>
-      {error && <Message>{error}</Message>}
     </div>
   );
 }

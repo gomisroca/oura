@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@/app/_components/ui/Button';
-import Message from '@/app/_components/ui/Message';
+import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import Spinner from '@/app/_components/ui/Spinner';
 import { api } from '@/trpc/react';
 import { useRouter } from 'next/navigation';
@@ -42,7 +42,7 @@ function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, 
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-5">
       {!success && !message && <Spinner />}
-      {message && <Message error={message.error}>{message.message}</Message>}
+      {message && <MessageWrapper error={message.error} message={message.message} popup={false} />}
       {!success && message && <Button onClick={() => router.push('/')}>Home</Button>}
       {success && <Button onClick={handleRedirect}>Go forward</Button>}
     </div>

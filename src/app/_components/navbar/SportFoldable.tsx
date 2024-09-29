@@ -9,7 +9,7 @@ import Button from '../ui/Button';
 import { FaCaretLeft } from 'react-icons/fa6';
 import Link from 'next/link';
 import Spinner from '../ui/Spinner';
-import Message from '../ui/Message';
+import MessageWrapper from '../ui/MessageWrapper';
 
 interface SportWithCategories extends Sport {
   categories: Category[];
@@ -44,7 +44,7 @@ function SportFoldable() {
         {status === 'pending' ? (
           <Spinner />
         ) : status === 'error' ? (
-          <Message>Unable to fetch sports at this time</Message>
+          <MessageWrapper message="Unable to fetch sports at this time" popup={false} />
         ) : (
           <>
             {sports.map((sport: SportWithCategories) => (

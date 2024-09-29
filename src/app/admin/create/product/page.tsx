@@ -13,9 +13,8 @@ import { api } from '@/trpc/react';
 import InputField from '@/app/_components/ui/InputField';
 import Button from '@/app/_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
-import ColorBubble from '@/app/_components/ui/ColorBubble';
-import Message from '@/app/_components/ui/Message';
 import Spinner from '@/app/_components/ui/Spinner';
+import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -95,6 +94,13 @@ interface Category {
   id: number;
 }
 
+function Color({ color }: { color: string }) {
+  return (
+    <span
+      className={`h-4 w-4 rounded-full border border-slate-800 shadow-md transition duration-200 ease-in-out dark:border-slate-200 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`}`}></span>
+  );
+}
+
 function StockInput({
   sizeObj,
   setInventory,
@@ -109,7 +115,7 @@ function StockInput({
       <p>{sizeObj.name} Color Stock</p>
       {sizeObj.colors.map((colorObj, colorIndex) => (
         <div key={colorObj.name} className="flex items-center gap-2">
-          <ColorBubble color={colorObj.name} />
+          <Color color={colorObj.name} />
           <input
             name="stock"
             type="number"
@@ -165,7 +171,7 @@ function ColorSelection({
             required>
             {COLORS.map((color) => (
               <option key={color} value={color} className="flex flex-row items-center gap-2">
-                <ColorBubble color={color} />
+                <Color color={color} />
                 <span>{color}</span>
               </option>
             ))}
@@ -240,7 +246,7 @@ function SubcategorySelection({
   return status === 'pending' ? (
     <Spinner />
   ) : status === 'error' ? (
-    <Message>Unable to fetch subcategories at this time</Message>
+    <MessageWrapper message="Unable to fetch subcategories at this time" />
   ) : (
     <>
       <p>{category.name} Subcategories</p>
@@ -282,7 +288,7 @@ function CategorySelection({
   return status === 'pending' ? (
     <Spinner />
   ) : status === 'error' ? (
-    <Message>Unable to fetch categories at this time</Message>
+    <MessageWrapper message="Unable to fetch categories at this time" />
   ) : (
     <>
       <p>{sport.name} Categories</p>
@@ -326,7 +332,7 @@ function SportSelection({
   return status === 'pending' ? (
     <Spinner />
   ) : status === 'error' ? (
-    <Message>Unable to fetch sports at this time</Message>
+    <MessageWrapper message="Unable to fetch sports at this time" />
   ) : (
     <>
       <p>Sport</p>
@@ -509,7 +515,7 @@ export default function ProductForm() {
       <Button type="submit" disabled={createProduct.isPending}>
         {createProduct.isPending ? 'Submitting...' : 'Submit'}
       </Button>
-      {formMessage.message && <Message error={formMessage.error}>{formMessage.message}</Message>}
+      {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
     </form>
   );
 }

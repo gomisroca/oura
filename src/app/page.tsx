@@ -1,6 +1,6 @@
 import { api } from '@/trpc/server';
 import ProductList from './_components/product/ProductList';
-import Message from './_components/ui/Message';
+import MessageWrapper from './_components/ui/MessageWrapper';
 
 export default async function Home() {
   try {
@@ -12,6 +12,6 @@ export default async function Home() {
       </div>
     );
   } catch (_error) {
-    return <Message>Unable to fetch products at this time</Message>;
+    return <MessageWrapper message="Unable to fetch products at this time" />;
   }
 }

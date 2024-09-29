@@ -15,6 +15,8 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { type ProductWithSizes } from 'types';
 import ColorBubble from '../ui/ColorBubble';
+import { FaSearch } from 'react-icons/fa';
+import Link from 'next/link';
 
 function ProductCard({ product }: { product: ProductWithSizes }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -42,6 +44,9 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
         <p>{product.description}</p>
         <p>Base Price: {product.basePrice}€</p>
         <p>On Sale Price: {product.onSalePrice}€</p>
+        <Link href={`/product/${product.id}`}>
+          <FaSearch />
+        </Link>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (
@@ -49,7 +54,7 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
               <p className="font-bold">{size.name}</p>
               <div className="flex flex-row items-center gap-2">
                 {size.colors.map((color) => (
-                  <ColorBubble key={color.name} color={color.name} stock={color.stock} />
+                  <ColorBubble key={color.id + color.name} product={product} sizeId={size.id} color={color} />
                 ))}
               </div>
             </div>

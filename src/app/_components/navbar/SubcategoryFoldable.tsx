@@ -7,7 +7,7 @@ import { FaFilter } from 'react-icons/fa6';
 import Foldable from '../ui/Foldable';
 import { api } from '@/trpc/react';
 import Spinner from '../ui/Spinner';
-import Message from '../ui/Message';
+import MessageWrapper from '../ui/MessageWrapper';
 
 function SubcategoryFoldable() {
   const params = useParams();
@@ -19,6 +19,7 @@ function SubcategoryFoldable() {
   const subcategoryId = Number(params.subcategory);
 
   const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: categoryId });
+
   return (
     <div>
       <Foldable
@@ -27,7 +28,7 @@ function SubcategoryFoldable() {
         {status === 'pending' ? (
           <Spinner />
         ) : status === 'error' ? (
-          <Message>Unable to fetch subcategories at this time</Message>
+          <MessageWrapper message="Unable to fetch subcategories at this time" />
         ) : (
           subcategories.map((subcategory) => (
             <Link

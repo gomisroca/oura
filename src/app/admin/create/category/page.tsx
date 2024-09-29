@@ -6,8 +6,8 @@ import { type CategoryWithSubcategories, type SportWithCategories } from 'types'
 import Button from '@/app/_components/ui/Button';
 import InputField from '@/app/_components/ui/InputField';
 import { type Sport, type Category, type Subcategory } from '@prisma/client';
-import Message from '@/app/_components/ui/Message';
 import Spinner from '@/app/_components/ui/Spinner';
+import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 
 function SportForm({ sports }: { sports: SportWithCategories[] }) {
   const [newSport, setNewSport] = useState<string>('');
@@ -52,7 +52,7 @@ function SportForm({ sports }: { sports: SportWithCategories[] }) {
       <Button type="submit" disabled={!newSport}>
         Submit
       </Button>
-      {message.message && <Message error={message.error}>{message.message}</Message>}
+      {message.message && <MessageWrapper error={message.error} message={message.message} />}
     </form>
   );
 }
@@ -124,7 +124,7 @@ function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
             </Button>
           </>
         )}
-        {message.message && <Message error={message.error}>{message.message}</Message>}
+        {message.message && <MessageWrapper error={message.error} message={message.message} />}
       </form>
     )
   );
@@ -220,7 +220,7 @@ function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
             </Button>
           </>
         )}
-        {message.message && <Message error={message.error}>{message.message}</Message>}
+        {message.message && <MessageWrapper error={message.error} message={message.message} />}
       </form>
     )
   );
@@ -233,7 +233,7 @@ function FormSelection() {
   return status === 'pending' ? (
     <Spinner />
   ) : status === 'error' ? (
-    <Message>Unable to fetch sports at this time</Message>
+    <MessageWrapper message="Unable to fetch sports at this time" />
   ) : (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
