@@ -17,25 +17,18 @@ import { api } from '@/trpc/react';
 import Spinner from '../ui/Spinner';
 import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
-import { useMessage } from '@/context/MessageContext';
+import MessageWrapper from '../ui/MessageWrapper';
 
 function CartList({ orderView = false, foldableView = false }: { orderView?: boolean; foldableView?: boolean }) {
-  const { setMessage, setError, setPopup } = useMessage();
   const router = useRouter();
   const { data: cart, status } = api.cart.get.useQuery();
 
   const products = useMemo(() => cart?.products, [cart?.products]);
 
-  const handleError = () => {
-    setMessage('Unable to fetch your cart at this time');
-    setError(true);
-    setPopup(true);
-  };
-
   return status === 'pending' ? (
     <Spinner />
   ) : status === 'error' ? (
-    handleError()
+    <MessageWrapper message="Unable to fetch your cart at this time" />
   ) : (
     <div
       className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 ${foldableView ? 'flex-col' : ''}`}
