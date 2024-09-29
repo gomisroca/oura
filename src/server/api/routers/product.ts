@@ -64,6 +64,13 @@ export const productRouter = createTRPCRouter({
     return ctx.db.product.findMany({ include: { sizes: { include: { colors: true } } } });
   }),
 
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    return ctx.db.product.findUnique({
+      where: { id: input.id },
+      include: { sizes: { include: { colors: true } } },
+    });
+  }),
+
   getByCategory: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findMany({
       where: { categoryId: input.categoryId },

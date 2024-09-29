@@ -22,6 +22,10 @@ function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?:
         productId: product.id,
         sizeId: sizeId,
         colorId: colorId,
+      }).then(() => {
+        setMessage(`Added ${product.name} to cart`);
+        setError(false);
+        setPopup(true);
       });
     } catch (_error) {
       setMessage('Please sign in to add to cart');
