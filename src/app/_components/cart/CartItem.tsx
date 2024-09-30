@@ -20,8 +20,17 @@ import Button from '../ui/Button';
 import { api } from '@/trpc/react';
 import { FaTrash } from 'react-icons/fa6';
 import { useMessage } from '@/context/MessageContext';
+import Link from 'next/link';
 
-function CartItem({ product, orderView }: { product: OrderItem; orderView?: boolean }) {
+function CartItem({
+  product,
+  orderView = false,
+  foldableView = false,
+}: {
+  product: OrderItem;
+  orderView?: boolean;
+  foldableView?: boolean;
+}) {
   const { setMessage, setError, setPopup } = useMessage();
   const utils = api.useUtils();
 
@@ -47,31 +56,33 @@ function CartItem({ product, orderView }: { product: OrderItem; orderView?: bool
   return (
     <div
       key={product.id}
-      className="flex flex-row gap-2 rounded-lg border bg-slate-200/90 p-5 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90">
-      <Image
-        src={
-          product.product.image
-            ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.product.image}`
-            : '/ph_item.png'
-        }
-        className="rounded-lg"
-        alt={product.product.name}
-        width={200}
-        height={200}
-      />
-      <div className="flex flex-row items-start gap-4">
-        <div className="flex flex-col gap-2">
-          <p>{product.product.name}</p>
-          <p>${product.price.toFixed(2)} EUR</p>
-          <div className="flex flex-row items-center gap-2">
-            {product.size?.name && <p>{product.size.name}</p>}
-            {product.color?.name && (
-              <ColorBubble clickable={false} color={product.color} product={product.product} sizeId={product.size.id} />
-            )}
-          </div>
+      className={`mr-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[15rem] w-[20rem]' : 'h-[20rem] w-[40rem]'}`}>
+      <Link className="h-full w-1/2 cursor-pointer rounded-l-xl" href={`/product/${product.product.id}`}>
+        <Image
+          className={`h-full min-h-[15rem] w-full cursor-pointer rounded-l-xl object-cover duration-200 ease-in-out hover:contrast-[1.1]`}
+          src={
+            product.product.image
+              ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.product.image}`
+              : '/ph_item.png'
+          }
+          alt={product.product.name}
+          width={200}
+          height={200}
+        />
+      </Link>
+      <div className="relative flex h-full w-1/2 flex-col items-center justify-center gap-2 p-4 font-semibold">
+        <p>{product.product.name}</p>
+        <p>${product.price.toFixed(2)} EUR</p>
+        <div className="flex flex-row items-center gap-2">
+          {product.size?.name && <p>{product.size.name}</p>}
+          {product.color?.name && (
+            <ColorBubble clickable={false} color={product.color} product={product.product} sizeId={product.size.id} />
+          )}
         </div>
         {!orderView && (
-          <Button onClick={() => removeFromCart()} className="h-fit px-[0.75rem]">
+          <Button
+            onClick={() => removeFromCart()}
+            className={`absolute h-fit px-[0.75rem] ${foldableView ? 'bottom-4' : 'bottom-8'}`}>
             <FaTrash />
           </Button>
         )}

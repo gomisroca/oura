@@ -14,10 +14,10 @@
 import React, { useMemo } from 'react';
 import CartItem from './CartItem';
 import { api } from '@/trpc/react';
-import Spinner from '../ui/Spinner';
 import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
 import MessageWrapper from '../ui/MessageWrapper';
+import CartListLoading from './CartListLoading';
 
 function CartList({ orderView = false, foldableView = false }: { orderView?: boolean; foldableView?: boolean }) {
   const router = useRouter();
@@ -26,19 +26,26 @@ function CartList({ orderView = false, foldableView = false }: { orderView?: boo
   const products = useMemo(() => cart?.products, [cart?.products]);
 
   return status === 'pending' ? (
-    <Spinner />
+    <CartListLoading foldableView={foldableView} />
   ) : status === 'error' ? (
     <MessageWrapper message="Unable to fetch your cart at this time" />
   ) : (
     <div
-      className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 ${foldableView ? 'flex-col' : ''}`}
+      className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90 ${foldableView ? 'flex-col' : ''}`}
       role="list">
-      {products ? (
-        products.map((product) => <CartItem key={product.id} product={product} orderView={orderView} />)
-      ) : (
-        <div>No products in cart</div>
+      <div
+        className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-y-auto overflow-x-hidden rounded-xl' : ''}`}>
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <CartItem key={product.id} product={product} orderView={orderView} foldableView={foldableView} />
+          ))
+        ) : (
+          <div>No products in cart</div>
+        )}
+      </div>
+      {foldableView && products && products.length > 0 && (
+        <Button onClick={() => router.push('/checkout')}>Go to Checkout</Button>
       )}
-      {foldableView && <Button onClick={() => router.push('/checkout')}>Go to Checkout</Button>}
     </div>
   );
 }
