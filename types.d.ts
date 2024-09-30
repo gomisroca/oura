@@ -6,6 +6,7 @@ import {
   type Category,
   type OrderProduct,
   type Order,
+  type Sale,
 } from '@prisma/client';
 
 interface Provider {
@@ -19,6 +20,7 @@ interface SizeWithColors extends Size {
 
 interface ProductWithSizes extends Product {
   sizes: SizeWithColors[];
+  sales: Sale[];
 }
 
 interface SportWithCategories extends Sport {

@@ -61,27 +61,36 @@ export const productRouter = createTRPCRouter({
   }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.product.findMany({ include: { sizes: { include: { colors: true } } } });
+    return ctx.db.product.findMany({
+      include: {
+        sizes: {
+          include: {
+            colors: true,
+          },
+        },
+        sales: true,
+      },
+    });
   }),
 
   getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findUnique({
       where: { id: input.id },
-      include: { sizes: { include: { colors: true } } },
+      include: { sizes: { include: { colors: true } }, sales: true },
     });
   }),
 
   getByCategory: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findMany({
       where: { categoryId: input.categoryId },
-      include: { sizes: { include: { colors: true } } },
+      include: { sizes: { include: { colors: true } }, sales: true },
     });
   }),
 
   getBySubcategory: publicProcedure.input(z.object({ subcategoryId: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.product.findMany({
       where: { subcategoryId: input.subcategoryId },
-      include: { sizes: { include: { colors: true } } },
+      include: { sizes: { include: { colors: true } }, sales: true },
     });
   }),
 });

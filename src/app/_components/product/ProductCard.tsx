@@ -17,6 +17,7 @@ import { type ProductWithSizes } from 'types';
 import ColorBubble from '../ui/ColorBubble';
 import { FaSearch } from 'react-icons/fa';
 import Link from 'next/link';
+import Button from '../ui/Button';
 
 function ProductCard({ product }: { product: ProductWithSizes }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -42,15 +43,11 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
         <h2>{product.name}</h2>
         <p>{product.gender.map((gender) => gender[0]!.toUpperCase() + gender.slice(1).toLowerCase()).join(', ')}</p>
         <p>{product.description}</p>
-        <p>Base Price: {product.basePrice}€</p>
-        <p>On Sale Price: {product.onSalePrice}€</p>
-        <Link href={`/product/${product.id}`}>
-          <FaSearch />
-        </Link>
+        <p>{product.sales.length > 0 ? product.onSalePrice : product.basePrice}€</p>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (
-            <div key={size.name} className="flex flex-row items-center gap-2">
+            <div key={size.name} className="flex flex-row items-center justify-between gap-2">
               <p className="font-bold">{size.name}</p>
               <div className="flex flex-row items-center gap-2">
                 {size.colors.map((color) => (
@@ -60,6 +57,11 @@ function ProductCard({ product }: { product: ProductWithSizes }) {
             </div>
           ))}
         </div>
+        <Link href={`/product/${product.id}`} className="absolute right-4 top-4">
+          <Button className="px-[0.75rem]">
+            <FaSearch size={20} />
+          </Button>
+        </Link>
       </div>
     </div>
   );

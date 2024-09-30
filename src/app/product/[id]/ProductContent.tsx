@@ -26,8 +26,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
         <h2>{product.name}</h2>
         <p>{product.gender.map((gender) => gender[0]!.toUpperCase() + gender.slice(1).toLowerCase()).join(', ')}</p>
         <p>{product.description}</p>
-        <p>{product.basePrice}€</p>
-        <p>On Sale Price: {product.onSalePrice}€</p>
+        <p>{product.sales.length > 0 ? product.onSalePrice : product.basePrice}€</p>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (
