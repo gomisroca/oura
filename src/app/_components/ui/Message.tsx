@@ -8,7 +8,7 @@ const Message = () => {
   if (!message) return null;
   return (
     <div
-      className={`fixed m-auto left-0 right-0 z-[99] w-[30rem] flex flex-col items-center justify-center gap-2 px-5 py-2 font-semibold border rounded-lg ${
+      className={`fixed m-auto left-0 right-0 z-[99] w-[90vw] xl:w-[30vw] flex flex-col items-center justify-center gap-2 px-5 py-2 font-semibold border rounded-lg ${
         error
           ? 'border-red-500 bg-red-200/90 dark:bg-red-800/90'
           : 'border-green-500 bg-green-200/90 dark:bg-green-800/90'
