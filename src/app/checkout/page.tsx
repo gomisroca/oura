@@ -5,7 +5,7 @@ import MessageWrapper from '../_components/ui/MessageWrapper';
 async function Checkout() {
   const session = await getServerAuthSession();
   if (!session) {
-    return <MessageWrapper message="Please sign in" />;
+    return <MessageWrapper message="Must be signed in to checkout" />;
   }
   return <CheckoutContent />;
 }

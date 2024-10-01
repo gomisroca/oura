@@ -20,7 +20,7 @@ function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, 
       setSuccess(true);
     },
     onError: (error) => {
-      setMessage({ error: true, message: `Error confirming order: ${error.message}. Please try again.` });
+      setMessage({ error: true, message: `Unable to confirm order at this time: ${error.message}` });
     },
   });
 
@@ -34,7 +34,7 @@ function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, 
     if (searchParams?.sessionId && searchParams?.orderId) {
       confirmOrder.mutate({ sessionId: searchParams.sessionId, orderId: searchParams.orderId });
     } else {
-      setMessage({ error: true, message: 'Missing Order or Session ID. Please try again.' });
+      setMessage({ error: true, message: 'Missing Order or Session ID' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);

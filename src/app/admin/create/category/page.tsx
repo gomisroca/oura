@@ -19,7 +19,7 @@ function SportForm({ sports }: { sports: SportWithCategories[] }) {
       setNewSport('');
     },
     onError: (error) => {
-      setMessage({ error: true, message: 'Error creating sport: ' + error.message });
+      setMessage({ error: true, message: 'Unable to create sport at this time: ' + error.message });
       setNewSport('');
     },
   });
@@ -68,7 +68,7 @@ function CategoryForm({ sports }: { sports: SportWithCategories[] }) {
       setNewCategory('');
     },
     onError: (error) => {
-      setMessage({ error: true, message: 'Error creating category: ' + error.message });
+      setMessage({ error: true, message: 'Unable to create category at this time: ' + error.message });
       setNewCategory('');
     },
   });
@@ -142,7 +142,7 @@ function SubcategoryForm({ sports }: { sports: SportWithCategories[] }) {
       setNewSubcategory('');
     },
     onError: (error) => {
-      setMessage({ error: true, message: 'Error creating subcategory: ' + error.message });
+      setMessage({ error: true, message: 'Unable to create subcategory at this time: ' + error.message });
       setNewSubcategory('');
     },
   });
