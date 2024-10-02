@@ -4,18 +4,18 @@ test('has initial buttons', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.getByRole('button', { name: 'Logo' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sports' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Categories' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'General Menu' })).toBeVisible();
 });
 
-test('sport foldable is visible', async ({ page }) => {
+test('categories foldable is visible', async ({ page }) => {
   await page.goto('/');
 
+  await expect(page.getByRole('button', { name: 'Categories' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Categories' }).click();
+
   await expect(page.getByRole('button', { name: 'Sports' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Sports' }).click();
-
-  await expect(page.getByRole('button', { name: 'Running' })).toBeVisible();
 });
 
 test('general menu  foldable is visible', async ({ page }) => {

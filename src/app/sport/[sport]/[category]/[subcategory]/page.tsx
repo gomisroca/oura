@@ -4,11 +4,15 @@ import { api } from '@/trpc/server';
 
 export default async function SubcategoryList({
   params,
+  searchParams,
 }: {
   params: { sport: string; category: string; subcategory: string };
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
   try {
-    const products = await api.product.getBySubcategory({ subcategoryId: Number(params.subcategory) });
+    const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+
+    const products = await api.product.getBySubcategory({ subcategoryId: Number(params.subcategory), gender: gender });
     if (products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
     return <ProductList products={products} />;
   } catch (_error) {

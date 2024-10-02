@@ -262,7 +262,7 @@ function SubcategorySelection({
         <option value="" disabled selected={!selectedSubcategory}>
           Select Subcategory
         </option>
-        {subcategories.map((subcategory) => (
+        {subcategories?.map((subcategory) => (
           <option key={subcategory.id} value={subcategory.id}>
             {subcategory.name}
           </option>
