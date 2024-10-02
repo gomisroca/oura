@@ -27,9 +27,59 @@ export const categoryRouter = createTRPCRouter({
     });
   }),
 
-  getSubcategories: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
-    return ctx.db.subcategory.findMany({ where: { categoryId: input.categoryId } });
-  }),
+  getSubcategories: publicProcedure
+    .input(z.object({ categoryId: z.number().optional(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      if (input.categoryId) {
+        return ctx.db.subcategory.findMany({
+          where: {
+            categoryId: input.categoryId,
+            products: {
+              some: {
+                gender: input.gender ? { has: input.gender } : undefined,
+              },
+            },
+          },
+        });
+      } else {
+        return null;
+      }
+    }),
+
+  getSportsByGender: publicProcedure
+    .input(z.object({ gender: z.enum(['MALE', 'FEMALE', 'OTHER']) }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.sport.findMany({
+        where: {
+          categories: {
+            some: {
+              subcategories: {
+                some: {
+                  products: {
+                    some: {
+                      gender: {
+                        has: input.gender || 'OTHER',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        include: {
+          categories: {
+            include: {
+              subcategories: {
+                include: {
+                  products: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
 
   createSport: protectedProcedure.input(z.object({ sport: z.string().min(1) })).mutation(async ({ ctx, input }) => {
     if (ctx.session.user?.role !== 'ADMIN') {

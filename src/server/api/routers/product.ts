@@ -80,17 +80,27 @@ export const productRouter = createTRPCRouter({
     });
   }),
 
-  getByCategory: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
-    return ctx.db.product.findMany({
-      where: { categoryId: input.categoryId },
-      include: { sizes: { include: { colors: true } }, sales: true },
-    });
-  }),
+  getByCategory: publicProcedure
+    .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.product.findMany({
+        where: {
+          categoryId: input.categoryId,
+          gender: input.gender ? { has: input.gender } : undefined,
+        },
+        include: { sizes: { include: { colors: true } }, sales: true },
+      });
+    }),
 
-  getBySubcategory: publicProcedure.input(z.object({ subcategoryId: z.number() })).query(async ({ ctx, input }) => {
-    return ctx.db.product.findMany({
-      where: { subcategoryId: input.subcategoryId },
-      include: { sizes: { include: { colors: true } }, sales: true },
-    });
-  }),
+  getBySubcategory: publicProcedure
+    .input(z.object({ subcategoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.product.findMany({
+        where: {
+          subcategoryId: input.subcategoryId,
+          gender: input.gender ? { has: input.gender } : undefined,
+        },
+        include: { sizes: { include: { colors: true } }, sales: true },
+      });
+    }),
 });
