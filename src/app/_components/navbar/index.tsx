@@ -2,7 +2,7 @@
  * Navbar component that displays the logo, sign in/out dropdown, and theme button.
  */
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
 import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } from 'react-icons/gi';
@@ -93,10 +93,18 @@ function Navbar() {
     <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
       <LogoIcons />
       <div className="relative flex flex-row items-start justify-end gap-2">
-        <SubcategoryFoldable />
-        <CategoryFoldableWrapper />
-        <CartFoldable />
-        <GeneralMenuFoldable />
+        <Suspense fallback={<div>...</div>}>
+          <SubcategoryFoldable />
+        </Suspense>
+        <Suspense fallback={<div>...</div>}>
+          <CategoryFoldableWrapper />
+        </Suspense>
+        <Suspense fallback={<div>...</div>}>
+          <CartFoldable />
+        </Suspense>
+        <Suspense fallback={<div>...</div>}>
+          <GeneralMenuFoldable />
+        </Suspense>
       </div>
     </div>
   );
