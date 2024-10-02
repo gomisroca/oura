@@ -30,9 +30,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // Listen for route changes
-    if (popup === false && pathname) {
-      handleRouteChange(); // Reset the message when the pathname changes
-    }
+    handleRouteChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]); // Trigger useEffect when the path changes
 
