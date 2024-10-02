@@ -14,6 +14,7 @@ test('product list changes when category is selected', async ({ page }) => {
   await expect(productList).toContainText('Product 1');
 
   // Check the state after clicking on a category
+  await page.getByRole('button', { name: 'Categories' }).click();
   await page.getByRole('button', { name: 'Sports' }).click();
   await page.getByRole('button', { name: 'Running' }).click();
   await page.getByRole('button', { name: 'Shoes' }).click();
