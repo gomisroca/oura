@@ -58,7 +58,7 @@ export const categoryRouter = createTRPCRouter({
                   products: {
                     some: {
                       gender: {
-                        has: input.gender || 'OTHER',
+                        has: input.gender,
                       },
                     },
                   },
@@ -69,10 +69,38 @@ export const categoryRouter = createTRPCRouter({
         },
         include: {
           categories: {
+            where: {
+              subcategories: {
+                some: {
+                  products: {
+                    some: {
+                      gender: {
+                        has: input.gender,
+                      },
+                    },
+                  },
+                },
+              },
+            },
             include: {
               subcategories: {
+                where: {
+                  products: {
+                    some: {
+                      gender: {
+                        has: input.gender,
+                      },
+                    },
+                  },
+                },
                 include: {
-                  products: true,
+                  products: {
+                    where: {
+                      gender: {
+                        has: input.gender,
+                      },
+                    },
+                  },
                 },
               },
             },
