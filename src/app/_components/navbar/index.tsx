@@ -2,16 +2,16 @@
  * Navbar component that displays the logo, sign in/out dropdown, and theme button.
  */
 
-import React, { Suspense } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
 import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } from 'react-icons/gi';
 import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
 import Button from '../ui/Button';
-import SubcategoryFoldable from './SubcategoryFoldable';
 import GeneralMenuFoldable from './GeneralMenuFoldable';
 import CartFoldable from './CartFoldable';
 import CategoryFoldableWrapper from './CategoryFoldableWrapper';
+import SubcategoryFoldableWrapper from './SubcategoryFoldable';
 
 const LogoIcons = () => {
   const icons = [
@@ -93,18 +93,10 @@ function Navbar() {
     <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
       <LogoIcons />
       <div className="relative flex flex-row items-start justify-end gap-2">
-        <Suspense fallback={<div>...</div>}>
-          <SubcategoryFoldable />
-        </Suspense>
-        <Suspense fallback={<div>...</div>}>
-          <CategoryFoldableWrapper />
-        </Suspense>
-        <Suspense fallback={<div>...</div>}>
-          <CartFoldable />
-        </Suspense>
-        <Suspense fallback={<div>...</div>}>
-          <GeneralMenuFoldable />
-        </Suspense>
+        <SubcategoryFoldableWrapper />
+        <CategoryFoldableWrapper />
+        <CartFoldable />
+        <GeneralMenuFoldable />
       </div>
     </div>
   );

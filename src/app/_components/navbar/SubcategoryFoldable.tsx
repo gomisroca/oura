@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { FaFilter } from 'react-icons/fa6';
 import Foldable from '../ui/Foldable';
 import { api } from '@/trpc/react';
+import { Suspense } from 'react';
+
+function SubcategoryFoldableWrapper() {
+  return (
+    <Suspense fallback={<div>...</div>}>
+      <SubcategoryFoldable />
+    </Suspense>
+  );
+}
 
 function SubcategoryFoldable() {
   const params = useParams();
@@ -53,4 +62,4 @@ function SubcategoryFoldable() {
   );
 }
 
-export default SubcategoryFoldable;
+export default SubcategoryFoldableWrapper;
