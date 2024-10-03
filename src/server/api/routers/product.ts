@@ -73,9 +73,10 @@ export const productRouter = createTRPCRouter({
     });
   }),
 
-  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    return ctx.db.product.findUnique({
+  visit: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    return ctx.db.product.update({
       where: { id: input.id },
+      data: { views: { increment: 1 } },
       include: { sizes: { include: { colors: true } }, sales: true },
     });
   }),
