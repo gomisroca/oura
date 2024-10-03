@@ -37,6 +37,10 @@ export const cartRouter = createTRPCRouter({
       },
     });
     if (!product) throw new TRPCError({ code: 'NOT_FOUND' });
+    const color = await ctx.db.color.findUnique({
+      where: { id: input.colorId },
+    });
+    if (!color || color.stock <= 0) throw new TRPCError({ code: 'NOT_FOUND' });
 
     await ctx.db.cart.update({
       where: {

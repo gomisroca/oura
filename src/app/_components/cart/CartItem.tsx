@@ -56,8 +56,10 @@ function CartItem({
   return (
     <div
       key={product.id}
-      className={`mr-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[15rem] w-[20rem]' : 'h-[20rem] w-[40rem]'}`}>
-      <Link className="h-full w-1/2 cursor-pointer rounded-l-xl" href={`/product/${product.product.id}`}>
+      className={`mx-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[15rem] w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
+      <Link
+        className="h-full w-1/2 cursor-pointer overflow-y-hidden rounded-l-xl"
+        href={`/product/${product.product.id}`}>
         <Image
           className={`h-full min-h-[15rem] w-full cursor-pointer rounded-l-xl object-cover duration-200 ease-in-out hover:contrast-[1.1]`}
           src={
@@ -79,6 +81,7 @@ function CartItem({
             <ColorBubble clickable={false} color={product.color} product={product.product} sizeId={product.size.id} />
           )}
         </div>
+        {product.color.stock <= 0 && <p className="text-red-600">Out of stock</p>}
         {!orderView && (
           <Button
             onClick={() => removeFromCart()}

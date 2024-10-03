@@ -108,6 +108,7 @@ model Product {
     basePrice     Float
     onSalePrice   Float
     amountSold    Int            @default(0)
+    views         Int            @default(0)
     sizes         Size[]
     orders        OrderProduct[]
     sales         Sale[]

@@ -5,12 +5,13 @@ import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import Spinner from '@/app/_components/ui/Spinner';
 import { api } from '@/trpc/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
   const router = useRouter();
   const [message, setMessage] = useState({ error: true, message: '' });
   const [success, setSuccess] = useState(false);
+  const hasConfirmedRef = useRef(false); // UseRef ensures the state persists across renders without causing re-renders
 
   // Check the session and order details with the server
   const confirmOrder = api.checkout.confirmOrder.useMutation({
@@ -29,15 +30,15 @@ function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, 
     router.push(`/checkout/success?orderId=${searchParams?.orderId}`);
   };
 
-  // If the sessionId and orderId are in the URL, call the mutation to confirm the order, otherwise set a message and show a button to go back to the home page
+  // Ensure the order is confirmed only once
   useEffect(() => {
-    if (searchParams?.sessionId && searchParams?.orderId) {
+    if (!hasConfirmedRef.current && searchParams?.sessionId && searchParams?.orderId) {
+      hasConfirmedRef.current = true; // Set ref to true, preventing future triggers
       confirmOrder.mutate({ sessionId: searchParams.sessionId, orderId: searchParams.orderId });
-    } else {
+    } else if (!searchParams?.sessionId || !searchParams?.orderId) {
       setMessage({ error: true, message: 'Missing Order or Session ID' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, confirmOrder]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-5">

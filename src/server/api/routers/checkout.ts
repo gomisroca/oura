@@ -56,6 +56,10 @@ export const checkoutRouter = createTRPCRouter({
     });
 
     for (const product of cart?.products) {
+      if (product.color.stock <= 0) throw new TRPCError({ code: 'NOT_FOUND' });
+    }
+
+    for (const product of cart.products) {
       await ctx.db.orderProduct.update({
         where: {
           id: product.id,
@@ -101,7 +105,11 @@ export const checkoutRouter = createTRPCRouter({
       // Try to retrieve the order, if it doesn't exist, throw an error
       const order = await ctx.db.order.findUnique({
         where: { id: input.orderId },
+        include: {
+          products: true,
+        },
       });
+
       if (!order) throw new TRPCError({ code: 'NOT_FOUND' });
 
       // Check that the user is actually the owner of the order
@@ -127,6 +135,27 @@ export const checkoutRouter = createTRPCRouter({
           products: true,
         },
       });
+
+      // Also need to update the products' stock and amountSold
+      for (const product of order.products) {
+        await ctx.db.product.update({
+          where: {
+            id: product.productId,
+          },
+          data: {
+            amountSold: { increment: 1 },
+          },
+        });
+
+        await ctx.db.color.update({
+          where: {
+            id: product.colorId,
+          },
+          data: {
+            stock: { decrement: 1 },
+          },
+        });
+      }
 
       return order;
     }),

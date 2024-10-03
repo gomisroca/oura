@@ -5,7 +5,6 @@
  *
  * @props
  *  products: The products to be rendered
- *  orderView: Whether the list is in the order view or not, which controls whether the remove button is displayed
  *
  * @example
  * <CartList />
@@ -19,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import MessageWrapper from '../ui/MessageWrapper';
 import CartListLoading from './CartListLoading';
 
-function CartList({ orderView = false, foldableView = false }: { orderView?: boolean; foldableView?: boolean }) {
+function CartList({ foldableView = false }: { foldableView?: boolean }) {
   const router = useRouter();
   const { data: cart, status } = api.cart.get.useQuery();
 
@@ -37,14 +36,24 @@ function CartList({ orderView = false, foldableView = false }: { orderView?: boo
         className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-y-auto overflow-x-hidden rounded-xl' : ''}`}>
         {products && products.length > 0 ? (
           products.map((product) => (
-            <CartItem key={product.id} product={product} orderView={orderView} foldableView={foldableView} />
+            <CartItem key={product.id} product={product} orderView={false} foldableView={foldableView} />
           ))
         ) : (
           <div>No products in cart</div>
         )}
       </div>
       {foldableView && products && products.length > 0 && (
-        <Button onClick={() => router.push('/checkout')}>Go to Checkout</Button>
+        // If an item has no stock, the button should be disabled and show a warning
+        <>
+          {products.some((product) => product.color.stock <= 0) && (
+            <p className="text-red-600">One or more products are out of stock</p>
+          )}
+          <Button
+            disabled={!products.every((product) => product.color.stock > 0)}
+            onClick={() => router.push('/checkout')}>
+            Checkout
+          </Button>
+        </>
       )}
     </div>
   );
