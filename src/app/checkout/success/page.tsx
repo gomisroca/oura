@@ -1,7 +1,7 @@
-import CartList from '@/app/_components/cart/CartList';
 import { api } from '@/trpc/server';
 import React from 'react';
 import { type OrderWithProducts } from 'types';
+import OrderList from './OrderList';
 
 async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
   try {
@@ -13,7 +13,7 @@ async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string,
     return (
       <div className="flex flex-col gap-2 px-5">
         <p>Order ID: {order.id}</p>
-        <CartList orderView={true} />
+        <OrderList products={order.products} />
       </div>
     );
   } catch (_error) {
