@@ -21,87 +21,137 @@ const productSchema = z.object({
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure.input(productSchema).mutation(async ({ ctx, input }) => {
-    if (ctx.session.user?.role !== 'ADMIN') {
-      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      let imageLink;
+      if (input.image) {
+        imageLink = await uploadImage(input.image);
+      }
+
+      const product = await ctx.db.product.create({
+        data: {
+          name: input.name,
+          description: input.description,
+          basePrice: input.basePrice,
+          onSalePrice: input.onSalePrice,
+          gender: input.gender,
+          subcategoryId: input.subcategory,
+          categoryId: input.category,
+          sportId: input.sport,
+          image: imageLink,
+        },
+      });
+
+      const sizes = await ctx.db.size.createManyAndReturn({
+        data: input.inventory.map((size) => ({ productId: product.id, name: size.name })),
+      });
+
+      await ctx.db.color.createMany({
+        data: input.inventory.flatMap((size) =>
+          size.colors.map((color) => ({
+            sizeId: sizes.find((s) => s.name === size.name)!.id,
+            name: color.name,
+            stock: color.stock,
+          }))
+        ),
+      });
+
+      return product;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to create product:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create product' });
+      }
     }
-    let imageLink;
-    if (input.image) {
-      imageLink = await uploadImage(input.image);
-    }
-
-    const product = await ctx.db.product.create({
-      data: {
-        name: input.name,
-        description: input.description,
-        basePrice: input.basePrice,
-        onSalePrice: input.onSalePrice,
-        gender: input.gender,
-        subcategoryId: input.subcategory,
-        categoryId: input.category,
-        sportId: input.sport,
-        image: imageLink,
-      },
-    });
-
-    const sizes = await ctx.db.size.createManyAndReturn({
-      data: input.inventory.map((size) => ({ productId: product.id, name: size.name })),
-    });
-
-    await ctx.db.color.createMany({
-      data: input.inventory.flatMap((size) =>
-        size.colors.map((color) => ({
-          sizeId: sizes.find((s) => s.name === size.name)!.id,
-          name: color.name,
-          stock: color.stock,
-        }))
-      ),
-    });
-
-    return product;
   }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.product.findMany({
-      include: {
-        sizes: {
-          include: {
-            colors: true,
+    try {
+      return ctx.db.product.findMany({
+        include: {
+          sizes: {
+            include: {
+              colors: true,
+            },
           },
+          sales: true,
         },
-        sales: true,
-      },
-    });
+      });
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get all products:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get all products' });
+      }
+    }
   }),
 
   visit: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    return ctx.db.product.update({
-      where: { id: input.id },
-      data: { views: { increment: 1 } },
-      include: { sizes: { include: { colors: true } }, sales: true },
-    });
+    try {
+      return ctx.db.product.update({
+        where: { id: input.id },
+        data: { views: { increment: 1 } },
+        include: { sizes: { include: { colors: true } }, sales: true },
+      });
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to visit product:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to visit product' });
+      }
+    }
   }),
 
   getByCategory: publicProcedure
     .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.product.findMany({
-        where: {
-          categoryId: input.categoryId,
-          gender: input.gender ? { has: input.gender } : undefined,
-        },
-        include: { sizes: { include: { colors: true } }, sales: true },
-      });
+      try {
+        return ctx.db.product.findMany({
+          where: {
+            categoryId: input.categoryId,
+            gender: input.gender ? { has: input.gender } : undefined,
+          },
+          include: { sizes: { include: { colors: true } }, sales: true },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by category:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by category' });
+        }
+      }
     }),
 
   getBySubcategory: publicProcedure
     .input(z.object({ subcategoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.product.findMany({
-        where: {
-          subcategoryId: input.subcategoryId,
-          gender: input.gender ? { has: input.gender } : undefined,
-        },
-        include: { sizes: { include: { colors: true } }, sales: true },
-      });
+      try {
+        return ctx.db.product.findMany({
+          where: {
+            subcategoryId: input.subcategoryId,
+            gender: input.gender ? { has: input.gender } : undefined,
+          },
+          include: { sizes: { include: { colors: true } }, sales: true },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by subcategory:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by subcategory' });
+        }
+      }
     }),
 });
