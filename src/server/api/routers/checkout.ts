@@ -57,6 +57,9 @@ export const checkoutRouter = createTRPCRouter({
 
     for (const product of cart?.products) {
       if (product.color.stock <= 0) throw new TRPCError({ code: 'NOT_FOUND' });
+    }
+
+    for (const product of cart.products) {
       await ctx.db.orderProduct.update({
         where: {
           id: product.id,
