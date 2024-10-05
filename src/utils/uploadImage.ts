@@ -1,8 +1,8 @@
 import supabase from '@/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
-async function getToken(id: string) {
-  const { data } = await supabase.storage.from('products').createSignedUploadUrl(`${id}.png`);
+async function getToken(id: string, bucket: string) {
+  const { data } = await supabase.storage.from(bucket).createSignedUploadUrl(`${id}.png`);
   return data?.token;
 }
 
@@ -12,16 +12,20 @@ async function convertBase64ToFile(dataUrl: string, id: string) {
   return new File([blob], id + '.png', { type: 'image/png' });
 }
 
-async function uploadImage(image: string) {
-  const id = uuidv4();
-  const file = await convertBase64ToFile(image, id);
+async function uploadImage(image: string, bucket = 'products') {
+  try {
+    const id = uuidv4();
+    const file = await convertBase64ToFile(image, id);
 
-  const token = await getToken(id);
-  if (token) {
-    const { data } = await supabase.storage.from('products').uploadToSignedUrl(`${id}.png`, token, file);
-    if (data) {
-      return data?.fullPath as string;
+    const token = await getToken(id, bucket);
+    if (token) {
+      const { data } = await supabase.storage.from(bucket).uploadToSignedUrl(`${id}.png`, token, file);
+      if (data) {
+        return data?.fullPath as string;
+      }
     }
+  } catch (_error) {
+    throw new Error('Failed to upload image');
   }
 }
 

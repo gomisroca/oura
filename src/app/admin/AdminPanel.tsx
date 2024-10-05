@@ -10,6 +10,7 @@ function AdminPanel() {
     <div className="flex flex-col gap-2">
       <Button onClick={() => router.push('/admin/create/product')}>Create Product</Button>
       <Button onClick={() => router.push('/admin/create/category')}>Create Category</Button>
+      <Button onClick={() => router.push('/admin/create/sale')}>Create Sale</Button>
     </div>
   );
 }
