@@ -25,40 +25,46 @@ export const productRouter = createTRPCRouter({
       if (ctx.session.user?.role !== 'ADMIN')
         throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
 
-      let imageLink;
+      let imageLink: string | undefined;
       if (input.image) {
-        imageLink = await uploadImage(input.image);
+        try {
+          imageLink = await uploadImage(input.image);
+        } catch (_error) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to upload image' });
+        }
       }
 
-      const product = await ctx.db.product.create({
-        data: {
-          name: input.name,
-          description: input.description,
-          basePrice: input.basePrice,
-          onSalePrice: input.onSalePrice,
-          gender: input.gender,
-          subcategoryId: input.subcategory,
-          categoryId: input.category,
-          sportId: input.sport,
-          image: imageLink,
-        },
-      });
+      return await ctx.db.$transaction(async (tx) => {
+        const product = await tx.product.create({
+          data: {
+            name: input.name,
+            description: input.description,
+            basePrice: input.basePrice,
+            onSalePrice: input.onSalePrice,
+            gender: input.gender,
+            subcategoryId: input.subcategory,
+            categoryId: input.category,
+            sportId: input.sport,
+            image: imageLink,
+          },
+        });
 
-      const sizes = await ctx.db.size.createManyAndReturn({
-        data: input.inventory.map((size) => ({ productId: product.id, name: size.name })),
-      });
+        const sizes = await tx.size.createManyAndReturn({
+          data: input.inventory.map((size) => ({ productId: product.id, name: size.name })),
+        });
 
-      await ctx.db.color.createMany({
-        data: input.inventory.flatMap((size) =>
-          size.colors.map((color) => ({
-            sizeId: sizes.find((s) => s.name === size.name)!.id,
-            name: color.name,
-            stock: color.stock,
-          }))
-        ),
-      });
+        await tx.color.createMany({
+          data: input.inventory.flatMap((size) =>
+            size.colors.map((color) => ({
+              sizeId: sizes.find((s) => s.name === size.name)!.id,
+              name: color.name,
+              stock: color.stock,
+            }))
+          ),
+        });
 
-      return product;
+        return product;
+      });
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;

@@ -153,8 +153,14 @@ export const categoryRouter = createTRPCRouter({
     try {
       if (ctx.session.user?.role !== 'ADMIN')
         throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
-      const sport = await ctx.db.sport.create({ data: { name: input.sport } });
-      return sport;
+
+      const sport = await ctx.db.sport.findFirst({
+        where: { name: input.sport },
+      });
+      if (sport) return sport;
+
+      const newSport = await ctx.db.sport.create({ data: { name: input.sport } });
+      return newSport;
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;
@@ -173,27 +179,33 @@ export const categoryRouter = createTRPCRouter({
         if (ctx.session.user?.role !== 'ADMIN')
           throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
 
-        // First, try to find the sport
-        const sport = await ctx.db.sport.findUnique({
-          where: { id: input.sportId },
-        });
-        if (!sport) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
-        }
-
-        // Next, try to find the category
-        const category = await ctx.db.category.findFirst({
-          where: { name: input.category, sportId: sport.id },
-        });
-
-        if (!category) {
-          // If the category doesn't exist, create it
-          const newCategory = await ctx.db.category.create({
-            data: { name: input.category, sportId: sport.id },
+        return await ctx.db.$transaction(async (tx) => {
+          // First, try to find the sport
+          const sport = await tx.sport.findUnique({
+            where: { id: input.sportId },
           });
-          return newCategory;
-        }
-        return category;
+
+          if (!sport) {
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
+          }
+
+          // Try to find the category associated with the sport
+          let category = await tx.category.findFirst({
+            where: { name: input.category, sportId: sport.id },
+          });
+
+          // If the category doesn't exist, create it
+          if (!category) {
+            category = await tx.category.create({
+              data: {
+                name: input.category,
+                sportId: sport.id,
+              },
+            });
+          }
+
+          return category;
+        });
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
@@ -212,35 +224,40 @@ export const categoryRouter = createTRPCRouter({
         if (ctx.session.user?.role !== 'ADMIN')
           throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
 
-        // First, try to find the sport
-        const sport = await ctx.db.sport.findUnique({
-          where: { id: input.sportId },
-        });
-        if (!sport) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
-        }
-
-        // Next, try to find the category
-        const category = await ctx.db.category.findUnique({
-          where: { id: input.categoryId },
-        });
-        if (!category) {
-          throw new TRPCError({ code: 'NOT_FOUND', message: 'Category not found' });
-        }
-
-        // Try to find the subcategory
-        const subcategory = await ctx.db.subcategory.findFirst({
-          where: { name: input.subcategory, categoryId: category.id },
-        });
-        if (!subcategory) {
-          // If the subcategory doesn't exist, create it
-          const newSubcategory = await ctx.db.subcategory.create({
-            data: { name: input.subcategory, categoryId: category.id },
+        return await ctx.db.$transaction(async (tx) => {
+          // First, try to find the sport
+          const sport = await tx.sport.findUnique({
+            where: { id: input.sportId },
           });
-          return newSubcategory;
-        }
+          if (!sport) {
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
+          }
 
-        return subcategory;
+          // Next, try to find the category
+          const category = await tx.category.findUnique({
+            where: { id: input.categoryId },
+          });
+          if (!category) {
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Category not found' });
+          }
+
+          // Try to find the subcategory associated with the category
+          let subcategory = await tx.subcategory.findFirst({
+            where: { name: input.subcategory, categoryId: category.id },
+          });
+
+          // If the subcategory doesn't exist, create it
+          if (!subcategory) {
+            subcategory = await tx.subcategory.create({
+              data: {
+                name: input.subcategory,
+                categoryId: category.id,
+              },
+            });
+          }
+
+          return subcategory;
+        });
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
