@@ -40,3 +40,16 @@ interface OrderItem extends OrderProduct {
   size: Size;
   color: Color;
 }
+
+interface SaleCategory {
+  id: number;
+  name: string;
+  categories: {
+    name: string;
+    id: number;
+    subcategories?: {
+      name: string;
+      id: number;
+    }[];
+  }[];
+}

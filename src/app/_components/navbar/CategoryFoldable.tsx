@@ -6,7 +6,54 @@ import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import { FaCaretLeft } from 'react-icons/fa6';
 import Link from 'next/link';
-import { type SportWithCategories } from 'types';
+import { type SaleCategory, type SportWithCategories } from 'types';
+
+function SaleFoldable({
+  sports,
+  setSelected,
+}: {
+  sports: SaleCategory[];
+  setSelected: React.Dispatch<React.SetStateAction<string | null>>;
+}) {
+  const [activeSport, setActiveSport] = React.useState<number | null>(null);
+
+  return (
+    <>
+      <div className={`flex flex-col gap-2 ${activeSport ? 'hidden' : ''}`}>
+        {sports.map((sport: SaleCategory) => (
+          <Button
+            key={sport.id}
+            name={sport.name}
+            className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
+            disabled={activeSport ? true : false}
+            onClick={() => setActiveSport(sport.id)}>
+            {sport.name}
+          </Button>
+        ))}
+        <Button name="Back" className={`z-50 w-full ${activeSport ? 'hidden' : ''}`} onClick={() => setSelected(null)}>
+          <FaCaretLeft />
+        </Button>
+      </div>
+      {activeSport && (
+        <div className="flex flex-col gap-2">
+          {sports
+            .find((sport: SaleCategory) => sport.id === activeSport)
+            ?.categories.map((category) => (
+              <Link key={category.id} href={`/sale/${activeSport}/${category.id}`} className="w-full">
+                <Button name={category.name} className="z-50 w-full">
+                  {category.name}
+                </Button>
+              </Link>
+            ))}
+
+          <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
+            <FaCaretLeft />
+          </Button>
+        </div>
+      )}
+    </>
+  );
+}
 
 function SportsFoldable({
   sports,
@@ -114,10 +161,14 @@ export default function CategoryFoldable({
   sports,
   maleSports,
   femaleSports,
+  saleName,
+  saleSports,
 }: {
   sports: SportWithCategories[];
   maleSports: SportWithCategories[];
   femaleSports: SportWithCategories[];
+  saleName?: string;
+  saleSports?: SaleCategory[];
 }) {
   const [selected, setSelected] = React.useState<string | null>(null);
 
@@ -143,6 +194,16 @@ export default function CategoryFoldable({
       <Foldable
         button={{ name: 'Categories', text: <FaSearch size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
+        {saleName && saleSports && (
+          <Button
+            name="Sale"
+            className={`z-50 w-full overflow-hidden border-2 border-orange-500 dark:border-orange-500 ${selected ? 'hidden' : ''}`}
+            disabled={selected ? true : false}
+            onClick={() => setSelected('SALE')}>
+            <p className="pointer-events-none absolute right-0 text-7xl opacity-10">%</p>
+            {saleName}
+          </Button>
+        )}
         <Button
           name="Sports"
           className={`z-50 w-full ${selected ? 'hidden' : ''}`}
@@ -164,6 +225,7 @@ export default function CategoryFoldable({
           onClick={() => setSelected('FEMALE')}>
           Woman
         </Button>
+        {selected === 'SALE' && saleSports && <SaleFoldable sports={saleSports} setSelected={setSelected} />}
         {selected === 'SPORTS' && <SportsFoldable sports={sports} setSelected={setSelected} />}
         {selected === 'MALE' && <GenderFoldable gender="man" sports={maleSports} setSelected={setSelected} />}
         {selected === 'FEMALE' && <GenderFoldable gender="woman" sports={femaleSports} setSelected={setSelected} />}
