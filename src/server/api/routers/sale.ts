@@ -5,7 +5,7 @@ import uploadImage from '@/utils/uploadImage';
 
 const createSchema = z.object({
   name: z.string().min(1),
-  startDate: z.date().min(new Date()),
+  startDate: z.date(),
   endDate: z.date().min(new Date()),
   image: z.string().optional(),
   selectedProducts: z.array(z.string()).min(1),
@@ -24,7 +24,16 @@ export const saleRouter = createTRPCRouter({
           },
         },
         include: {
-          products: true,
+          products: {
+            include: {
+              sizes: {
+                include: {
+                  colors: true,
+                },
+              },
+              sales: true,
+            },
+          },
         },
       });
     } catch (error) {
