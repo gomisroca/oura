@@ -46,6 +46,87 @@ export const saleRouter = createTRPCRouter({
       }
     }
   }),
+  getProductsByCategory: publicProcedure
+    .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.db.sale.findFirst({
+          where: {
+            startDate: {
+              lte: new Date(),
+            },
+            endDate: {
+              gte: new Date(),
+            },
+          },
+          include: {
+            products: {
+              where: {
+                categoryId: input.categoryId,
+                gender: input.gender ? { has: input.gender } : undefined,
+              },
+              include: {
+                sizes: {
+                  include: {
+                    colors: true,
+                  },
+                },
+                sales: true,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by category:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by category' });
+        }
+      }
+    }),
+
+  getProductsBySubcategory: publicProcedure
+    .input(z.object({ subcategoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.db.sale.findFirst({
+          where: {
+            startDate: {
+              lte: new Date(),
+            },
+            endDate: {
+              gte: new Date(),
+            },
+          },
+          include: {
+            products: {
+              where: {
+                subcategoryId: input.subcategoryId,
+                gender: input.gender ? { has: input.gender } : undefined,
+              },
+              include: {
+                sizes: {
+                  include: {
+                    colors: true,
+                  },
+                },
+                sales: true,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by subcategory:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by subcategory' });
+        }
+      }
+    }),
   create: protectedProcedure.input(createSchema).mutation(async ({ ctx, input }) => {
     try {
       if (ctx.session.user?.role !== 'ADMIN')
