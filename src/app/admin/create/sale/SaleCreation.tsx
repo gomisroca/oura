@@ -86,12 +86,6 @@ export default function SaleCreation() {
     const startDateTime = new Date(`${startDate}T${startTime}`);
     const endDateTime = new Date(`${endDate}T${endTime}`);
 
-    console.log(name);
-    console.log(startDate);
-    console.log(endDate);
-    console.log(image);
-    console.log(selectedProducts);
-
     createSale.mutate({
       name,
       startDate: startDateTime,

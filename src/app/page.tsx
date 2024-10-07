@@ -5,7 +5,7 @@ import MessageWrapper from './_components/ui/MessageWrapper';
 import LandingContent from './LandingContent';
 import { type ProductWithSizes } from 'types';
 
-async function DekstopLanding() {
+async function LandingHero() {
   const sale = await api.sale.get();
   const products: ProductWithSizes[] | undefined = sale?.products.sort(
     (a, b) => b.amountSold + b.views - (a.amountSold + a.views)
@@ -26,18 +26,6 @@ async function DekstopLanding() {
       {products && <LandingContent sale={sale} products={products} />}
     </>
   );
-}
-
-function MobileLanding() {
-  return <div></div>;
-}
-
-function LandingHero() {
-  if (typeof window !== 'undefined' && window.innerWidth < 768) {
-    return <MobileLanding />;
-  } else {
-    return <DekstopLanding />;
-  }
 }
 
 export default LandingHero;
