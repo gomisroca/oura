@@ -1,65 +1,24 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react'
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
+import Fade from 'embla-carousel-fade'
 import { ProductWithSizes } from 'types';
 import ProductCard from '../product/ProductCard';
-import Button from './Button';
 
-const Carousel = ({ products }: { products: ProductWithSizes[] }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [hovering, setHovering] = useState(false);
-
-  setTimeout(() => {
-    if(hovering) return;
-    setCurrentIndex((currentIndex + 1) % products.length);
-  }, 3000);
-
-  const handleNext = () => {
-    setCurrentIndex((currentIndex + 1) % products.length);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((currentIndex - 1 + products.length) % products.length);
-  };
-
-  const handleMouseEnter = () => {
-    setHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setHovering(false);
-  };
+export default function Carousel({ products }: { products: ProductWithSizes[] }) {
+  const [emblaRef] = useEmblaCarousel({ align: 'center' }, [Autoplay({ stopOnMouseEnter: true, stopOnInteraction: false }), Fade()])
 
   return (
-    <div 
-    className="relative"
-    onMouseEnter={handleMouseEnter}
-    onMouseLeave={handleMouseLeave}
-    >
-      <div className="relative overflow-hidden flex-row flex">
+    <div className="overflow-hidden" ref={emblaRef}>
+      <div className="flex overflow-hidden">
         {products.map((product, index) => (
-          <div
-            key={product.id}
-            className={`${index === currentIndex ? 'active' : 'hidden'}`}
-          >
-            <ProductCard product={product} />
+          <div key={index} className="flex-[0_0_100%] min-w-0 flex items-center justify-center">
+            <ProductCard product={product} className='h-[15rem] w-[80vw] sm:h-[20rem] md:h-[25rem] md:w-[20rem]' />
           </div>
         ))}
       </div>
-      <Button
-        className="absolute top-10 left-0 z-10"
-        onClick={handlePrev}
-      >
-        &#10094;
-      </Button>
-      <Button
-        className="absolute top-10 right-0 z-10"
-        onClick={handleNext}
-      >
-        &#10095;
-      </Button>
     </div>
-  );
-};
-
-export default Carousel;
+  )
+}
