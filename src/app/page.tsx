@@ -21,7 +21,7 @@ async function DekstopLanding() {
         alt="sale"
         width={1920}
         height={1080}
-        className="pointer-events-none absolute bottom-0 left-0 right-0 top-0 h-full w-full object-cover object-center"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 top-0 min-h-screen w-full object-cover object-center xl:h-full"
       />
       {products && <LandingContent sale={sale} products={products} />}
     </>
