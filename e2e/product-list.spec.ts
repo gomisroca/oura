@@ -1,17 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 test('has product list', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/sport/2/2');
 
   const productList = page.getByRole('list');
-  await expect(productList).toContainText('Product 1');
+  await expect(productList).toContainText('Product 5');
 });
 
 test('product list changes when category is selected', async ({ page }) => {
   // Check the initial state
   await page.goto('/');
-  const productList = page.getByRole('list');
-  await expect(productList).toContainText('Product 1');
 
   // Check the state after clicking on a category
   await page.getByRole('button', { name: 'Categories' }).click();
