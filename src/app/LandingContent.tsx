@@ -12,7 +12,7 @@ export default function LandingContent({ sale, products }: { sale?: Sale; produc
     if (type === 'sale') {
       router.push('/sale');
     } else {
-      router.push('/product');
+      router.push('/sport');
     }
   };
   return (

@@ -29,10 +29,11 @@ function SubcategoryFoldable() {
 
   const { data: subcategories, status } = api.category.getSubcategories.useQuery({
     categoryId: categoryId ? categoryId : undefined,
+    sale: pathname.includes('sale'),
     gender: gender,
   });
 
-  if (pathname.includes('sale') || !categoryId || status === 'error' || !subcategories) {
+  if (!categoryId || status === 'error' || !subcategories) {
     return null;
   }
   return (
