@@ -13,6 +13,7 @@
 import { env } from '@/env';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { type ProductWithSizes } from 'types';
 import ColorBubble from '../ui/ColorBubble';
 import { FaSearch } from 'react-icons/fa';
@@ -25,7 +26,10 @@ function ProductCard({ product, className }: { product: ProductWithSizes; classN
     <div
       onClick={() => setShowDetails(!showDetails)}
       key={product.id}
-      className={`group relative flex h-[25rem] w-[20rem] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-700/30 ${className}`}>
+      className={twMerge(
+        'group relative flex h-[25rem] w-[20rem] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-700/30',
+        className
+      )}>
       <Image
         className="h-full w-full cursor-pointer rounded-t-xl object-cover duration-200 ease-in-out group-hover:contrast-[1.05]"
         src={
@@ -41,9 +45,17 @@ function ProductCard({ product, className }: { product: ProductWithSizes; classN
         className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-slate-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
         {/* Basic Information */}
         <h2>{product.name}</h2>
-        <p>{product.gender.map((gender) => gender[0]!.toUpperCase() + gender.slice(1).toLowerCase()).join(', ')}</p>
         <p>{product.description}</p>
-        <p>{product.sales.length > 0 ? product.onSalePrice : product.basePrice}€</p>
+        <div className="relative items-center justify-center text-center">
+          {product.sales.length > 0 && (
+            <div className="flex flex-row gap-2">
+              <p className="text-sm line-through">{product.basePrice}€</p>
+              <p className="text-sm font-bold uppercase text-red-600">ON SALE</p>
+            </div>
+          )}
+          {product.sales.length > 0 && <p className="text-xl font-bold">{product.onSalePrice}€</p>}
+          {product.sales.length === 0 && <p className="text-xl font-bold"> {product.basePrice}€</p>}
+        </div>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (
