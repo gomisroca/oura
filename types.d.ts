@@ -19,9 +19,9 @@ interface SizeWithColors extends Size {
 }
 
 interface ProductWithSizes extends Product {
-  sport: { name: string } | null;
-  category: { name: string } | null;
-  subcategory: { name: string } | null;
+  sport: { name: string; id: number } | null;
+  category: { name: string; id: number } | null;
+  subcategory: { name: string; id: number } | null;
   sizes: SizeWithColors[];
   sales: ProductOnSale[];
 }
