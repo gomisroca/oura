@@ -24,9 +24,17 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
       <div className="flex w-full flex-col items-center justify-center gap-2 rounded-b-lg bg-slate-200/90 p-4 dark:bg-slate-800/90">
         {/* Basic Information */}
         <h2>{product.name}</h2>
-        <p>{product.gender.map((gender) => gender[0]!.toUpperCase() + gender.slice(1).toLowerCase()).join(', ')}</p>
         <p>{product.description}</p>
-        <p>{product.sales.length > 0 ? product.onSalePrice : product.basePrice}€</p>
+        <div className="relative items-center justify-center text-center">
+          {product.sales.length > 0 && (
+            <div className="flex flex-row gap-2">
+              <p className="text-sm line-through">{product.basePrice}€</p>
+              <p className="text-sm font-bold uppercase text-red-600">ON SALE</p>
+            </div>
+          )}
+          {product.sales.length > 0 && <p className="text-xl font-bold">{product.onSalePrice}€</p>}
+          {product.sales.length === 0 && <p className="text-xl font-bold"> {product.basePrice}€</p>}
+        </div>
         {/* Size and Color Information */}
         <div>
           {product.sizes.map((size) => (

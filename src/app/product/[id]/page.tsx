@@ -2,6 +2,7 @@ import { api } from '@/trpc/server';
 import { type ProductWithSizes } from 'types';
 import ProductContent from './ProductContent';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
+import ProductBackButtons from './ProductBackButtons';
 
 export default async function ProductView({ params }: { params: { id: string } }) {
   try {
@@ -12,7 +13,12 @@ export default async function ProductView({ params }: { params: { id: string } }
 
     // Add a link to the sport/category/subcategory of the product
     // Add a list of similar products below the product
-    return <ProductContent product={product} />;
+    return (
+      <>
+        <ProductBackButtons product={product} />
+        <ProductContent product={product} />
+      </>
+    );
   } catch (_error) {
     return <MessageWrapper message="Unable to fetch product at this time" />;
   }

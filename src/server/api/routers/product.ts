@@ -88,9 +88,9 @@ export const productRouter = createTRPCRouter({
               colors: true,
             },
           },
-          sport: { select: { name: true } },
-          category: { select: { name: true } },
-          subcategory: { select: { name: true } },
+          sport: { select: { name: true, id: true } },
+          category: { select: { name: true, id: true } },
+          subcategory: { select: { name: true, id: true } },
           sales: {
             where: {
               sale: {
@@ -123,9 +123,9 @@ export const productRouter = createTRPCRouter({
         data: { views: { increment: 1 } },
         include: {
           sizes: { include: { colors: true } },
-          sport: { select: { name: true } },
-          category: { select: { name: true } },
-          subcategory: { select: { name: true } },
+          sport: { select: { name: true, id: true } },
+          category: { select: { name: true, id: true } },
+          subcategory: { select: { name: true, id: true } },
           sales: {
             where: {
               sale: {
@@ -162,9 +162,9 @@ export const productRouter = createTRPCRouter({
           },
           include: {
             sizes: { include: { colors: true } },
-            sport: { select: { name: true } },
-            category: { select: { name: true } },
-            subcategory: { select: { name: true } },
+            sport: { select: { name: true, id: true } },
+            category: { select: { name: true, id: true } },
+            subcategory: { select: { name: true, id: true } },
             sales: {
               where: {
                 sale: {
@@ -201,9 +201,9 @@ export const productRouter = createTRPCRouter({
           },
           include: {
             sizes: { include: { colors: true } },
-            sport: { select: { name: true } },
-            category: { select: { name: true } },
-            subcategory: { select: { name: true } },
+            sport: { select: { name: true, id: true } },
+            category: { select: { name: true, id: true } },
+            subcategory: { select: { name: true, id: true } },
             sales: {
               where: {
                 sale: {
@@ -240,9 +240,9 @@ export const productRouter = createTRPCRouter({
           },
           include: {
             sizes: { include: { colors: true } },
-            sport: { select: { name: true } },
-            category: { select: { name: true } },
-            subcategory: { select: { name: true } },
+            sport: { select: { name: true, id: true } },
+            category: { select: { name: true, id: true } },
+            subcategory: { select: { name: true, id: true } },
             sales: {
               where: {
                 sale: {
