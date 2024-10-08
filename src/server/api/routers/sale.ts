@@ -12,7 +12,7 @@ const createSchema = z.object({
 });
 
 export const saleRouter = createTRPCRouter({
-  get: publicProcedure.query(async ({ ctx }) => {
+  get: publicProcedure.input(z.enum(['MALE', 'FEMALE', 'OTHER']).optional()).query(async ({ ctx, input }) => {
     try {
       return ctx.db.sale.findFirst({
         where: {
@@ -25,13 +25,25 @@ export const saleRouter = createTRPCRouter({
         },
         include: {
           products: {
+            where: {
+              product: {
+                gender: input ? { has: input } : undefined,
+              },
+            },
             include: {
-              sizes: {
+              product: {
                 include: {
-                  colors: true,
+                  sizes: {
+                    include: {
+                      colors: true,
+                    },
+                  },
+                  sport: { select: { name: true } },
+                  category: { select: { name: true } },
+                  subcategory: { select: { name: true } },
+                  sales: true,
                 },
               },
-              sales: true,
             },
           },
         },
@@ -46,6 +58,56 @@ export const saleRouter = createTRPCRouter({
       }
     }
   }),
+  getProductsBySport: publicProcedure
+    .input(z.object({ sportId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.db.sale.findFirst({
+          where: {
+            startDate: {
+              lte: new Date(),
+            },
+            endDate: {
+              gte: new Date(),
+            },
+          },
+          include: {
+            products: {
+              where: {
+                product: {
+                  sportId: input.sportId,
+                  gender: input.gender ? { has: input.gender } : undefined,
+                },
+              },
+              include: {
+                product: {
+                  include: {
+                    sizes: {
+                      include: {
+                        colors: true,
+                      },
+                    },
+                    sport: { select: { name: true } },
+                    category: { select: { name: true } },
+                    subcategory: { select: { name: true } },
+                    sales: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by sport:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by sport' });
+        }
+      }
+    }),
+
   getProductsByCategory: publicProcedure
     .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
@@ -62,16 +124,25 @@ export const saleRouter = createTRPCRouter({
           include: {
             products: {
               where: {
-                categoryId: input.categoryId,
-                gender: input.gender ? { has: input.gender } : undefined,
+                product: {
+                  categoryId: input.categoryId,
+                  gender: input.gender ? { has: input.gender } : undefined,
+                },
               },
               include: {
-                sizes: {
+                product: {
                   include: {
-                    colors: true,
+                    sizes: {
+                      include: {
+                        colors: true,
+                      },
+                    },
+                    sport: { select: { name: true } },
+                    category: { select: { name: true } },
+                    subcategory: { select: { name: true } },
+                    sales: true,
                   },
                 },
-                sales: true,
               },
             },
           },
@@ -103,16 +174,25 @@ export const saleRouter = createTRPCRouter({
           include: {
             products: {
               where: {
-                subcategoryId: input.subcategoryId,
-                gender: input.gender ? { has: input.gender } : undefined,
+                product: {
+                  subcategoryId: input.subcategoryId,
+                  gender: input.gender ? { has: input.gender } : undefined,
+                },
               },
               include: {
-                sizes: {
+                product: {
                   include: {
-                    colors: true,
+                    sizes: {
+                      include: {
+                        colors: true,
+                      },
+                    },
+                    sport: { select: { name: true } },
+                    category: { select: { name: true } },
+                    subcategory: { select: { name: true } },
+                    sales: true,
                   },
                 },
-                sales: true,
               },
             },
           },
@@ -177,11 +257,17 @@ export const saleRouter = createTRPCRouter({
             startDate: input.startDate,
             endDate: input.endDate,
             image: imageLink,
-            products: {
-              connect: input.selectedProducts.map((id) => ({ id })),
-            },
           },
         });
+
+        for (const product of input.selectedProducts) {
+          await tx.productOnSale.create({
+            data: {
+              productId: product,
+              saleId: sale.id,
+            },
+          });
+        }
 
         return sale;
       });

@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
-import { type SaleCategory } from 'types';
 
 export const categoryRouter = createTRPCRouter({
   getSports: publicProcedure.query(async ({ ctx }) => {
@@ -49,7 +48,13 @@ export const categoryRouter = createTRPCRouter({
   }),
 
   getSubcategories: publicProcedure
-    .input(z.object({ categoryId: z.number().optional(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .input(
+      z.object({
+        categoryId: z.number().optional(),
+        gender: z.enum(['MALE', 'FEMALE']).optional(),
+        sale: z.boolean().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       try {
         if (input.categoryId) {
@@ -59,6 +64,20 @@ export const categoryRouter = createTRPCRouter({
               products: {
                 some: {
                   gender: input.gender ? { has: input.gender } : undefined,
+                  sales: input.sale
+                    ? {
+                        some: {
+                          sale: {
+                            startDate: {
+                              lte: new Date(),
+                            },
+                            endDate: {
+                              gte: new Date(),
+                            },
+                          },
+                        },
+                      }
+                    : undefined,
                 },
               },
             },
@@ -76,76 +95,7 @@ export const categoryRouter = createTRPCRouter({
         }
       }
     }),
-  getSportsInSale: publicProcedure.query(async ({ ctx }) => {
-    try {
-      const sale = await ctx.db.sale.findFirst({
-        where: {
-          startDate: {
-            lte: new Date(),
-          },
-          endDate: {
-            gte: new Date(),
-          },
-        },
-        include: {
-          products: {
-            include: {
-              subcategory: {
-                include: {
-                  Category: {
-                    include: {
-                      sport: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
-      const sports: SaleCategory[] = [];
-      if (sale) {
-        for (const product of sale?.products) {
-          if (product.subcategory) {
-            const productSport = {
-              name: product.subcategory.Category.sport.name,
-              id: product.subcategory.Category.sport.id,
-              categories: [],
-            };
-            if (!sports.find((sport) => sport.id === productSport.id)) {
-              sports.push(productSport);
-            }
-            const sport = sports.find((sport) => sport.id === productSport.id);
-            if (!sport!.categories?.find((category) => category.id === product.subcategory!.Category.id)) {
-              sport!.categories.push({
-                name: product.subcategory.Category.name,
-                id: product.subcategory.Category.id,
-                subcategories: [],
-              });
-            }
-            const category = sport!.categories.find((category) => category.id === product.subcategory!.Category.id);
-            if (!category!.subcategories?.find((subcategory) => subcategory.id === product.subcategory!.id)) {
-              category!.subcategories!.push({
-                name: product.subcategory.name,
-                id: product.subcategory.id,
-              });
-            }
-          }
-        }
-        return { saleName: sale?.name, sports };
-      } else {
-        return null;
-      }
-    } catch (error) {
-      if (error instanceof TRPCError) {
-        throw error;
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('Failed to get sports:', error);
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get sports' });
-      }
-    }
-  }),
+
   getSportsByGender: publicProcedure
     .input(z.object({ gender: z.enum(['MALE', 'FEMALE', 'OTHER']) }))
     .query(async ({ ctx, input }) => {
@@ -218,6 +168,105 @@ export const categoryRouter = createTRPCRouter({
         }
       }
     }),
+
+  getSportsInSale: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const sale = await ctx.db.sale.findFirst({
+        where: {
+          startDate: {
+            lte: new Date(),
+          },
+          endDate: {
+            gte: new Date(),
+          },
+        },
+      });
+      if (sale) {
+        return ctx.db.sport.findMany({
+          where: {
+            categories: {
+              some: {
+                subcategories: {
+                  some: {
+                    products: {
+                      some: {
+                        sales: {
+                          some: {
+                            sale: {
+                              id: sale.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          include: {
+            categories: {
+              where: {
+                subcategories: {
+                  some: {
+                    products: {
+                      some: {
+                        sales: {
+                          some: {
+                            sale: {
+                              id: sale.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              include: {
+                subcategories: {
+                  where: {
+                    products: {
+                      some: {
+                        sales: {
+                          some: {
+                            sale: {
+                              id: sale.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  include: {
+                    products: {
+                      where: {
+                        sales: {
+                          some: {
+                            sale: {
+                              id: sale.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get sports with active sales:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get sports with active sales' });
+      }
+    }
+  }),
 
   createSport: protectedProcedure.input(z.object({ sport: z.string().min(1) })).mutation(async ({ ctx, input }) => {
     try {

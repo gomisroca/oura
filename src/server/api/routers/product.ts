@@ -76,16 +76,33 @@ export const productRouter = createTRPCRouter({
     }
   }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  getAll: publicProcedure.input(z.enum(['MALE', 'FEMALE', 'OTHER']).optional()).query(async ({ ctx, input }) => {
     try {
       return ctx.db.product.findMany({
+        where: {
+          gender: input ? { has: input } : undefined,
+        },
         include: {
           sizes: {
             include: {
               colors: true,
             },
           },
-          sales: true,
+          sport: { select: { name: true } },
+          category: { select: { name: true } },
+          subcategory: { select: { name: true } },
+          sales: {
+            where: {
+              sale: {
+                startDate: {
+                  lte: new Date(),
+                },
+                endDate: {
+                  gte: new Date(),
+                },
+              },
+            },
+          },
         },
       });
     } catch (error) {
@@ -104,7 +121,24 @@ export const productRouter = createTRPCRouter({
       return ctx.db.product.update({
         where: { id: input.id },
         data: { views: { increment: 1 } },
-        include: { sizes: { include: { colors: true } }, sales: true },
+        include: {
+          sizes: { include: { colors: true } },
+          sport: { select: { name: true } },
+          category: { select: { name: true } },
+          subcategory: { select: { name: true } },
+          sales: {
+            where: {
+              sale: {
+                startDate: {
+                  lte: new Date(),
+                },
+                endDate: {
+                  gte: new Date(),
+                },
+              },
+            },
+          },
+        },
       });
     } catch (error) {
       if (error instanceof TRPCError) {
@@ -117,6 +151,45 @@ export const productRouter = createTRPCRouter({
     }
   }),
 
+  getBySport: publicProcedure
+    .input(z.object({ sportId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.db.product.findMany({
+          where: {
+            sportId: input.sportId,
+            gender: input.gender ? { has: input.gender } : undefined,
+          },
+          include: {
+            sizes: { include: { colors: true } },
+            sport: { select: { name: true } },
+            category: { select: { name: true } },
+            subcategory: { select: { name: true } },
+            sales: {
+              where: {
+                sale: {
+                  startDate: {
+                    lte: new Date(),
+                  },
+                  endDate: {
+                    gte: new Date(),
+                  },
+                },
+              },
+            },
+          },
+        });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to get products by category:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get products by category' });
+        }
+      }
+    }),
+
   getByCategory: publicProcedure
     .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
@@ -126,7 +199,24 @@ export const productRouter = createTRPCRouter({
             categoryId: input.categoryId,
             gender: input.gender ? { has: input.gender } : undefined,
           },
-          include: { sizes: { include: { colors: true } }, sales: true },
+          include: {
+            sizes: { include: { colors: true } },
+            sport: { select: { name: true } },
+            category: { select: { name: true } },
+            subcategory: { select: { name: true } },
+            sales: {
+              where: {
+                sale: {
+                  startDate: {
+                    lte: new Date(),
+                  },
+                  endDate: {
+                    gte: new Date(),
+                  },
+                },
+              },
+            },
+          },
         });
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -148,7 +238,24 @@ export const productRouter = createTRPCRouter({
             subcategoryId: input.subcategoryId,
             gender: input.gender ? { has: input.gender } : undefined,
           },
-          include: { sizes: { include: { colors: true } }, sales: true },
+          include: {
+            sizes: { include: { colors: true } },
+            sport: { select: { name: true } },
+            category: { select: { name: true } },
+            subcategory: { select: { name: true } },
+            sales: {
+              where: {
+                sale: {
+                  startDate: {
+                    lte: new Date(),
+                  },
+                  endDate: {
+                    gte: new Date(),
+                  },
+                },
+              },
+            },
+          },
         });
       } catch (error) {
         if (error instanceof TRPCError) {
