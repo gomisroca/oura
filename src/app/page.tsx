@@ -11,7 +11,7 @@ async function LandingHero() {
   // Get products in the sale, if there is one, otherwise get all products
   let products: ProductWithSizes[] | undefined;
   if (sale) {
-    products = sale?.products;
+    products = sale?.products.map((p) => p.product);
   } else {
     products = await api.product.getAll();
   }
