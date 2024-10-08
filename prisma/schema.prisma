@@ -94,26 +94,26 @@ enum GENDER {
 }
 
 model Product {
-    id            String          @id @default(uuid())
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
+    id            String         @id @default(uuid())
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
     name          String
     description   String
     image         String?
-    gender        GENDER[]        @default([MALE, FEMALE, OTHER])
-    subcategory   Subcategory?    @relation(fields: [subcategoryId], references: [id])
+    gender        GENDER[]       @default([MALE, FEMALE, OTHER])
+    subcategory   Subcategory?   @relation(fields: [subcategoryId], references: [id])
     subcategoryId Int?
-    category      Category?       @relation(fields: [categoryId], references: [id])
+    category      Category?      @relation(fields: [categoryId], references: [id])
     categoryId    Int?
-    sport         Sport?          @relation(fields: [sportId], references: [id])
+    sport         Sport?         @relation(fields: [sportId], references: [id])
     sportId       Int?
     basePrice     Float
     onSalePrice   Float
-    amountSold    Int             @default(0)
-    views         Int             @default(0)
+    amountSold    Int            @default(0)
+    views         Int            @default(0)
     sizes         Size[]
     orders        OrderProduct[]
-    sales         ProductOnSale[]
+    sales         SaleProduct[]
 }
 
 model OrderProduct {
@@ -157,15 +157,15 @@ model Subcategory {
 }
 
 model Sale {
-    id        String          @id @default(cuid())
+    id        String        @id @default(cuid())
     name      String
     startDate DateTime
     endDate   DateTime
     image     String?
-    products  ProductOnSale[]
+    products  SaleProduct[]
 }
 
-model ProductOnSale {
+model SaleProduct {
     id        Int      @id @default(autoincrement())
     product   Product  @relation(fields: [productId], references: [id])
     productId String

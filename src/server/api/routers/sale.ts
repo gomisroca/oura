@@ -265,7 +265,7 @@ export const saleRouter = createTRPCRouter({
         });
 
         for (const product of input.selectedProducts) {
-          await tx.productOnSale.create({
+          await tx.saleProduct.create({
             data: {
               productId: product,
               saleId: sale.id,
