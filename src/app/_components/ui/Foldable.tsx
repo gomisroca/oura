@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Button from './Button';
 
@@ -54,7 +55,7 @@ function Foldable({ button, addCaret = true, children, className }: FoldableProp
     <div className="relative flex flex-col items-end w-full" ref={foldableRef} data-testid="foldable">
       <Button 
       name={button?.name ?? 'Foldable Button'}
-      className={`transition duration-200 ease-in-out ${isOpen ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''} ${button?.className ? button.className : ''}`}
+      className={twMerge('transition duration-200 ease-in-out', isOpen && 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700', button?.className)}
       onClick={toggleOpen}
       >
         {button?.text}
@@ -62,7 +63,7 @@ function Foldable({ button, addCaret = true, children, className }: FoldableProp
       </Button>
       {isOpen && (
         <div 
-        className={`absolute mt-14 items-end justify-center flex flex-col gap-2 ${className ? className : ''}`}>
+        className={twMerge('absolute mt-14 items-end justify-center flex flex-col gap-2', className)}>
           {React.Children.map(children, (child, index) => (
             <>
               {child}

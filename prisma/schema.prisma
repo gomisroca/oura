@@ -94,24 +94,26 @@ enum GENDER {
 }
 
 model Product {
-    id            String         @id @default(uuid())
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
+    id            String          @id @default(uuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
     name          String
     description   String
     image         String?
-    gender        GENDER[]       @default([MALE, FEMALE, OTHER])
-    subcategory   Subcategory?   @relation(fields: [subcategoryId], references: [id])
+    gender        GENDER[]        @default([MALE, FEMALE, OTHER])
+    subcategory   Subcategory?    @relation(fields: [subcategoryId], references: [id])
     subcategoryId Int?
+    category      Category?       @relation(fields: [categoryId], references: [id])
     categoryId    Int?
+    sport         Sport?          @relation(fields: [sportId], references: [id])
     sportId       Int?
     basePrice     Float
     onSalePrice   Float
-    amountSold    Int            @default(0)
-    views         Int            @default(0)
+    amountSold    Int             @default(0)
+    views         Int             @default(0)
     sizes         Size[]
     orders        OrderProduct[]
-    sales         Sale[]
+    sales         ProductOnSale[]
 }
 
 model OrderProduct {
@@ -133,6 +135,7 @@ model Sport {
     id         Int        @id @default(autoincrement())
     name       String
     categories Category[]
+    products   Product[]
 }
 
 // Could be Jackets > Bomber jacket, leather jacket, etc.
@@ -142,23 +145,33 @@ model Category {
     sport         Sport         @relation(fields: [sportId], references: [id])
     sportId       Int
     subcategories Subcategory[]
+    products      Product[]
 }
 
 model Subcategory {
     id         Int       @id @default(autoincrement())
     name       String
-    Category   Category  @relation(fields: [categoryId], references: [id])
+    category   Category  @relation(fields: [categoryId], references: [id])
     categoryId Int
     products   Product[]
 }
 
 model Sale {
-    id        String    @id @default(cuid())
+    id        String          @id @default(cuid())
     name      String
     startDate DateTime
     endDate   DateTime
     image     String?
-    products  Product[]
+    products  ProductOnSale[]
+}
+
+model ProductOnSale {
+    id        Int      @id @default(autoincrement())
+    product   Product  @relation(fields: [productId], references: [id])
+    productId String
+    sale      Sale     @relation(fields: [saleId], references: [id])
+    saleId    String
+    createdAt DateTime @default(now())
 }
 
 model Size {

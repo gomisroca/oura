@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '../ui/Button';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaFilter } from 'react-icons/fa6';
 import Foldable from '../ui/Foldable';
@@ -17,6 +17,7 @@ function SubcategoryFoldableWrapper() {
 }
 
 function SubcategoryFoldable() {
+  const pathname = usePathname();
   const params = useParams();
   const searchParams = useSearchParams();
   const genderParam = searchParams.get('gender');
@@ -28,6 +29,7 @@ function SubcategoryFoldable() {
 
   const { data: subcategories, status } = api.category.getSubcategories.useQuery({
     categoryId: categoryId ? categoryId : undefined,
+    sale: pathname.includes('sale'),
     gender: gender,
   });
 
@@ -44,9 +46,11 @@ function SubcategoryFoldable() {
             key={subcategory.id}
             className="w-full self-start"
             href={
-              genderParam
-                ? `/sport/${sportId}/${categoryId}/${subcategory.id}?gender=${genderParam}`
-                : `/sport/${sportId}/${categoryId}/${subcategory.id}`
+              pathname.includes('sale')
+                ? `/sale/${sportId}/${categoryId}/${subcategory.id}`
+                : genderParam
+                  ? `/sport/${sportId}/${categoryId}/${subcategory.id}?gender=${genderParam}`
+                  : `/sport/${sportId}/${categoryId}/${subcategory.id}`
             }>
             <Button
               key={subcategory.id}

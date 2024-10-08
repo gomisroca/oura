@@ -13,17 +13,18 @@ export default async function CategoryList({
   try {
     const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
 
-    const products = await api.product.getByCategory({ categoryId: Number(params.category), gender: gender });
-    if (products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
+    const sale = await api.sale.getProductsByCategory({ categoryId: Number(params.category), gender: gender });
+    if (!sale || sale.products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
     return (
       <div className="flex flex-col gap-4">
         <div className="absolute left-0 right-0 top-24 z-10 flex flex-row items-center justify-center">
-          <BackButton>{products[0]?.sport?.name ?? 'Sport'}</BackButton>
+          <BackButton steps={-2}>Sale</BackButton>
+          <BackButton>{sale.products[0]?.product.sport?.name ?? 'Sport'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{products[0]?.category?.name}</span>
+            <span className="text-slate-800 dark:text-slate-400">{sale.products[0]?.product.category?.name}</span>
           </div>
         </div>
-        <ProductList products={products} />
+        <ProductList products={sale.products.map((p) => p.product)} />
       </div>
     );
   } catch (_error) {

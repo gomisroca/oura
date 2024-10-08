@@ -6,7 +6,7 @@ import {
   type Category,
   type OrderProduct,
   type Order,
-  type Sale,
+  type ProductOnSale,
 } from '@prisma/client';
 
 interface Provider {
@@ -19,8 +19,11 @@ interface SizeWithColors extends Size {
 }
 
 interface ProductWithSizes extends Product {
+  sport: { name: string; id: number } | null;
+  category: { name: string; id: number } | null;
+  subcategory: { name: string; id: number } | null;
   sizes: SizeWithColors[];
-  sales: Sale[];
+  sales: ProductOnSale[];
 }
 
 interface SportWithCategories extends Sport {
@@ -39,4 +42,17 @@ interface OrderItem extends OrderProduct {
   product: Product;
   size: Size;
   color: Color;
+}
+
+interface SaleCategory {
+  id: number;
+  name: string;
+  categories: {
+    name: string;
+    id: number;
+    subcategories?: {
+      name: string;
+      id: number;
+    }[];
+  }[];
 }

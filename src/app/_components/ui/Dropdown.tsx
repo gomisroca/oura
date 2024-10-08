@@ -17,7 +17,8 @@
  * </Dropdown>
  */
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 import Button from './Button';
 
 interface DropdownProps {
@@ -45,14 +46,14 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
       {/* Renders the button with the provided name and onClick event handler */}
       <Button
         name={button.name ?? 'Dropdown'}
-        className={`${button.className ? button.className : ''}`}
+        className={button?.className}
         onClick={() => setIsOpen(!isOpen)}>
         {button.text}
       </Button>
       {/* Renders the dropdown menu if isOpen is true */}
       {isOpen && (
         <div
-          className={`absolute z-50 mt-2 ${className ? className : ''}`}>
+          className={twMerge('absolute z-50 mt-2', className)}>
           <ul
             onClick={closeOnChildClick ? handleChildClick : undefined}
             className="flex flex-col items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">
