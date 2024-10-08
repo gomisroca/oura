@@ -4,11 +4,14 @@ import CategoryFoldable from './CategoryFoldable';
 
 async function CategoryFoldableWrapper() {
   try {
-    const sports = await api.category.getSports();
-    const maleCategories = await api.category.getSportsByGender({ gender: 'MALE' });
-    const femaleCategories = await api.category.getSportsByGender({ gender: 'FEMALE' });
-    const sale = await api.sale.get();
-    const saleCategories = await api.category.getSportsInSale();
+    // Run all API calls concurrently
+    const [sports, maleCategories, femaleCategories, sale, saleCategories] = await Promise.all([
+      api.category.getSports(),
+      api.category.getSportsByGender({ gender: 'MALE' }),
+      api.category.getSportsByGender({ gender: 'FEMALE' }),
+      api.sale.get(),
+      api.category.getSportsInSale(),
+    ]);
 
     return (
       <CategoryFoldable
