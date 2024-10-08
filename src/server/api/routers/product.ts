@@ -78,6 +78,7 @@ export const productRouter = createTRPCRouter({
 
   getAll: publicProcedure.input(z.enum(['MALE', 'FEMALE', 'OTHER']).optional()).query(async ({ ctx, input }) => {
     try {
+      const currentTime = new Date();
       return ctx.db.product.findMany({
         where: {
           gender: input ? { has: input } : undefined,
@@ -95,10 +96,10 @@ export const productRouter = createTRPCRouter({
             where: {
               sale: {
                 startDate: {
-                  lte: new Date(),
+                  lte: currentTime,
                 },
                 endDate: {
-                  gte: new Date(),
+                  gte: currentTime,
                 },
               },
             },
@@ -118,6 +119,7 @@ export const productRouter = createTRPCRouter({
 
   visit: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     try {
+      const currentTime = new Date();
       return ctx.db.product.update({
         where: { id: input.id },
         data: { views: { increment: 1 } },
@@ -130,10 +132,10 @@ export const productRouter = createTRPCRouter({
             where: {
               sale: {
                 startDate: {
-                  lte: new Date(),
+                  lte: currentTime,
                 },
                 endDate: {
-                  gte: new Date(),
+                  gte: currentTime,
                 },
               },
             },
@@ -155,6 +157,7 @@ export const productRouter = createTRPCRouter({
     .input(z.object({ sportId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.product.findMany({
           where: {
             sportId: input.sportId,
@@ -169,10 +172,10 @@ export const productRouter = createTRPCRouter({
               where: {
                 sale: {
                   startDate: {
-                    lte: new Date(),
+                    lte: currentTime,
                   },
                   endDate: {
-                    gte: new Date(),
+                    gte: currentTime,
                   },
                 },
               },
@@ -194,6 +197,7 @@ export const productRouter = createTRPCRouter({
     .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.product.findMany({
           where: {
             categoryId: input.categoryId,
@@ -208,10 +212,10 @@ export const productRouter = createTRPCRouter({
               where: {
                 sale: {
                   startDate: {
-                    lte: new Date(),
+                    lte: currentTime,
                   },
                   endDate: {
-                    gte: new Date(),
+                    gte: currentTime,
                   },
                 },
               },
@@ -233,6 +237,7 @@ export const productRouter = createTRPCRouter({
     .input(z.object({ subcategoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.product.findMany({
           where: {
             subcategoryId: input.subcategoryId,
@@ -247,10 +252,10 @@ export const productRouter = createTRPCRouter({
               where: {
                 sale: {
                   startDate: {
-                    lte: new Date(),
+                    lte: currentTime,
                   },
                   endDate: {
-                    gte: new Date(),
+                    gte: currentTime,
                   },
                 },
               },

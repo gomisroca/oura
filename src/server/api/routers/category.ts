@@ -57,6 +57,7 @@ export const categoryRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         if (input.categoryId) {
           return ctx.db.subcategory.findMany({
             where: {
@@ -69,10 +70,10 @@ export const categoryRouter = createTRPCRouter({
                         some: {
                           sale: {
                             startDate: {
-                              lte: new Date(),
+                              lte: currentTime,
                             },
                             endDate: {
-                              gte: new Date(),
+                              gte: currentTime,
                             },
                           },
                         },
@@ -171,13 +172,14 @@ export const categoryRouter = createTRPCRouter({
 
   getSportsInSale: publicProcedure.query(async ({ ctx }) => {
     try {
+      const currentTime = new Date();
       const sale = await ctx.db.sale.findFirst({
         where: {
           startDate: {
-            lte: new Date(),
+            lte: currentTime,
           },
           endDate: {
-            gte: new Date(),
+            gte: currentTime,
           },
         },
       });

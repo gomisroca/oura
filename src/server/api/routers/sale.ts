@@ -14,13 +14,14 @@ const createSchema = z.object({
 export const saleRouter = createTRPCRouter({
   get: publicProcedure.input(z.enum(['MALE', 'FEMALE', 'OTHER']).optional()).query(async ({ ctx, input }) => {
     try {
+      const currentTime = new Date();
       return ctx.db.sale.findFirst({
         where: {
           startDate: {
-            lte: new Date(),
+            lte: currentTime,
           },
           endDate: {
-            gte: new Date(),
+            gte: currentTime,
           },
         },
         include: {
@@ -62,13 +63,14 @@ export const saleRouter = createTRPCRouter({
     .input(z.object({ sportId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.sale.findFirst({
           where: {
             startDate: {
-              lte: new Date(),
+              lte: currentTime,
             },
             endDate: {
-              gte: new Date(),
+              gte: currentTime,
             },
           },
           include: {
@@ -112,13 +114,14 @@ export const saleRouter = createTRPCRouter({
     .input(z.object({ categoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.sale.findFirst({
           where: {
             startDate: {
-              lte: new Date(),
+              lte: currentTime,
             },
             endDate: {
-              gte: new Date(),
+              gte: currentTime,
             },
           },
           include: {
@@ -162,13 +165,14 @@ export const saleRouter = createTRPCRouter({
     .input(z.object({ subcategoryId: z.number(), gender: z.enum(['MALE', 'FEMALE']).optional() }))
     .query(async ({ ctx, input }) => {
       try {
+        const currentTime = new Date();
         return ctx.db.sale.findFirst({
           where: {
             startDate: {
-              lte: new Date(),
+              lte: currentTime,
             },
             endDate: {
-              gte: new Date(),
+              gte: currentTime,
             },
           },
           include: {
