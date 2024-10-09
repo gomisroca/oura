@@ -21,7 +21,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
         width={400}
         height={400}
       />
-      <div className="flex w-full flex-col items-center justify-center gap-2 rounded-b-lg bg-slate-200/90 p-4 dark:bg-slate-800/90">
+      <div className="flex w-full flex-col items-center justify-center gap-2 rounded-b-xl bg-slate-200/90 p-4 dark:bg-slate-800/90">
         {/* Basic Information */}
         <h2>{product.name}</h2>
         <p>{product.description}</p>
