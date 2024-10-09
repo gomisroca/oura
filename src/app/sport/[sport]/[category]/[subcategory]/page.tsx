@@ -17,7 +17,7 @@ export default async function SubcategoryList({
     if (products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
     return (
       <div className="flex flex-col gap-4">
-        <div className="absolute left-0 right-0 top-24 z-10 flex flex-row items-center justify-center">
+        <div className="flex flex-row items-center justify-center md:absolute md:left-0 md:right-0 md:top-24">
           <BackButton steps={-2}>{products[0]?.sport?.name ?? 'Sport'}</BackButton>
           <BackButton>{products[0]?.category?.name ?? 'Category'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">

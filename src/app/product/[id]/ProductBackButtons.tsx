@@ -7,7 +7,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
   const router = useRouter();
 
   return (
-    <div className="absolute left-0 right-0 top-24 z-10 flex flex-row items-center justify-center">
+    <div className="flex flex-row items-center justify-center md:absolute md:left-0 md:right-0 md:top-24">
       <div
         onClick={() => router.push('/sport/' + product.sport?.id)}
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">
@@ -26,7 +26,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
       </div>
       <div
         onClick={() =>
-          router.push('/sport/' + product.sport?.id + '/' + product.category?.id + '/' + product.category?.id)
+          router.push('/sport/' + product.sport?.id + '/' + product.category?.id + '/' + product.subcategory?.id)
         }
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">
         <span className="transition-colors duration-200 group-hover:text-slate-700 dark:group-hover:text-slate-300">

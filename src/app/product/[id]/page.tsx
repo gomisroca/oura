@@ -3,6 +3,7 @@ import { type ProductWithSizes } from 'types';
 import ProductContent from './ProductContent';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import ProductBackButtons from './ProductBackButtons';
+import RelatedProducts from './RelatedProducts';
 
 export default async function ProductView({ params }: { params: { id: string } }) {
   try {
@@ -11,13 +12,12 @@ export default async function ProductView({ params }: { params: { id: string } }
       return <MessageWrapper message="Product not found" />;
     }
 
-    // Add a link to the sport/category/subcategory of the product
-    // Add a list of similar products below the product
     return (
-      <>
+      <div className="flex flex-col gap-4">
         <ProductBackButtons product={product} />
         <ProductContent product={product} />
-      </>
+        {product.categoryId && <RelatedProducts productId={params.id} categoryId={product.categoryId} />}
+      </div>
     );
   } catch (_error) {
     return <MessageWrapper message="Unable to fetch product at this time" />;
