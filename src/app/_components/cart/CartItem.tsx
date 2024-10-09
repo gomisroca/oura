@@ -56,12 +56,12 @@ function CartItem({
   return (
     <div
       key={product.id}
-      className={`mx-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[15rem] w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
+      className={`mx-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[10rem] w-[15rem] md:h-[15rem] md:w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
       <Link
         className="h-full w-1/2 cursor-pointer overflow-y-hidden rounded-l-xl"
         href={`/product/${product.product.id}`}>
         <Image
-          className={`h-full min-h-[15rem] w-full cursor-pointer rounded-l-xl object-cover duration-200 ease-in-out hover:contrast-[1.1]`}
+          className={`h-full min-h-[10rem] w-full cursor-pointer rounded-l-xl object-cover duration-200 ease-in-out hover:contrast-[1.1] md:min-h-[15rem]`}
           src={
             product.product.image
               ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.product.image}`
@@ -74,7 +74,7 @@ function CartItem({
       </Link>
       <div className="relative flex h-full w-1/2 flex-col items-center justify-center gap-2 p-4 font-semibold">
         <p>{product.product.name}</p>
-        <p>${product.price.toFixed(2)} EUR</p>
+        <p>{product.price.toFixed(2)}€</p>
         <div className="flex flex-row items-center gap-2">
           {product.size?.name && <p>{product.size.name}</p>}
           {product.color?.name && (
@@ -85,7 +85,7 @@ function CartItem({
         {!orderView && (
           <Button
             onClick={() => removeFromCart()}
-            className={`absolute h-fit px-[0.75rem] ${foldableView ? 'bottom-4' : 'bottom-8'}`}>
+            className={`h-fit px-[0.75rem] ${foldableView ? 'bottom-4' : 'bottom-8'}`}>
             <FaTrash />
           </Button>
         )}

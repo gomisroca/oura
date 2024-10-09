@@ -63,7 +63,7 @@ function Foldable({ button, addCaret = true, children, className }: FoldableProp
       </Button>
       {isOpen && (
         <div 
-        className={twMerge('absolute mt-14 items-end justify-center flex flex-col gap-2', className)}>
+        className={twMerge('z-[999] absolute mt-14 items-end justify-center flex flex-col gap-2', className)}>
           {React.Children.map(children, (child, index) => (
             <>
               {child}
