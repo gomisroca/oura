@@ -2,19 +2,26 @@ import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
+import {
+  createCategory,
+  createSport,
+  createSubcategory,
+  getCategoriesInSport,
+  getSports,
+  getSportsByGender,
+  getSportsInSale,
+  getSubcategoriesInCategory,
+  getUniqueCategory,
+  getUniqueSport,
+  getUniqueSubcategory,
+} from '../queries/category';
+import { getOngoingSale } from '../queries/sale';
 
 export const categoryRouter = createTRPCRouter({
   getSports: publicProcedure.query(async ({ ctx }) => {
     try {
-      return ctx.db.sport.findMany({
-        include: {
-          categories: {
-            include: {
-              subcategories: true,
-            },
-          },
-        },
-      });
+      const sports = await getSports({ prisma: ctx.db });
+      return sports;
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;
@@ -28,14 +35,8 @@ export const categoryRouter = createTRPCRouter({
 
   getCategories: publicProcedure.input(z.object({ sportId: z.number() })).query(async ({ ctx, input }) => {
     try {
-      return ctx.db.category.findMany({
-        where: {
-          sportId: input.sportId,
-        },
-        include: {
-          subcategories: true,
-        },
-      });
+      const categories = await getCategoriesInSport({ prisma: ctx.db, sportId: input.sportId });
+      return categories;
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;
@@ -57,35 +58,16 @@ export const categoryRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        const currentTime = new Date();
         if (input.categoryId) {
-          return ctx.db.subcategory.findMany({
-            where: {
-              categoryId: input.categoryId,
-              products: {
-                some: {
-                  gender: input.gender ? { has: input.gender } : undefined,
-                  sales: input.sale
-                    ? {
-                        some: {
-                          sale: {
-                            startDate: {
-                              lte: currentTime,
-                            },
-                            endDate: {
-                              gte: currentTime,
-                            },
-                          },
-                        },
-                      }
-                    : undefined,
-                },
-              },
-            },
+          const subcategories = await getSubcategoriesInCategory({
+            prisma: ctx.db,
+            categoryId: input.categoryId,
+            gender: input.gender,
+            sale: input.sale,
           });
-        } else {
-          return null;
+          return subcategories;
         }
+        return null;
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
@@ -101,64 +83,8 @@ export const categoryRouter = createTRPCRouter({
     .input(z.object({ gender: z.enum(['MALE', 'FEMALE', 'OTHER']) }))
     .query(async ({ ctx, input }) => {
       try {
-        return ctx.db.sport.findMany({
-          where: {
-            categories: {
-              some: {
-                subcategories: {
-                  some: {
-                    products: {
-                      some: {
-                        gender: {
-                          has: input.gender,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          include: {
-            categories: {
-              where: {
-                subcategories: {
-                  some: {
-                    products: {
-                      some: {
-                        gender: {
-                          has: input.gender,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              include: {
-                subcategories: {
-                  where: {
-                    products: {
-                      some: {
-                        gender: {
-                          has: input.gender,
-                        },
-                      },
-                    },
-                  },
-                  include: {
-                    products: {
-                      where: {
-                        gender: {
-                          has: input.gender,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
+        const sports = await getSportsByGender({ prisma: ctx.db, gender: input.gender });
+        return sports;
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
@@ -172,93 +98,12 @@ export const categoryRouter = createTRPCRouter({
 
   getSportsInSale: publicProcedure.query(async ({ ctx }) => {
     try {
-      const currentTime = new Date();
-      const sale = await ctx.db.sale.findFirst({
-        where: {
-          startDate: {
-            lte: currentTime,
-          },
-          endDate: {
-            gte: currentTime,
-          },
-        },
-      });
+      const sale = await getOngoingSale({ prisma: ctx.db });
       if (sale) {
-        return ctx.db.sport.findMany({
-          where: {
-            categories: {
-              some: {
-                subcategories: {
-                  some: {
-                    products: {
-                      some: {
-                        sales: {
-                          some: {
-                            sale: {
-                              id: sale.id,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          include: {
-            categories: {
-              where: {
-                subcategories: {
-                  some: {
-                    products: {
-                      some: {
-                        sales: {
-                          some: {
-                            sale: {
-                              id: sale.id,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              include: {
-                subcategories: {
-                  where: {
-                    products: {
-                      some: {
-                        sales: {
-                          some: {
-                            sale: {
-                              id: sale.id,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  include: {
-                    products: {
-                      where: {
-                        sales: {
-                          some: {
-                            sale: {
-                              id: sale.id,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
+        const sports = await getSportsInSale({ prisma: ctx.db, saleId: sale.id });
+        return sports;
       }
+      return undefined;
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;
@@ -275,12 +120,10 @@ export const categoryRouter = createTRPCRouter({
       if (ctx.session.user?.role !== 'ADMIN')
         throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
 
-      const sport = await ctx.db.sport.findFirst({
-        where: { name: input.sport },
-      });
+      const sport = await getUniqueSport({ prisma: ctx.db, sportName: input.sport });
       if (sport) return sport;
 
-      const newSport = await ctx.db.sport.create({ data: { name: input.sport } });
+      const newSport = await createSport({ prisma: ctx.db, sportName: input.sport });
       return newSport;
     } catch (error) {
       if (error instanceof TRPCError) {
@@ -302,27 +145,18 @@ export const categoryRouter = createTRPCRouter({
 
         return await ctx.db.$transaction(async (tx) => {
           // First, try to find the sport
-          const sport = await tx.sport.findUnique({
-            where: { id: input.sportId },
-          });
+          const sport = await getUniqueSport({ prisma: tx, sportId: input.sportId });
 
           if (!sport) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
           }
 
           // Try to find the category associated with the sport
-          let category = await tx.category.findFirst({
-            where: { name: input.category, sportId: sport.id },
-          });
+          let category = await getUniqueCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId });
 
           // If the category doesn't exist, create it
           if (!category) {
-            category = await tx.category.create({
-              data: {
-                name: input.category,
-                sportId: sport.id,
-              },
-            });
+            category = await createCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId });
           }
 
           return category;
@@ -347,33 +181,34 @@ export const categoryRouter = createTRPCRouter({
 
         return await ctx.db.$transaction(async (tx) => {
           // First, try to find the sport
-          const sport = await tx.sport.findUnique({
-            where: { id: input.sportId },
-          });
+          const sport = await getUniqueSport({ prisma: tx, sportId: input.sportId });
           if (!sport) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
           }
 
           // Next, try to find the category
-          const category = await tx.category.findUnique({
-            where: { id: input.categoryId },
+          const category = await getUniqueCategory({
+            prisma: tx,
+            categoryId: input.categoryId,
+            sportId: input.sportId,
           });
           if (!category) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Category not found' });
           }
 
           // Try to find the subcategory associated with the category
-          let subcategory = await tx.subcategory.findFirst({
-            where: { name: input.subcategory, categoryId: category.id },
+          let subcategory = await getUniqueSubcategory({
+            prisma: tx,
+            subcategoryName: input.subcategory,
+            categoryId: input.categoryId,
           });
 
           // If the subcategory doesn't exist, create it
           if (!subcategory) {
-            subcategory = await tx.subcategory.create({
-              data: {
-                name: input.subcategory,
-                categoryId: category.id,
-              },
+            subcategory = await createSubcategory({
+              prisma: tx,
+              subcategoryName: input.subcategory,
+              categoryId: input.categoryId,
             });
           }
 
