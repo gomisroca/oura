@@ -28,10 +28,12 @@ interface ProductWithSizes extends Product {
 
 interface SportWithCategories extends Sport {
   categories: CategoryWithSubcategories[];
+  products: Product[];
 }
 
 interface CategoryWithSubcategories extends Category {
   subcategories: Subcategory[];
+  products: Product[];
 }
 
 interface OrderWithProducts extends Order {
