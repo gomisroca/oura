@@ -67,16 +67,18 @@ function SportsFoldable({
   return (
     <>
       <div className={`flex flex-col gap-2 ${activeSport ? 'hidden' : ''}`}>
-        {sports.map((sport: SportWithCategories) => (
-          <Button
-            key={sport.id}
-            name={sport.name}
-            className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
-            disabled={activeSport ? true : false}
-            onClick={() => setActiveSport(sport.id)}>
-            {sport.name}
-          </Button>
-        ))}
+        {sports
+          .filter((sport) => sport.products.length > 0)
+          .map((sport: SportWithCategories) => (
+            <Button
+              key={sport.id}
+              name={sport.name}
+              className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
+              disabled={activeSport ? true : false}
+              onClick={() => setActiveSport(sport.id)}>
+              {sport.name}
+            </Button>
+          ))}
         <Button name="Back" className={`z-50 w-full ${activeSport ? 'hidden' : ''}`} onClick={() => setSelected(null)}>
           <FaCaretLeft />
         </Button>
@@ -85,7 +87,8 @@ function SportsFoldable({
         <div className="flex flex-col gap-2">
           {sports
             .find((sport: SportWithCategories) => sport.id === activeSport)
-            ?.categories.map((category) => (
+            ?.categories.filter((category) => category.products.length > 0)
+            .map((category) => (
               <Link key={category.id} href={`/sport/${activeSport}/${category.id}`} className="w-full">
                 <Button name={category.name} className="z-50 w-full">
                   {category.name}
@@ -116,16 +119,18 @@ function GenderFoldable({
   return (
     <>
       <div className={`flex flex-col gap-2 ${activeCategory ? 'hidden' : ''}`}>
-        {sports.map((sport: SportWithCategories) => (
-          <Button
-            key={sport.id}
-            name={sport.name}
-            className={`z-50 w-full ${activeCategory ? 'hidden' : ''}`}
-            disabled={activeCategory ? true : false}
-            onClick={() => setActiveCategory(sport.id)}>
-            {sport.name}
-          </Button>
-        ))}
+        {sports
+          .filter((sport) => sport.products.length > 0)
+          .map((sport: SportWithCategories) => (
+            <Button
+              key={sport.id}
+              name={sport.name}
+              className={`z-50 w-full ${activeCategory ? 'hidden' : ''}`}
+              disabled={activeCategory ? true : false}
+              onClick={() => setActiveCategory(sport.id)}>
+              {sport.name}
+            </Button>
+          ))}
         <Button
           name="Back"
           className={`z-50 w-full ${activeCategory ? 'hidden' : ''}`}
@@ -137,7 +142,8 @@ function GenderFoldable({
         <div className="flex flex-col gap-2">
           {sports
             .find((sport: SportWithCategories) => sport.id === activeCategory)
-            ?.categories.map((category) => (
+            ?.categories.filter((category) => category.products.length > 0)
+            .map((category) => (
               <Link
                 key={category.id}
                 href={`/sport/${activeCategory}/${category.id}?gender=${gender}`}

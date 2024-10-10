@@ -3,6 +3,9 @@ import Stripe from 'stripe';
 import { env } from '@/env';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
+import { confirmOrder, createOrder, deleteOrder, getOrder, transferProductsToOrder } from '../queries/checkout';
+import { getCart } from '../queries/cart';
+import { getUniqueColor, updateColorStock, updateProductSales } from '../queries/product';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -10,18 +13,7 @@ export const checkoutRouter = createTRPCRouter({
   // Get the order for future viewing
   getOrder: protectedProcedure.input(z.object({ orderId: z.string() })).query(async ({ input, ctx }) => {
     try {
-      const order = await ctx.db.order.findUnique({
-        where: { id: input.orderId },
-        include: {
-          products: {
-            include: {
-              product: true,
-              size: true,
-              color: true,
-            },
-          },
-        },
-      });
+      const order = await getOrder({ prisma: ctx.db, orderId: input.orderId });
 
       if (!order) throw new TRPCError({ code: 'NOT_FOUND', message: 'Order not found' });
       if (!ctx.session?.user?.id || ctx.session.user.id !== order.userId)
@@ -44,35 +36,18 @@ export const checkoutRouter = createTRPCRouter({
     try {
       if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
       // Get the user cart using the user id
-      const cart = await ctx.db.cart.findUnique({
-        where: { userId: ctx.session.user.id },
-        include: {
-          products: {
-            include: {
-              product: true,
-              size: true,
-              color: true,
-            },
-          },
-        },
-      });
+      const cart = await getCart({ prisma: ctx.db, userId: ctx.session.user.id });
 
       // Check if the cart exists and has products, otherwise error
       if (!cart || !cart.products.length) throw new TRPCError({ code: 'NOT_FOUND', message: 'No products in cart' });
 
       // And then we use those products to create the order
-      const order = await ctx.db.order.create({
-        data: {
-          userId: ctx.session.user.id,
-        },
-      });
+      const order = await createOrder({ prisma: ctx.db, userId: ctx.session.user.id });
 
       await ctx.db.$transaction(async (tx) => {
         // First check if all products have sufficient stock
         for (const product of cart.products) {
-          const color = await tx.color.findUnique({
-            where: { id: product.colorId },
-          });
+          const color = await getUniqueColor({ prisma: tx, colorId: product.colorId });
 
           if (!color || color.stock <= 0) {
             throw new TRPCError({
@@ -84,13 +59,7 @@ export const checkoutRouter = createTRPCRouter({
 
         // If the stock check passes, update the products' orderId and cartId
         for (const product of cart.products) {
-          await tx.orderProduct.update({
-            where: { id: product.id },
-            data: {
-              orderId: order.id,
-              cartId: null,
-            },
-          });
+          await transferProductsToOrder({ prisma: tx, productId: product.id, orderId: order.id });
         }
       });
 
@@ -136,12 +105,7 @@ export const checkoutRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       try {
         // Try to retrieve the order, if it doesn't exist, throw an error
-        const order = await ctx.db.order.findUnique({
-          where: { id: input.orderId },
-          include: {
-            products: true,
-          },
-        });
+        const order = await getOrder({ prisma: ctx.db, orderId: input.orderId });
 
         if (!order) throw new TRPCError({ code: 'NOT_FOUND', message: 'Order not found' });
 
@@ -152,38 +116,21 @@ export const checkoutRouter = createTRPCRouter({
         // Check the status of the session, if it's not paid, destroy the order and throw an error
         const session = await stripe.checkout.sessions.retrieve(input.sessionId);
         if (!session || session.payment_status !== 'paid') {
-          await ctx.db.order.delete({ where: { id: input.orderId } });
+          await deleteOrder({ prisma: ctx.db, orderId: input.orderId });
           throw new TRPCError({ code: 'BAD_REQUEST', message: 'Payment was not successful' });
         }
 
         // If all checks pass, update the order
-        const updatedOrder = await ctx.db.order.update({
-          where: {
-            id: input.orderId,
-          },
-          data: {
-            stripeSessionId: session.id,
-            confirmed: true,
-          },
-          include: {
-            products: true,
-          },
-        });
+        const updatedOrder = await confirmOrder({ prisma: ctx.db, orderId: input.orderId, sessionId: session.id });
 
         // Update stock and amountSold for the products
         await ctx.db.$transaction(async (tx) => {
           for (const product of updatedOrder.products) {
             // Update product's amountSold
-            await tx.product.update({
-              where: { id: product.productId },
-              data: { amountSold: { increment: 1 } },
-            });
+            await updateProductSales({ prisma: tx, productId: product.productId });
 
             // Update product color's stock
-            await tx.color.update({
-              where: { id: product.colorId },
-              data: { stock: { decrement: 1 } },
-            });
+            await updateColorStock({ prisma: tx, colorId: product.colorId });
           }
         });
 
