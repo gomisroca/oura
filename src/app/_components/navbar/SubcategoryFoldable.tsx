@@ -7,6 +7,7 @@ import { FaFilter } from 'react-icons/fa6';
 import Foldable from '../ui/Foldable';
 import { api } from '@/trpc/react';
 import { Suspense } from 'react';
+import { skipToken } from '@tanstack/react-query';
 
 function SubcategoryFoldableWrapper() {
   return (
@@ -27,11 +28,15 @@ function SubcategoryFoldable() {
   const categoryId = Number(params.category);
   const subcategoryId = Number(params.subcategory);
 
-  const { data: subcategories, status } = api.category.getSubcategories.useQuery({
-    categoryId: categoryId ? categoryId : undefined,
-    sale: pathname.includes('sale'),
-    gender: gender,
-  });
+  const { data: subcategories, status } = api.category.getSubcategories.useQuery(
+    categoryId
+      ? {
+          categoryId: categoryId,
+          sale: pathname.includes('sale'),
+          gender: gender,
+        }
+      : skipToken
+  );
 
   if (!categoryId || status === 'error' || !subcategories) {
     return null;
