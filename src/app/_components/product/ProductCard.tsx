@@ -49,9 +49,7 @@ function ProductCard({ product, className }: { product: ProductWithSizes; classN
             : '/ph_item.png'
         }
         alt={product.name}
-        width={400}
-        height={400}
-        priority
+        fill
         blurDataURL="/ph_item.png"
         placeholder="blur"
       />
