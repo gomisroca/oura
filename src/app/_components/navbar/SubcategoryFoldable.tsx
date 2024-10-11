@@ -11,7 +11,7 @@ import { skipToken } from '@tanstack/react-query';
 
 function SubcategoryFoldableWrapper() {
   return (
-    <Suspense fallback={<div>...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <SubcategoryFoldable />
     </Suspense>
   );

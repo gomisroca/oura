@@ -19,25 +19,20 @@ function SaleFoldable({
 
   return (
     <>
-      <div className={`flex flex-col gap-2 ${activeSport ? 'hidden' : ''}`}>
-        {sports.map((sport: SaleCategory) => (
-          <Button
-            key={sport.id}
-            name={sport.name}
-            className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
-            disabled={activeSport ? true : false}
-            onClick={() => setActiveSport(sport.id)}>
+      <div className={`flex flex-col gap-2 ${activeSport && 'hidden'}`}>
+        {sports.map((sport) => (
+          <Button key={sport.id} name={sport.name} className="z-50 w-full" onClick={() => setActiveSport(sport.id)}>
             {sport.name}
           </Button>
         ))}
-        <Button name="Back" className={`z-50 w-full ${activeSport ? 'hidden' : ''}`} onClick={() => setSelected(null)}>
+        <Button name="Back" className="z-50 w-full" onClick={() => setSelected(null)}>
           <FaCaretLeft />
         </Button>
       </div>
       {activeSport && (
         <div className="flex flex-col gap-2">
           {sports
-            .find((sport: SaleCategory) => sport.id === activeSport)
+            .find((sport) => sport.id === activeSport)
             ?.categories.map((category) => (
               <Link key={category.id} href={`/sale/${activeSport}/${category.id}`} className="w-full">
                 <Button name={category.name} className="z-50 w-full">
@@ -45,7 +40,6 @@ function SaleFoldable({
                 </Button>
               </Link>
             ))}
-
           <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
             <FaCaretLeft />
           </Button>
@@ -66,27 +60,22 @@ function SportsFoldable({
 
   return (
     <>
-      <div className={`flex flex-col gap-2 ${activeSport ? 'hidden' : ''}`}>
+      <div className={`flex flex-col gap-2 ${activeSport && 'hidden'}`}>
         {sports
           .filter((sport) => sport.products.length > 0)
-          .map((sport: SportWithCategories) => (
-            <Button
-              key={sport.id}
-              name={sport.name}
-              className={`z-50 w-full ${activeSport ? 'hidden' : ''}`}
-              disabled={activeSport ? true : false}
-              onClick={() => setActiveSport(sport.id)}>
+          .map((sport) => (
+            <Button key={sport.id} name={sport.name} className="z-50 w-full" onClick={() => setActiveSport(sport.id)}>
               {sport.name}
             </Button>
           ))}
-        <Button name="Back" className={`z-50 w-full ${activeSport ? 'hidden' : ''}`} onClick={() => setSelected(null)}>
+        <Button name="Back" className="z-50 w-full" onClick={() => setSelected(null)}>
           <FaCaretLeft />
         </Button>
       </div>
       {activeSport && (
         <div className="flex flex-col gap-2">
           {sports
-            .find((sport: SportWithCategories) => sport.id === activeSport)
+            .find((sport) => sport.id === activeSport)
             ?.categories.filter((category) => category.products.length > 0)
             .map((category) => (
               <Link key={category.id} href={`/sport/${activeSport}/${category.id}`} className="w-full">
@@ -95,7 +84,6 @@ function SportsFoldable({
                 </Button>
               </Link>
             ))}
-
           <Button name="Back" className="z-50" onClick={() => setActiveSport(null)}>
             <FaCaretLeft />
           </Button>
@@ -121,27 +109,23 @@ function GenderFoldable({
       <div className={`flex flex-col gap-2 ${activeCategory ? 'hidden' : ''}`}>
         {sports
           .filter((sport) => sport.products.length > 0)
-          .map((sport: SportWithCategories) => (
+          .map((sport) => (
             <Button
               key={sport.id}
               name={sport.name}
-              className={`z-50 w-full ${activeCategory ? 'hidden' : ''}`}
-              disabled={activeCategory ? true : false}
+              className="z-50 w-full"
               onClick={() => setActiveCategory(sport.id)}>
               {sport.name}
             </Button>
           ))}
-        <Button
-          name="Back"
-          className={`z-50 w-full ${activeCategory ? 'hidden' : ''}`}
-          onClick={() => setSelected(null)}>
+        <Button name="Back" className="z-50 w-full" onClick={() => setSelected(null)}>
           <FaCaretLeft />
         </Button>
       </div>
       {activeCategory && (
         <div className="flex flex-col gap-2">
           {sports
-            .find((sport: SportWithCategories) => sport.id === activeCategory)
+            .find((sport) => sport.id === activeCategory)
             ?.categories.filter((category) => category.products.length > 0)
             .map((category) => (
               <Link
@@ -153,7 +137,6 @@ function GenderFoldable({
                 </Button>
               </Link>
             ))}
-
           <Button name="Back" className="z-50" onClick={() => setActiveCategory(null)}>
             <FaCaretLeft />
           </Button>
@@ -182,18 +165,18 @@ export default function CategoryFoldable({
   const foldableRef = useRef<HTMLDivElement>(null);
 
   // Closes the foldable if a click occurs outside the menu
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = React.useCallback((event: MouseEvent) => {
     if (foldableRef.current && !foldableRef.current.contains(event.target as Node)) {
       setSelected(null);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.body.addEventListener('click', handleClickOutside);
     return () => {
       document.body.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div ref={foldableRef}>

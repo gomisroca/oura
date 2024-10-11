@@ -3,6 +3,7 @@ import { api } from '@/trpc/server';
 
 async function RelatedProducts({ productId, categoryId }: { productId: string; categoryId: number }) {
   let products = await api.product.getByCategory({ categoryId: categoryId });
+
   if (products) {
     products = products
       .filter((p) => p.id !== productId)

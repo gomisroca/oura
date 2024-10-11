@@ -7,12 +7,14 @@ export default async function SportsList({
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
-  try {
-    const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+  const gender = searchParams.gender === 'man' ? 'MALE' : searchParams.gender === 'woman' ? 'FEMALE' : undefined;
 
-    const products = await api.product.getAll(gender);
-    const sports = await api.category.getSports();
-    if (products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
+  try {
+    const [products, sports] = await Promise.all([api.product.getAll(gender), api.category.getSports()]);
+
+    if (products.length === 0) {
+      return <MessageWrapper message="No products found" popup={false} />;
+    }
 
     return <SportList products={products} sports={sports} />;
   } catch (_error) {
