@@ -14,9 +14,11 @@ async function ProductList({ products }: { products: ProductWithSizes[] }) {
   return (
     <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2" role="list">
       {products.map((product) => (
-        <React.Suspense key={product.id} fallback={<ProductListLoading />}>
-          <ProductCard key={product.id} product={product} />
-        </React.Suspense>
+        <div role="listitem" key={product.id}>
+          <React.Suspense fallback={<ProductListLoading />}>
+            <ProductCard key={product.id} product={product} />
+          </React.Suspense>
+        </div>
       ))}
     </div>
   );

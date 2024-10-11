@@ -33,6 +33,7 @@ function CartList({ foldableView = false }: { foldableView?: boolean }) {
       className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90 ${foldableView ? 'flex-col' : ''}`}
       role="list">
       <div
+        role="listitem"
         className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-y-auto overflow-x-hidden rounded-xl' : ''}`}>
         {products && products.length > 0 ? (
           products.map((product) => (

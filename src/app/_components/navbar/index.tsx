@@ -79,8 +79,8 @@ const LogoIcons = () => {
   ];
 
   return (
-    <Link href="/" aria-label="home">
-      <Button name="Logo" className={textColors[Math.floor(Math.random() * textColors.length)] + ' px-5'}>
+    <Link href="/" aria-label="oura">
+      <Button name="oura" className={textColors[Math.floor(Math.random() * textColors.length)] + ' px-5'}>
         <span>{icons[Math.floor(Math.random() * icons.length)]}</span>
         <span>oura</span>
       </Button>

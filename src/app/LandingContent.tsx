@@ -35,7 +35,10 @@ export default function LandingContent({ sale, products }: { sale?: Sale; produc
       {/* Conditional rendering for products and action buttons */}
       {products && products.length > 0 && (
         <div className="flex flex-col items-center justify-center gap-2">
-          <Button onClick={handleBrowse(sale ? '/sale' : '/sport')} className="w-[80vw] md:w-[25vw] 2xl:w-[10vw]">
+          <Button
+            name={sale ? 'Browse Sale' : 'Browse Products'}
+            onClick={handleBrowse(sale ? '/sale' : '/sport')}
+            className="w-[80vw] md:w-[25vw] 2xl:w-[10vw]">
             {sale ? 'Browse Sale' : 'Browse Products'}
           </Button>
           <Carousel products={products} />
