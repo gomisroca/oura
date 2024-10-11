@@ -38,6 +38,7 @@ async function LandingHero() {
       <Image
         src={landingImageSrc}
         alt={sale ? 'Current Sale' : 'Default Landing'}
+        priority={true}
         width={1920}
         height={1080}
         className={`pointer-events-none absolute bottom-0 left-0 right-0 top-0 min-h-screen w-full object-cover object-center dark:brightness-50 xl:h-full ${!sale && 'opacity-50 grayscale'}`}
