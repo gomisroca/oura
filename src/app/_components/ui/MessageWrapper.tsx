@@ -1,24 +1,26 @@
-"use client"; // This makes it a client component
+"use client";
 
 import { useMessage } from "@/context/MessageContext";
 import { useEffect } from "react";
+
+type MessageWrapperProps = {
+  message: string;
+  error?: boolean;
+  popup?: boolean;
+};
 
 const MessageWrapper = ({
   message,
   error = true,
   popup = false,
-}: {
-  message: string;
-  error?: boolean;
-  popup?: boolean;
-}) => {
+}: MessageWrapperProps) => {
   const { setMessage, setError, setPopup } = useMessage();
 
   useEffect(() => {
     setMessage(message);
     setError(error);
     setPopup(popup);
-  }, [message, error, popup, setMessage, setError, setPopup]);
+  }, [message, error, popup]);
 
   return null;
 };

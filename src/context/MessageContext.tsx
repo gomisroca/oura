@@ -21,26 +21,26 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
 
   const pathname = usePathname(); // Get the current path
 
-  // Clear message on route change
+  // Clear message, error, and popup on route change
   useEffect(() => {
-    const handleRouteChange = () => {
+    if (message || error || popup) {
       setMessage(''); // Reset message
-      setError(false); // Reset error if needed
-      setPopup(false); // Reset popup if needed
-    };
+      setError(false); // Reset error
+      setPopup(false); // Reset popup
+    }
+  }, [pathname, message, error, popup]);
 
-    // Listen for route changes
-    handleRouteChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]); // Trigger useEffect when the path changes
-
+  // Automatically hide popup after 5 seconds
   useEffect(() => {
     if (popup === true) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setMessage('');
         setError(undefined);
         setPopup(undefined);
       }, 5000);
+
+      // Cleanup timeout when popup state changes
+      return () => clearTimeout(timeout);
     }
   }, [popup]);
 

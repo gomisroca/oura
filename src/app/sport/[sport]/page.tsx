@@ -10,10 +10,11 @@ export default async function SportList({
   params: { sport: string };
   searchParams: Record<string, string | string[] | undefined>;
 }) {
-  try {
-    const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+  const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
 
+  try {
     const products = await api.product.getBySport({ sportId: Number(params.sport), gender: gender });
+
     if (products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
     return (
       <div className="flex h-full flex-col justify-start gap-4">
