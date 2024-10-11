@@ -1,20 +1,20 @@
 'use client';
 
-import MessageWrapper from '@/app/_components/ui/MessageWrapper';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 
-function Error() {
+export default function Error() {
   const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       router.push('/');
     }, 5000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    // Cleanup the timeout on unmount to prevent memory leaks
+    return () => clearTimeout(timeout);
+  }, [router]);
 
   return <MessageWrapper message="Something went wrong" />;
 }
-
-export default Error;
