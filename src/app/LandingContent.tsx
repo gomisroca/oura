@@ -1,20 +1,18 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { type Sale } from '@prisma/client';
 import { type ProductWithSizes } from 'types';
 import Button from './_components/ui/Button';
 import Carousel from './_components/ui/Carousel';
-import { useRouter } from 'next/navigation';
 
 export default function LandingContent({ sale, products }: { sale?: Sale; products: ProductWithSizes[] }) {
   const router = useRouter();
-  const handleBrowse = (type: 'sale' | 'all') => () => {
-    if (type === 'sale') {
-      router.push('/sale');
-    } else {
-      router.push('/sport');
-    }
+
+  const handleBrowse = (route: string) => () => {
+    router.push(route);
   };
+
   return (
     <div className="absolute left-0 right-0 top-0 flex min-h-screen flex-col items-center justify-evenly overflow-hidden">
       {/* Sale Title */}
@@ -33,11 +31,11 @@ export default function LandingContent({ sale, products }: { sale?: Sale; produc
             : 'Sports with a purpose'}
         </p>
       </div>
-      {products && (
+
+      {/* Conditional rendering for products and action buttons */}
+      {products && products.length > 0 && (
         <div className="flex flex-col items-center justify-center gap-2">
-          <Button
-            onClick={sale ? handleBrowse('sale') : handleBrowse('all')}
-            className="w-[80vw] md:w-[25vw] 2xl:w-[10vw]">
+          <Button onClick={handleBrowse(sale ? '/sale' : '/sport')} className="w-[80vw] md:w-[25vw] 2xl:w-[10vw]">
             {sale ? 'Browse Sale' : 'Browse Products'}
           </Button>
           <Carousel products={products} />
