@@ -10,8 +10,8 @@ import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
 import Button from '../ui/Button';
 import GeneralMenuFoldable from './GeneralMenuFoldable';
 import CartFoldable from './CartFoldable';
-import CategoryFoldableWrapper from './CategoryFoldableWrapper';
 import SubcategoryFoldableWrapper from './SubcategoryFoldable';
+import CategoryFoldable from './CategoryFoldable';
 
 const LogoIcons = () => {
   const icons = [
@@ -94,7 +94,7 @@ function Navbar() {
       <LogoIcons />
       <div className="relative flex flex-row items-start justify-end gap-2">
         <SubcategoryFoldableWrapper />
-        <CategoryFoldableWrapper />
+        <CategoryFoldable />
         <CartFoldable />
         <GeneralMenuFoldable />
       </div>
