@@ -22,18 +22,13 @@ async function LandingHero() {
     return <MessageWrapper message="Something went wrong while fetching products." />;
   }
 
-  // Handle case where no products are available
-  if (!products || products.length === 0) {
-    return <MessageWrapper message="No products are available at this time." />;
-  }
-
   // Set the landing image source, using the sale image if available
   const landingImageSrc = sale
     ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${sale.image}`
     : '/landing.jpg';
 
   return (
-    <>
+    <div className="absolute bottom-0 left-0 right-0 top-0">
       {/* Landing Image */}
       <Image
         src={landingImageSrc}
@@ -45,8 +40,8 @@ async function LandingHero() {
       />
 
       {/* Render content only if products are available */}
-      {products && <LandingContent sale={sale ?? undefined} products={products} />}
-    </>
+      <LandingContent sale={sale ?? undefined} products={products ?? undefined} />
+    </div>
   );
 }
 
