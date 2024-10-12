@@ -6,7 +6,10 @@ import Foldable from '../ui/Foldable';
 import Button from '../ui/Button';
 import { FaCaretLeft } from 'react-icons/fa6';
 import Link from 'next/link';
-import { type SaleCategory, type SportWithCategories } from 'types';
+import { type SaleCategory } from 'types';
+import { api } from '@/trpc/react';
+import MessageWrapper from '../ui/MessageWrapper';
+import Spinner from '../ui/Spinner';
 
 function SaleFoldable({
   sports,
@@ -49,15 +52,19 @@ function SaleFoldable({
   );
 }
 
-function SportsFoldable({
-  sports,
-  setSelected,
-}: {
-  sports: SportWithCategories[];
-  setSelected: React.Dispatch<React.SetStateAction<string | null>>;
-}) {
+function SportsFoldable({ setSelected }: { setSelected: React.Dispatch<React.SetStateAction<string | null>> }) {
   const [activeSport, setActiveSport] = React.useState<number | null>(null);
-
+  const { data: sports, status } = api.category.getSports.useQuery();
+  if (status === 'error') {
+    return <MessageWrapper message="Unable to fetch sports at this time" popup={false} />;
+  }
+  if (status === 'pending') {
+    return (
+      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 whitespace-nowrap text-nowrap rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:bg-slate-200/80 xl:dark:bg-slate-800/80">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <>
       <div className={`flex flex-col gap-2 ${activeSport && 'hidden'}`}>
@@ -95,15 +102,25 @@ function SportsFoldable({
 
 function GenderFoldable({
   gender,
-  sports,
   setSelected,
 }: {
   gender: 'man' | 'woman';
-  sports: SportWithCategories[];
   setSelected: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
   const [activeCategory, setActiveCategory] = React.useState<number | null>(null);
-
+  const { data: sports, status } = api.category.getSportsByGender.useQuery({
+    gender: gender === 'man' ? 'MALE' : 'FEMALE',
+  });
+  if (status === 'error') {
+    return <MessageWrapper message="Unable to fetch sports at this time" popup={false} />;
+  }
+  if (status === 'pending') {
+    return (
+      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 whitespace-nowrap text-nowrap rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:bg-slate-200/80 xl:dark:bg-slate-800/80">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <>
       <div className={`flex flex-col gap-2 ${activeCategory ? 'hidden' : ''}`}>
@@ -146,19 +163,9 @@ function GenderFoldable({
   );
 }
 
-export default function CategoryFoldable({
-  sports,
-  maleSports,
-  femaleSports,
-  saleName,
-  saleSports,
-}: {
-  sports: SportWithCategories[];
-  maleSports: SportWithCategories[];
-  femaleSports: SportWithCategories[];
-  saleName?: string;
-  saleSports?: SaleCategory[];
-}) {
+export default function CategoryFoldable() {
+  const { data: sale } = api.category.getSportsInSale.useQuery();
+
   const [selected, setSelected] = React.useState<string | null>(null);
 
   // Reference to the foldable element for click outside detection
@@ -183,14 +190,14 @@ export default function CategoryFoldable({
       <Foldable
         button={{ name: 'Categories', text: <FaSearch size={20} />, className: 'px-[0.75rem] xl:px-10' }}
         addCaret={false}>
-        {saleName && saleSports && (
+        {sale && (
           <Button
             name="Sale"
             className={`z-50 w-full overflow-hidden border-2 border-orange-500 dark:border-orange-500 ${selected ? 'hidden' : ''}`}
             disabled={selected ? true : false}
             onClick={() => setSelected('SALE')}>
             <p className="pointer-events-none absolute right-0 text-7xl opacity-10">%</p>
-            {saleName}
+            {sale.name}
           </Button>
         )}
         <Button
@@ -214,10 +221,10 @@ export default function CategoryFoldable({
           onClick={() => setSelected('FEMALE')}>
           Woman
         </Button>
-        {selected === 'SALE' && saleSports && <SaleFoldable sports={saleSports} setSelected={setSelected} />}
-        {selected === 'SPORTS' && <SportsFoldable sports={sports} setSelected={setSelected} />}
-        {selected === 'MALE' && <GenderFoldable gender="man" sports={maleSports} setSelected={setSelected} />}
-        {selected === 'FEMALE' && <GenderFoldable gender="woman" sports={femaleSports} setSelected={setSelected} />}
+        {selected === 'SALE' && sale && <SaleFoldable sports={sale.sports} setSelected={setSelected} />}
+        {selected === 'SPORTS' && <SportsFoldable setSelected={setSelected} />}
+        {selected === 'MALE' && <GenderFoldable gender="man" setSelected={setSelected} />}
+        {selected === 'FEMALE' && <GenderFoldable gender="woman" setSelected={setSelected} />}
       </Foldable>
     </div>
   );

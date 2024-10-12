@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('has initial buttons', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('button', { name: 'Logo' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'oura' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Categories' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'General Menu' })).toBeVisible();
 });

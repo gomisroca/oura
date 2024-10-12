@@ -101,7 +101,7 @@ export const categoryRouter = createTRPCRouter({
       const sale = await getOngoingSale({ prisma: ctx.db });
       if (sale) {
         const sports = await getSportsInSale({ prisma: ctx.db, saleId: sale.id });
-        return sports;
+        return { name: sale.name, sports };
       }
       return undefined;
     } catch (error) {

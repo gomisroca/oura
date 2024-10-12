@@ -10,8 +10,8 @@ import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
 import Button from '../ui/Button';
 import GeneralMenuFoldable from './GeneralMenuFoldable';
 import CartFoldable from './CartFoldable';
-import CategoryFoldableWrapper from './CategoryFoldableWrapper';
 import SubcategoryFoldableWrapper from './SubcategoryFoldable';
+import CategoryFoldable from './CategoryFoldable';
 
 const LogoIcons = () => {
   const icons = [
@@ -79,8 +79,8 @@ const LogoIcons = () => {
   ];
 
   return (
-    <Link href="/" aria-label="home">
-      <Button name="Logo" className={textColors[Math.floor(Math.random() * textColors.length)] + ' px-5'}>
+    <Link href="/" aria-label="oura">
+      <Button name="oura" className={textColors[Math.floor(Math.random() * textColors.length)] + ' px-5'}>
         <span>{icons[Math.floor(Math.random() * icons.length)]}</span>
         <span>oura</span>
       </Button>
@@ -94,7 +94,7 @@ function Navbar() {
       <LogoIcons />
       <div className="relative flex flex-row items-start justify-end gap-2">
         <SubcategoryFoldableWrapper />
-        <CategoryFoldableWrapper />
+        <CategoryFoldable />
         <CartFoldable />
         <GeneralMenuFoldable />
       </div>

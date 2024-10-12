@@ -31,7 +31,9 @@ const SignedInDropdown = () => {
       className="right-0"
       closeOnChildClick={false}>
       {providers.map((provider) => (
-        <SignInButton key={provider.name} provider={provider} />
+        <li key={provider.name}>
+          <SignInButton provider={provider} />
+        </li>
       ))}
     </Dropdown>
   );
@@ -51,13 +53,17 @@ const SignedOutDropdown = ({ session }: { session: Session }) => {
       className="right-0 w-max"
       closeOnChildClick={false}>
       {session.user.role === 'ADMIN' && (
-        <Link href="/admin" className="w-full">
-          <Button name="Admin" className="w-full">
-            Admin
-          </Button>
-        </Link>
+        <li>
+          <Link href="/admin" className="w-full">
+            <Button name="Admin" className="w-full">
+              Admin
+            </Button>
+          </Link>
+        </li>
       )}
-      <SignOutButton />
+      <li>
+        <SignOutButton />
+      </li>
     </Dropdown>
   );
 };

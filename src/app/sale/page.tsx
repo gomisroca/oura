@@ -10,12 +10,12 @@ export default async function SaleList({
   const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
 
   try {
-    const [sale, sports] = await Promise.all([api.sale.get(gender), api.category.getSportsInSale()]);
+    const [sale, saleSports] = await Promise.all([api.sale.get(gender), api.category.getSportsInSale()]);
 
     if (!sale || sale.products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
 
-    if (sports) {
-      return <SportList products={sale.products.map((p) => p.product)} sports={sports} sale={true} />;
+    if (saleSports) {
+      return <SportList products={sale.products.map((p) => p.product)} sports={saleSports.sports} sale={true} />;
     } else {
       return <MessageWrapper message="Unable to fetch sports in sale at this time" popup={false} />;
     }
