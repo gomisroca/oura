@@ -10,7 +10,15 @@ import { FaSearch } from 'react-icons/fa';
 import Link from 'next/link';
 import Button from '../ui/Button';
 
-function ProductCard({ product, className }: { product: ProductWithSizes; className?: string }) {
+function ProductCard({
+  product,
+  className,
+  loadingMethod = 'lazy',
+}: {
+  product: ProductWithSizes;
+  className?: string;
+  loadingMethod?: 'lazy' | 'eager';
+}) {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => setShowDetails((prev) => !prev);
@@ -46,14 +54,15 @@ function ProductCard({ product, className }: { product: ProductWithSizes; classN
         src={
           product.image
             ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}?width=200&height=250`
-            : `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}?width=20&height=25`
+            : `/ph_item.png`
         }
         alt={product.name}
         height={250}
         width={200}
         blurDataURL="/ph_item.png"
         placeholder="blur"
-        loading="lazy"
+        priority={loadingMethod === 'eager'}
+        loading={loadingMethod}
       />
       <div
         className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-slate-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
