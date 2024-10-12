@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import { Work_Sans } from 'next/font/google';
 import { type Metadata } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
 import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from 'next-themes';
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </MessageProvider>
         </ThemeProvider>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
