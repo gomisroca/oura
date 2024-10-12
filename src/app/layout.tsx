@@ -8,7 +8,9 @@ import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from 'next-themes';
 import { MessageProvider } from '@/context/MessageContext';
 import Navbar from './_components/navbar';
-import Message from './_components/ui/Message';
+import dynamic from 'next/dynamic';
+
+const Message = dynamic(() => import('./_components/ui/Message'), { ssr: false });
 
 export const metadata: Metadata = {
   title: 'OURA Clothing',
