@@ -21,7 +21,7 @@ const providers: Provider[] = [
   },
 ];
 
-const SignedInDropdown = () => {
+const SignedOutDropdown = () => {
   return (
     <Dropdown
       button={{
@@ -39,7 +39,7 @@ const SignedInDropdown = () => {
   );
 };
 
-const SignedOutDropdown = ({ session }: { session: Session }) => {
+const SignedInDropdown = ({ session }: { session: Session }) => {
   return (
     <Dropdown
       button={{
@@ -62,6 +62,13 @@ const SignedOutDropdown = ({ session }: { session: Session }) => {
         </li>
       )}
       <li>
+        <Link href="/order-history" className="w-full">
+          <Button name="Orders" className="w-full">
+            Orders
+          </Button>
+        </Link>
+      </li>
+      <li>
         <SignOutButton />
       </li>
     </Dropdown>
@@ -71,9 +78,9 @@ const SignedOutDropdown = ({ session }: { session: Session }) => {
 async function UserDropdown() {
   const session = await getServerAuthSession();
   if (!session) {
-    return <SignedInDropdown />;
+    return <SignedOutDropdown />;
   }
-  return <SignedOutDropdown session={session} />;
+  return <SignedInDropdown session={session} />;
 }
 
 export default UserDropdown;

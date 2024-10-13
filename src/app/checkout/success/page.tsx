@@ -10,12 +10,7 @@ async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string,
     // Get the order details
     const order: OrderWithProducts | undefined = await api.checkout.getOrder({ orderId: searchParams.orderId });
 
-    return (
-      <div className="flex flex-col gap-2 px-5">
-        <p>Order ID: {order.id}</p>
-        <OrderList products={order.products} />
-      </div>
-    );
+    return <OrderList products={order.products} id={order.id} createdAt={order.createdAt} />;
   } catch (_error) {
     return <div>Unable to fetch order details at this time</div>;
   }
