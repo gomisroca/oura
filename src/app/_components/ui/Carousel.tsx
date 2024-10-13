@@ -38,11 +38,17 @@ export default function Carousel({ products, sportListView = false }: { products
     }
   };
 
+  // Handle touch and mouse events to control autoplay
+  const handleInteractionStart = () => stopAutoplay();
+  const handleInteractionEnd = () => startAutoplay();
+  
   return (
     <div
       className="overflow-hidden"
-      onMouseEnter={stopAutoplay} // Stop autoplay on hover
-      onMouseLeave={startAutoplay} // Resume autoplay when not hovering
+      onMouseEnter={handleInteractionStart} // Desktop hover: stop autoplay
+      onMouseLeave={handleInteractionEnd}   // Desktop hover out: resume autoplay
+      onTouchStart={handleInteractionStart} // Mobile touch: stop autoplay
+      onTouchEnd={handleInteractionEnd}     // Mobile touch end: resume autoplay
     >
       <div className="flex items-center justify-center">
         {products[currentIndex] && (

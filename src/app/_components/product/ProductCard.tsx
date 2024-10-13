@@ -26,7 +26,9 @@ function ProductCard({
   const renderedSizes = useMemo(
     () =>
       product.sizes.map((size) => (
-        <div key={size.name} className="flex flex-row items-center justify-between gap-2">
+        <div
+          key={size.name}
+          className="flex flex-row items-center justify-between gap-2 rounded-xl border border-slate-600/10 px-2 py-1 dark:border-slate-400/10">
           <p className="font-bold">{size.name}</p>
           <div className="flex flex-row items-center gap-2">
             {size.colors.map((color) => (
@@ -66,8 +68,8 @@ function ProductCard({
       />
       <div
         className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-slate-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
-        <h2>{product.name}</h2>
-        <p>{product.description}</p>
+        <h2 className="line-clamp-1 text-lg font-semibold md:line-clamp-2">{product.name}</h2>
+        <p className="line-clamp-2 text-ellipsis text-sm md:line-clamp-3">{product.description}</p>
         <div className="relative items-center justify-center text-center">
           {product.sales.length > 0 ? (
             <>
@@ -82,7 +84,7 @@ function ProductCard({
           )}
         </div>
         {/* Size and Color Information */}
-        {renderedSizes}
+        <div className="flex flex-wrap gap-2">{renderedSizes}</div>
         <Link
           href={`/product/${product.id}`}
           className="absolute right-4 top-4"

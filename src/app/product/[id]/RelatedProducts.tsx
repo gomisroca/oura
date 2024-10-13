@@ -11,7 +11,7 @@ async function RelatedProducts({ productId, categoryId }: { productId: string; c
       .slice(0, 3);
     return (
       <div className="flex flex-col items-center justify-center gap-2">
-        <p className="text-xl">Related Products</p>
+        <p className="text-xl uppercase">Related Products</p>
         <ProductList products={products} />
       </div>
     );
