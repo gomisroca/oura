@@ -597,6 +597,7 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             alt={name}
             width={200}
             height={250}
+            className="m-auto rounded-xl"
           />
         ) : (
           <p>No image uploaded</p>
