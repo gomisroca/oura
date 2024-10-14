@@ -29,6 +29,33 @@ export const getOrder = async ({
   return order;
 };
 
+export const getAllOrders = async ({
+  prisma,
+  userId,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  userId: string;
+}) => {
+  const orders = await prisma.order.findMany({
+    where: { userId: userId },
+    include: {
+      products: {
+        include: {
+          product: true,
+          size: true,
+          color: true,
+        },
+      },
+    },
+  });
+  return orders;
+};
+
 // Create Order
 export const createOrder = async ({
   prisma,

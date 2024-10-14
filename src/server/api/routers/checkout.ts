@@ -3,7 +3,14 @@ import Stripe from 'stripe';
 import { env } from '@/env';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
-import { confirmOrder, createOrder, deleteOrder, getOrder, transferProductsToOrder } from '../queries/checkout';
+import {
+  confirmOrder,
+  createOrder,
+  deleteOrder,
+  getAllOrders,
+  getOrder,
+  transferProductsToOrder,
+} from '../queries/checkout';
 import { getCart } from '../queries/cart';
 import { getUniqueColor, updateColorStock, updateProductSales } from '../queries/product';
 
@@ -27,6 +34,27 @@ export const checkoutRouter = createTRPCRouter({
         // eslint-disable-next-line no-console
         console.error('Order retrieval failed:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get order' });
+      }
+    }
+  }),
+
+  // Get all order history for the user
+  getOrderHistory: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      const orders = await getAllOrders({ prisma: ctx.db, userId: ctx.session?.user?.id });
+
+      if (!orders) throw new TRPCError({ code: 'NOT_FOUND', message: 'Orders not found' });
+
+      return orders;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Order history retrieval failed:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get order history' });
       }
     }
   }),

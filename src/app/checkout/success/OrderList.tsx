@@ -14,11 +14,15 @@
 import CartItem from '@/app/_components/cart/CartItem';
 import { type OrderItem } from 'types';
 
-function OrderList({ products }: { products: OrderItem[] }) {
+function OrderList({ products, id, createdAt }: { products: OrderItem[]; id: string; createdAt: Date }) {
   return (
     <div
-      className="mx-auto flex w-full flex-wrap items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90"
+      className="mx-auto flex w-full flex-col items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90"
       role="list">
+      <div className="flex w-full flex-row items-start justify-evenly">
+        <p>{createdAt.toLocaleString()}</p>
+        <p>{id}</p>
+      </div>
       <div className="flex flex-col items-center gap-2" role="listitem">
         {products && products.length > 0 ? (
           products.map((product) => (
