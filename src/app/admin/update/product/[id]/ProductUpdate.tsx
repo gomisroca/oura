@@ -453,232 +453,99 @@ function GenderSelection({
 }
 
 export default function ProductUpdate({ productId }: { productId: string }) {
-  const utils = api.useUtils();
-  const { data: product } = api.product.getUnique.useQuery(productId);
+  // const utils = api.useUtils();
+  // const { data: product } = api.product.getUnique.useQuery(productId);
 
-  const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [basePrice, setBasePrice] = useState(0);
-  const [onSalePrice, setOnSalePrice] = useState(0);
-  const [image, setImage] = useState<string>();
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [subcategory, setSubcategory] = useState<number>(0);
-  const [category, setCategory] = useState<number>(0);
-  const [sport, setSport] = useState<number>(0);
-  const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
+  // const [formMessage, setFormMessage] = useState({ error: true, message: '' });
+  // const [name, setName] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [basePrice, setBasePrice] = useState(0);
+  // const [onSalePrice, setOnSalePrice] = useState(0);
+  // const [image, setImage] = useState<string>();
+  // const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  // const [subcategory, setSubcategory] = useState<number>(0);
+  // const [category, setCategory] = useState<number>(0);
+  // const [sport, setSport] = useState<number>(0);
+  // const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
 
-  useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setDescription(product.description);
-      setBasePrice(product.basePrice);
-      setOnSalePrice(product.onSalePrice);
-      setGender(product.gender);
-      setSubcategory(product.subcategory?.id ?? 0);
-      setCategory(product.category?.id ?? 0);
-      setSport(product.sport?.id ?? 0);
-      setInventory(product.sizes.map((size) => ({ name: size.name, colors: size.colors })));
-    }
-  }, [product]);
+  // useEffect(() => {
+  //   if (product) {
+  //     setName(product.name);
+  //     setDescription(product.description);
+  //     setBasePrice(product.basePrice);
+  //     setOnSalePrice(product.onSalePrice);
+  //     setGender(product.gender);
+  //     setSubcategory(product.subcategory?.id ?? 0);
+  //     setCategory(product.category?.id ?? 0);
+  //     setSport(product.sport?.id ?? 0);
+  //     setInventory(product.sizes.map((size) => ({ name: size.name, colors: size.colors })));
+  //   }
+  // }, [product]);
 
-  const updateProduct = api.product.update.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
-    },
-    onSuccess: async () => {
-      await utils.product.invalidate();
-      setFormMessage({ error: false, message: 'Product updated successfully!' });
-    },
-  });
+  // const updateProduct = api.product.update.useMutation({
+  //   onError: () => {
+  //     setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+  //   },
+  //   onSuccess: async () => {
+  //     await utils.product.invalidate();
+  //     setFormMessage({ error: false, message: 'Product updated successfully!' });
+  //   },
+  // });
 
-  const deleteProduct = api.product.delete.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
-    },
-    onSuccess: async () => {
-      await utils.product.invalidate();
-      setFormMessage({ error: false, message: 'Product deleted successfully!' });
-    },
-  });
+  // const deleteProduct = api.product.delete.useMutation({
+  //   onError: () => {
+  //     setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+  //   },
+  //   onSuccess: async () => {
+  //     await utils.product.invalidate();
+  //     setFormMessage({ error: false, message: 'Product deleted successfully!' });
+  //   },
+  // });
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files![0];
+  // const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const selectedFile = e.target.files![0];
 
-    if (selectedFile) {
-      setFormMessage({ error: false, message: '' });
-      // Validate file type and size
-      const isValidFileType = checkFileType(selectedFile);
-      if (!isValidFileType) {
-        setFormMessage({ error: true, message: 'Please upload a valid image file' });
-        return;
-      }
-      const isValidFileSize = checkFileSize(selectedFile);
-      if (!isValidFileSize) {
-        setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
-        return;
-      }
+  //   if (selectedFile) {
+  //     setFormMessage({ error: false, message: '' });
+  //     // Validate file type and size
+  //     const isValidFileType = checkFileType(selectedFile);
+  //     if (!isValidFileType) {
+  //       setFormMessage({ error: true, message: 'Please upload a valid image file' });
+  //       return;
+  //     }
+  //     const isValidFileSize = checkFileSize(selectedFile);
+  //     if (!isValidFileSize) {
+  //       setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
+  //       return;
+  //     }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target!.result;
-        setImage(imageData as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const imageData = e.target!.result;
+  //       setImage(imageData as string);
+  //     };
+  //     reader.readAsDataURL(selectedFile);
+  //   }
+  // };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setFormMessage({ error: false, message: '' });
-    e.preventDefault();
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   setFormMessage({ error: false, message: '' });
+  //   e.preventDefault();
 
-    updateProduct.mutate({
-      id: productId,
-      name,
-      description,
-      basePrice,
-      onSalePrice,
-      gender,
-      subcategory,
-      category,
-      sport,
-      inventory,
-      image,
-    });
-  };
+  //   updateProduct.mutate({
+  //     id: productId,
+  //     name,
+  //     description,
+  //     basePrice,
+  //     onSalePrice,
+  //     gender,
+  //     subcategory,
+  //     category,
+  //     sport,
+  //     inventory,
+  //     image,
+  //   });
+  // };
 
-  if (product) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4">
-        <Button
-          className="bg-red-500/80 dark:bg-red-600 xl:bg-red-500/80 xl:dark:bg-red-600/80"
-          onClick={() => deleteProduct.mutate({ id: productId })}>
-          Delete Product
-        </Button>
-      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="name"
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="description"
-          type="text"
-          placeholder="Description"
-          required
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="basePrice"
-          type="number"
-          placeholder="Base Price"
-          required
-          min={0}
-          step={0.01}
-          value={basePrice}
-          onChange={(e) => setBasePrice(Number(e.target.value))}
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="onSalePrice"
-          type="number"
-          placeholder="On Sale Price"
-          required
-          min={0}
-          step={0.01}
-          value={onSalePrice}
-          onChange={(e) => setOnSalePrice(Number(e.target.value))}
-        />
-        <GenderSelection setGender={setGender} productGenders={gender} />
-        <SportSelection
-          setSubcategory={setSubcategory}
-          setCategory={setCategory}
-          setSport={setSport}
-          productSport={product?.sport ?? undefined}
-          productCategory={product?.category ?? undefined}
-          productSubcategory={product?.subcategory ?? undefined}
-        />
-        <h1 className="text-xl">Size Selection</h1>
-        <SizeSelection inventory={inventory} setInventory={setInventory} />
-        {product.image ? (
-          <Image
-            src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-            alt={name}
-            width={200}
-            height={250}
-            className="m-auto rounded-xl"
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="description"
-            type="text"
-            placeholder="Description"
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="basePrice"
-            type="number"
-            placeholder="Base Price"
-            required
-            min={0}
-            step={0.01}
-            value={basePrice}
-            onChange={(e) => setBasePrice(Number(e.target.value))}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="onSalePrice"
-            type="number"
-            placeholder="On Sale Price"
-            required
-            min={0}
-            step={0.01}
-            value={onSalePrice}
-            onChange={(e) => setOnSalePrice(Number(e.target.value))}
-          />
-          <GenderSelection setGender={setGender} productGenders={gender} />
-          <SportSelection
-            setSubcategory={setSubcategory}
-            setCategory={setCategory}
-            setSport={setSport}
-            productSport={product?.sport ?? undefined}
-            productCategory={product?.category ?? undefined}
-            productSubcategory={product?.subcategory ?? undefined}
-          />
-          <h1 className="text-xl">Size Selection</h1>
-          <SizeSelection inventory={inventory} setInventory={setInventory} />
-          {product.image ? (
-            <Image
-              src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-              alt={name}
-              width={200}
-              height={250}
-            />
-          ) : (
-            <p>No image uploaded</p>
-          )}
-          <p>New Image (optional)</p>
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            type="file"
-            name="image"
-            accept="image/png, image/jpeg, image/jpg"
-            onChange={(e) => handleImage(e)}
-          />
-          <Button type="submit">Submit</Button>
-          {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
-        </form>
-      </div>
-    );
-  }
+  return <div className="flex flex-col items-center justify-center gap-4"></div>;
 }
