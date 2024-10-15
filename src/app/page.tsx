@@ -3,7 +3,7 @@ import { env } from '@/env';
 import { api } from '@/trpc/server';
 import { type ProductWithSizes } from 'types';
 import LandingContent from './LandingContent';
-import MessageWrapper from './_components/ui/MessageWrapper';
+import { notFound } from 'next/navigation';
 
 async function LandingHero() {
   // Fetch ongoing sale info, wrapped in try-catch for error handling
@@ -19,7 +19,7 @@ async function LandingHero() {
     // Sort products by popularity (views + sales)
     products = products?.sort((a, b) => b.amountSold + b.views - (a.amountSold + a.views));
   } catch (_error) {
-    return <MessageWrapper message="Something went wrong while fetching products." />;
+    notFound();
   }
 
   // Set the landing image source, using the sale image if available

@@ -1,6 +1,6 @@
-import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import { api } from '@/trpc/server';
 import SportList from '../_components/ui/SportList';
+import { notFound } from 'next/navigation';
 
 export default async function SaleList({
   searchParams,
@@ -12,14 +12,14 @@ export default async function SaleList({
   try {
     const [sale, saleSports] = await Promise.all([api.sale.get(gender), api.category.getSportsInSale()]);
 
-    if (!sale || sale.products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
+    if (!sale || sale.products.length === 0) notFound();
 
     if (saleSports) {
       return <SportList products={sale.products.map((p) => p.product)} sports={saleSports.sports} sale={true} />;
     } else {
-      return <MessageWrapper message="Unable to fetch sports in sale at this time" popup={false} />;
+      notFound();
     }
   } catch (_error) {
-    return <MessageWrapper message="Unable to fetch products at this time" popup={false} />;
+    notFound();
   }
 }

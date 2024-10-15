@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import MessageWrapper from './_components/ui/MessageWrapper';
 
 export default function NotFoundPage() {
   const router = useRouter();
@@ -16,5 +15,5 @@ export default function NotFoundPage() {
     return () => clearTimeout(timeout);
   }, [router]);
 
-  return <MessageWrapper message="404 | Page Not Found" />;
+  return <h1 className="text-center text-4xl font-bold">404 | Page Not Found</h1>;
 }
