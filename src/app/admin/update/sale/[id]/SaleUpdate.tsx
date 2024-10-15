@@ -72,6 +72,16 @@ export default function SaleUpdate({ id }: { id: string }) {
     },
   });
 
+  const deleteSale = api.sale.delete.useMutation({
+    onError: () => {
+      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+    },
+    onSuccess: async () => {
+      await utils.sale.invalidate();
+      setFormMessage({ error: false, message: 'Sale deleted successfully!' });
+    },
+  });
+
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files![0];
 
@@ -114,91 +124,101 @@ export default function SaleUpdate({ id }: { id: string }) {
       selectedProducts,
     });
   };
+
   if (sale) {
     return (
-      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-        <p>Name</p>
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="name"
-          type="text"
-          placeholder="Sale Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <p>Start Date</p>
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="startDate"
-          type="date"
-          placeholder="Start Date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          required
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="startTime"
-          type="time"
-          placeholder="Start Time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          required
-        />
-        <p>End Date</p>
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="endDate"
-          type="date"
-          placeholder="End Date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          required
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="endTime"
-          type="time"
-          placeholder="End Time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          required
-        />
-        {sale.image ? (
-          <Image
-            src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${sale.image}`}
-            alt={name}
-            width={200}
-            height={250}
-            className="m-auto rounded-xl"
-          />
-        ) : (
-          <p>No image uploaded</p>
-        )}
-        <p>New Image (optional)</p>
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          type="file"
-          name="image"
-          accept="image/png, image/jpeg, image/jpg"
-          onChange={(e) => handleImage(e)}
-        />
-        {products && (
-          <>
-            <p>Products</p>
-            <ProductSelector
-              products={products}
-              saleProducts={sale.products.map((product) => product.productId)}
-              setSelectedProducts={setSelectedProducts}
-            />
-          </>
-        )}
-        <Button type="submit" disabled={updateSale.isPending}>
-          {updateSale.isPending ? 'Submitting...' : 'Submit'}
+      <div className="flex flex-col items-center justify-center gap-4">
+        <Button
+          className="bg-red-500/80 dark:bg-red-600 xl:bg-red-500/80 xl:dark:bg-red-600/80"
+          onClick={() => deleteSale.mutate({ id })}>
+          Delete
         </Button>
-        {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />}
-      </form>
+        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+          <p>Name</p>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="name"
+            type="text"
+            placeholder="Sale Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <p>Start Date</p>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="startDate"
+            type="date"
+            placeholder="Start Date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="startTime"
+            type="time"
+            placeholder="Start Time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            required
+          />
+          <p>End Date</p>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="endDate"
+            type="date"
+            placeholder="End Date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+          />
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="endTime"
+            type="time"
+            placeholder="End Time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            required
+          />
+          {sale.image ? (
+            <Image
+              src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${sale.image}`}
+              alt={name}
+              width={200}
+              height={250}
+              className="m-auto rounded-xl"
+            />
+          ) : (
+            <p>No image uploaded</p>
+          )}
+          <p>New Image (optional)</p>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            type="file"
+            name="image"
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={(e) => handleImage(e)}
+          />
+          {products && (
+            <>
+              <p>Products</p>
+              <ProductSelector
+                products={products}
+                saleProducts={sale.products.map((product) => product.productId)}
+                setSelectedProducts={setSelectedProducts}
+              />
+            </>
+          )}
+          <Button type="submit" disabled={updateSale.isPending}>
+            {updateSale.isPending ? 'Submitting...' : 'Submit'}
+          </Button>
+          {formMessage.message && (
+            <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
+          )}
+        </form>
+      </div>
     );
   }
   return null;

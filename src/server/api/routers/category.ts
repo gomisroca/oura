@@ -3,9 +3,13 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
 import {
+  addProductToSubcategory,
   createCategory,
   createSport,
   createSubcategory,
+  deleteCategory,
+  deleteSport,
+  deleteSubcategory,
   getCategoriesInSport,
   getSports,
   getSportsByGender,
@@ -14,10 +18,67 @@ import {
   getUniqueCategory,
   getUniqueSport,
   getUniqueSubcategory,
+  RemoveProductFromSubcategory,
+  updateCategory,
+  updateSport,
+  updateSubcategory,
 } from '../queries/category';
 import { getOngoingSale } from '../queries/sale';
 
+const updateSchema = z.object({
+  name: z.string().min(1),
+  id: z.number(),
+  sportId: z.number(),
+  categoryId: z.number(),
+  selectedProducts: z.array(z.string()).min(1),
+});
+
 export const categoryRouter = createTRPCRouter({
+  getUniqueSport: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    try {
+      const sport = await getUniqueSport({ prisma: ctx.db, sportId: input.id });
+      return sport;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get sports:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get sports' });
+      }
+    }
+  }),
+
+  getUniqueCategory: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    try {
+      const category = await getUniqueCategory({ prisma: ctx.db, categoryId: input.id });
+      return category;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get sports:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get sports' });
+      }
+    }
+  }),
+
+  getUniqueSubcategory: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    try {
+      const subcategory = await getUniqueSubcategory({ prisma: ctx.db, subcategoryId: input.id });
+      return subcategory;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get sports:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get sports' });
+      }
+    }
+  }),
+
   getSports: publicProcedure.query(async ({ ctx }) => {
     try {
       const sports = await getSports({ prisma: ctx.db });
@@ -197,22 +258,24 @@ export const categoryRouter = createTRPCRouter({
           }
 
           // Try to find the subcategory associated with the category
-          let subcategory = await getUniqueSubcategory({
+          const subcategory = await getUniqueSubcategory({
             prisma: tx,
             subcategoryName: input.subcategory,
             categoryId: input.categoryId,
           });
+          if (subcategory) {
+            return subcategory;
+          }
 
           // If the subcategory doesn't exist, create it
           if (!subcategory) {
-            subcategory = await createSubcategory({
+            const newSubcategory = await createSubcategory({
               prisma: tx,
               subcategoryName: input.subcategory,
               categoryId: input.categoryId,
             });
+            return newSubcategory;
           }
-
-          return subcategory;
         });
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -224,4 +287,154 @@ export const categoryRouter = createTRPCRouter({
         }
       }
     }),
+
+  updateSport: protectedProcedure
+    .input(z.object({ id: z.number(), name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        if (ctx.session.user?.role !== 'ADMIN')
+          throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+        await updateSport({ prisma: ctx.db, sportId: input.id, sportName: input.name });
+
+        return true;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to update sport:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update sport' });
+        }
+      }
+    }),
+
+  updateCategory: protectedProcedure
+    .input(z.object({ id: z.number(), name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        if (ctx.session.user?.role !== 'ADMIN')
+          throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+        await updateCategory({ prisma: ctx.db, categoryId: input.id, categoryName: input.name });
+
+        return true;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to update category:', error);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update category' });
+        }
+      }
+    }),
+
+  updateSubcategory: protectedProcedure.input(updateSchema).mutation(async ({ ctx, input }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      return await ctx.db.$transaction(async (tx) => {
+        const subcategory = await updateSubcategory({
+          prisma: tx,
+          subcategoryId: input.id,
+          subcategoryName: input.name,
+        });
+
+        // Add products to subcategory if they don't exist in it
+        for (const product of input.selectedProducts) {
+          const productInSubcategory = subcategory.products.find((sp) => sp.id === product);
+
+          if (!productInSubcategory) {
+            await addProductToSubcategory({
+              prisma: tx,
+              productId: product,
+              subcategoryId: input.id,
+              categoryId: input.categoryId,
+              sportId: input.sportId,
+            });
+          }
+        }
+
+        // Remove products that are no longer in selectedProducts
+        const productsToRemove = subcategory.products.filter((sp) => !input.selectedProducts.includes(sp.id));
+        if (productsToRemove.length > 0) {
+          for (const productInSubcategory of productsToRemove) {
+            await RemoveProductFromSubcategory({
+              prisma: tx,
+              productId: productInSubcategory.id,
+            });
+          }
+        }
+
+        return true;
+      });
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to update subcategory:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update subcategory' });
+      }
+    }
+  }),
+
+  deleteSport: protectedProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      await deleteSport({ prisma: ctx.db, sportId: input.id });
+
+      return true;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to delete sport:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete sport' });
+      }
+    }
+  }),
+
+  deleteCategory: protectedProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      await deleteCategory({ prisma: ctx.db, categoryId: input.id });
+
+      return true;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to delete category:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete category' });
+      }
+    }
+  }),
+
+  deleteSubcategory: protectedProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      await deleteSubcategory({ prisma: ctx.db, subcategoryId: input.id });
+
+      return true;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to delete subcategory:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete subcategory' });
+      }
+    }
+  }),
 });
