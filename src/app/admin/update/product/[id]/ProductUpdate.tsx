@@ -553,7 +553,7 @@ export default function ProductUpdate({ productId }: { productId: string }) {
         <Button
           className="bg-red-500/80 dark:bg-red-600 xl:bg-red-500/80 xl:dark:bg-red-600/80"
           onClick={() => deleteProduct.mutate({ id: productId })}>
-          Delete
+          Delete Product
         </Button>
         <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
           <input
