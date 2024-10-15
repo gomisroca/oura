@@ -1,7 +1,7 @@
 import ProductList from '@/app/_components/product/ProductList';
 import BackButton from '@/app/_components/ui/BackButton';
-import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import { api } from '@/trpc/server';
+import { notFound } from 'next/navigation';
 
 export default async function SubcategoryList({
   params,
@@ -18,7 +18,7 @@ export default async function SubcategoryList({
       gender: gender,
     });
 
-    if (!sale || sale.products.length === 0) return <MessageWrapper message="No products found" popup={false} />;
+    if (!sale || sale.products.length === 0) notFound();
     return (
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-center md:absolute md:left-0 md:right-0 md:top-24">
@@ -33,6 +33,6 @@ export default async function SubcategoryList({
       </div>
     );
   } catch (_error) {
-    return <MessageWrapper message="Unable to fetch products at this time" popup={false} />;
+    notFound();
   }
 }

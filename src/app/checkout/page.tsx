@@ -1,11 +1,11 @@
 import { getServerAuthSession } from '@/server/auth';
 import CheckoutContent from './CheckoutContent';
-import MessageWrapper from '../_components/ui/MessageWrapper';
+import { notFound } from 'next/navigation';
 
 async function Checkout() {
   const session = await getServerAuthSession();
   if (!session) {
-    return <MessageWrapper message="Must be signed in to checkout" />;
+    notFound();
   }
   return <CheckoutContent />;
 }
