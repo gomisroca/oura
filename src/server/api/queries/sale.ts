@@ -1,6 +1,49 @@
 import { type GENDER, type Prisma, type PrismaClient } from '@prisma/client';
 import { type DefaultArgs } from '@prisma/client/runtime/library';
 
+// Get unique Sale
+export const getUniqueSale = async ({
+  prisma,
+  saleId,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  saleId: string;
+}) => {
+  const sale = await prisma.sale.findUnique({
+    where: { id: saleId },
+    include: {
+      products: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  return sale;
+};
+
+// Get all Sales
+export const getAllSales = async ({
+  prisma,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+}) => {
+  const sales = await prisma.sale.findMany();
+
+  return sales;
+};
+
 // Get ongoing Sale
 export const getOngoingSale = async ({
   prisma,
@@ -343,6 +386,63 @@ export const createSaleProduct = async ({
     data: {
       productId: productId,
       saleId: saleId,
+    },
+  });
+
+  return sale;
+};
+
+// Delete Sale Product
+export const deleteSaleProduct = async ({
+  prisma,
+  saleProductId,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  saleProductId: number;
+}) => {
+  await prisma.saleProduct.delete({
+    where: {
+      id: saleProductId,
+    },
+  });
+};
+
+// Update Sale
+export const updateSale = async ({
+  prisma,
+  id,
+  name,
+  startDate,
+  endDate,
+  imageLink,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  imageLink?: string;
+}) => {
+  const sale = await prisma.sale.update({
+    where: { id: id },
+    data: {
+      name: name,
+      startDate: startDate,
+      endDate: endDate,
+      image: imageLink,
+    },
+    include: {
+      products: true,
     },
   });
 

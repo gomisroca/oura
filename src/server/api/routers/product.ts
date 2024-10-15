@@ -11,10 +11,30 @@ import {
   getProductsbyCategory,
   getProductsbySport,
   getProductsbySubcategory,
+  getUniqueProduct,
+  updateProduct,
   updateProductVisits,
+  updateSizes,
+  updateColors,
 } from '../queries/product';
 
-const productSchema = z.object({
+const createSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  basePrice: z.number().multipleOf(0.01),
+  onSalePrice: z.number().multipleOf(0.01),
+  gender: z.array(z.enum(['MALE', 'FEMALE', 'OTHER'])),
+  subcategory: z.number(),
+  category: z.number(),
+  sport: z.number(),
+  inventory: z.array(
+    z.object({ name: z.string(), colors: z.array(z.object({ name: z.string(), stock: z.number() })) })
+  ),
+  image: z.string().optional(),
+});
+
+const updateSchema = z.object({
+  id: z.string(),
   name: z.string().min(1),
   description: z.string().min(1),
   basePrice: z.number().multipleOf(0.01),
@@ -41,6 +61,21 @@ export const productRouter = createTRPCRouter({
         // eslint-disable-next-line no-console
         console.error('Failed to visit product:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to visit product' });
+      }
+    }
+  }),
+
+  getUnique: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    try {
+      const product = await getUniqueProduct({ prisma: ctx.db, productId: input });
+      return product;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get unique product:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get unique product' });
       }
     }
   }),
@@ -119,7 +154,7 @@ export const productRouter = createTRPCRouter({
       }
     }),
 
-  create: protectedProcedure.input(productSchema).mutation(async ({ ctx, input }) => {
+  create: protectedProcedure.input(createSchema).mutation(async ({ ctx, input }) => {
     try {
       if (ctx.session.user?.role !== 'ADMIN')
         throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
@@ -168,6 +203,63 @@ export const productRouter = createTRPCRouter({
         // eslint-disable-next-line no-console
         console.error('Failed to create product:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create product' });
+      }
+    }
+  }),
+
+  update: protectedProcedure.input(updateSchema).mutation(async ({ ctx, input }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      let imageLink: string | undefined;
+      if (input.image) {
+        try {
+          imageLink = await uploadImage(input.image);
+        } catch (_error) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to upload image' });
+        }
+      }
+
+      return await ctx.db.$transaction(async (tx) => {
+        const product = await updateProduct({
+          prisma: tx,
+          productId: input.id,
+          name: input.name,
+          description: input.description,
+          basePrice: input.basePrice,
+          onSalePrice: input.onSalePrice,
+          gender: input.gender,
+          subcategoryId: input.subcategory,
+          categoryId: input.category,
+          sportId: input.sport,
+          imageLink: imageLink,
+        });
+        if (product === null) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
+        }
+
+        const sizes = await updateSizes({
+          prisma: tx,
+          productId: product.id,
+          inventory: input.inventory,
+        });
+
+        await updateColors({
+          prisma: tx,
+          sizes: sizes,
+          inventory: input.inventory,
+        });
+
+        return product;
+      });
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to update product:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update product' });
       }
     }
   }),
