@@ -448,3 +448,21 @@ export const updateSale = async ({
 
   return sale;
 };
+
+// Delete Sale
+export const deleteSale = async ({
+  prisma,
+  id,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  id: string;
+}) => {
+  await prisma.sale.delete({
+    where: { id: id },
+  });
+};

@@ -6,6 +6,7 @@ import {
   checkOverlappingSale,
   createSale,
   createSaleProduct,
+  deleteSale,
   deleteSaleProduct,
   getAllSales,
   getOngoingSaleWithDetails,
@@ -248,6 +249,24 @@ export const saleRouter = createTRPCRouter({
         // eslint-disable-next-line no-console
         console.error('Failed to update sale:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update sale' });
+      }
+    }
+  }),
+
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input, ctx }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      await deleteSale({ prisma: ctx.db, id: input.id });
+      return true;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to delete sale:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete sale' });
       }
     }
   }),

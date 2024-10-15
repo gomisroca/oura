@@ -16,6 +16,7 @@ import {
   updateProductVisits,
   updateSizes,
   updateColors,
+  deleteProduct,
 } from '../queries/product';
 
 const createSchema = z.object({
@@ -260,6 +261,24 @@ export const productRouter = createTRPCRouter({
         // eslint-disable-next-line no-console
         console.error('Failed to update product:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update product' });
+      }
+    }
+  }),
+
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input, ctx }) => {
+    try {
+      if (ctx.session.user?.role !== 'ADMIN')
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
+
+      await deleteProduct({ prisma: ctx.db, id: input.id });
+      return true;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to delete product:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete product' });
       }
     }
   }),

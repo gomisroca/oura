@@ -492,6 +492,16 @@ export default function ProductUpdate({ productId }: { productId: string }) {
     },
   });
 
+  const deleteProduct = api.product.delete.useMutation({
+    onError: () => {
+      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+    },
+    onSuccess: async () => {
+      await utils.product.invalidate();
+      setFormMessage({ error: false, message: 'Product deleted successfully!' });
+    },
+  });
+
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files![0];
 
@@ -539,79 +549,86 @@ export default function ProductUpdate({ productId }: { productId: string }) {
 
   if (product) {
     return (
-      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="name"
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="description"
-          type="text"
-          placeholder="Description"
-          required
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="basePrice"
-          type="number"
-          placeholder="Base Price"
-          required
-          min={0}
-          step={0.01}
-          value={basePrice}
-          onChange={(e) => setBasePrice(Number(e.target.value))}
-        />
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          name="onSalePrice"
-          type="number"
-          placeholder="On Sale Price"
-          required
-          min={0}
-          step={0.01}
-          value={onSalePrice}
-          onChange={(e) => setOnSalePrice(Number(e.target.value))}
-        />
-        <GenderSelection setGender={setGender} productGenders={gender} />
-        <SportSelection
-          setSubcategory={setSubcategory}
-          setCategory={setCategory}
-          setSport={setSport}
-          productSport={product?.sport ?? undefined}
-          productCategory={product?.category ?? undefined}
-          productSubcategory={product?.subcategory ?? undefined}
-        />
-        <h1 className="text-xl">Size Selection</h1>
-        <SizeSelection inventory={inventory} setInventory={setInventory} />
-        {product.image ? (
-          <Image
-            src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-            alt={name}
-            width={200}
-            height={250}
+      <div className="flex flex-col items-center justify-center gap-4">
+        <Button
+          className="bg-red-500/80 dark:bg-red-600 xl:bg-red-500/80 xl:dark:bg-red-600/80"
+          onClick={() => deleteProduct.mutate({ id: productId })}>
+          Delete
+        </Button>
+        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="name"
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
-        ) : (
-          <p>No image uploaded</p>
-        )}
-        <p>New Image (optional)</p>
-        <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-          type="file"
-          name="image"
-          accept="image/png, image/jpeg, image/jpg"
-          onChange={(e) => handleImage(e)}
-        />
-        <Button type="submit">Submit</Button>
-        {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
-      </form>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="description"
+            type="text"
+            placeholder="Description"
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="basePrice"
+            type="number"
+            placeholder="Base Price"
+            required
+            min={0}
+            step={0.01}
+            value={basePrice}
+            onChange={(e) => setBasePrice(Number(e.target.value))}
+          />
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            name="onSalePrice"
+            type="number"
+            placeholder="On Sale Price"
+            required
+            min={0}
+            step={0.01}
+            value={onSalePrice}
+            onChange={(e) => setOnSalePrice(Number(e.target.value))}
+          />
+          <GenderSelection setGender={setGender} productGenders={gender} />
+          <SportSelection
+            setSubcategory={setSubcategory}
+            setCategory={setCategory}
+            setSport={setSport}
+            productSport={product?.sport ?? undefined}
+            productCategory={product?.category ?? undefined}
+            productSubcategory={product?.subcategory ?? undefined}
+          />
+          <h1 className="text-xl">Size Selection</h1>
+          <SizeSelection inventory={inventory} setInventory={setInventory} />
+          {product.image ? (
+            <Image
+              src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
+              alt={name}
+              width={200}
+              height={250}
+            />
+          ) : (
+            <p>No image uploaded</p>
+          )}
+          <p>New Image (optional)</p>
+          <input
+            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            type="file"
+            name="image"
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={(e) => handleImage(e)}
+          />
+          <Button type="submit">Submit</Button>
+          {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
+        </form>
+      </div>
     );
   }
 }

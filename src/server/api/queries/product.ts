@@ -648,3 +648,21 @@ export const updateProductVisits = async ({
   });
   return product;
 };
+
+// Delete Product
+export const deleteProduct = async ({
+  prisma,
+  id,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  id: string;
+}) => {
+  await prisma.product.delete({
+    where: { id: id },
+  });
+};
