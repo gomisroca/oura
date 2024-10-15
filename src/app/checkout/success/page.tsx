@@ -2,6 +2,7 @@ import { api } from '@/trpc/server';
 import React from 'react';
 import { type OrderWithProducts } from 'types';
 import OrderList from './OrderList';
+import { notFound } from 'next/navigation';
 
 async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
   try {
@@ -12,7 +13,7 @@ async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string,
 
     return <OrderList products={order.products} id={order.id} createdAt={order.createdAt} />;
   } catch (_error) {
-    return <div>Unable to fetch order details at this time</div>;
+    return notFound();
   }
 }
 
