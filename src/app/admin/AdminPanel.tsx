@@ -41,14 +41,6 @@ function AdminPanel() {
           </Button>
         </div>
       </div>
-      {/* 
-      There should be update options for each of these.
-      When updating a product, it should be possible to update the sizes, colors, stock.
-          It might be interesting to add 'tags' to the product model, to get more accurate related products.
-      When updating a sport, category or subcategory, it should be possible to delete it or its categories/subcategories (with a warning of how many products will be left orphaned). 
-          It should also be possible to update which products belong to it.
-      When updating a sale, it should be possible to update the date, time, and which products belong to it.
-      */}
     </div>
   );
 }

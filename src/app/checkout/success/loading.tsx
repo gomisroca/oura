@@ -1,5 +1,5 @@
-import CartListLoading from '@/app/_components/cart/CartListLoading';
+import OrderListSkeleton from '@/app/_components/skeletons/OrderListSkeleton';
 
 export default function Loading() {
-  return <CartListLoading />;
+  return <OrderListSkeleton />;
 }

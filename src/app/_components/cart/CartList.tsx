@@ -16,7 +16,7 @@ import { api } from '@/trpc/react';
 import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
 import MessageWrapper from '../ui/MessageWrapper';
-import CartListLoading from './CartListLoading';
+import CartListSkeleton from '../skeletons/CartListSkeleton';
 
 function CartList({ foldableView = false }: { foldableView?: boolean }) {
   const router = useRouter();
@@ -25,7 +25,7 @@ function CartList({ foldableView = false }: { foldableView?: boolean }) {
   const products = useMemo(() => cart?.products, [cart?.products]);
 
   return status === 'pending' ? (
-    <CartListLoading foldableView={foldableView} />
+    <CartListSkeleton foldableView={foldableView} />
   ) : status === 'error' ? (
     <MessageWrapper message="Unable to fetch your cart at this time" />
   ) : (
