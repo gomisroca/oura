@@ -3,10 +3,11 @@
 import { api } from '@/trpc/react';
 import { Color, Product } from '@prisma/client';
 import { ProductWithSizes } from 'types';
-import { useMessage } from '@/context/MessageContext';
+import { useSetAtom } from 'jotai';
+import { messageAtom } from "@/atoms/message";
 
 function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?: boolean, product: ProductWithSizes | Product, sizeId: string, color: Color }) {
-  const { setMessage, setError, setPopup } = useMessage();
+  const setMessage = useSetAtom(messageAtom);
   const utils = api.useUtils();
   const addToCart = api.cart.add.useMutation({
     onSuccess: async () => {
@@ -24,14 +25,10 @@ function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?:
         sizeId: sizeId,
         colorId: colorId,
       }).then(() => {
-        setMessage(`Added ${product.name} to cart`);
-        setError(false);
-        setPopup(true);
+        setMessage({ message: `Added ${product.name} to cart`, error: false, popup: true});
       });
     } catch (_error) {
-      setMessage('Please sign in to add to cart');
-      setError(true);
-      setPopup(true);
+      setMessage({ message: 'Please sign in to add to cart', error: true, popup: true});
     }
   };
 

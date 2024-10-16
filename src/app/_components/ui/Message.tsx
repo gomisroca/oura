@@ -1,9 +1,33 @@
 'use client';
 
-import { useMessage } from "@/context/MessageContext";
+import { messageAtom } from "@/atoms/message";
+import { useAtom } from "jotai";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const Message = () => {
-  const { message, error, popup } = useMessage();
+  const [{ message, error, popup }, setMessage] = useAtom(messageAtom);
+
+  const pathname = usePathname(); // Get the current path
+
+  // Clear message, error, and popup on route change
+  useEffect(() => {
+    if (message || error || popup) {
+      setMessage({message: null})
+    }
+  }, [pathname]);
+
+  // Automatically hide popup after 5 seconds
+  useEffect(() => {
+    if (popup === true) {
+      const timeout = setTimeout(() => {
+        setMessage({message: null})
+      }, 5000);
+
+      // Cleanup timeout when popup state changes
+      return () => clearTimeout(timeout);
+    }
+  }, [popup]);
 
   if (!message) return null;
 

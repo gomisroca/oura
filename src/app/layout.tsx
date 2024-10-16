@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from 'next-themes';
-import { MessageProvider } from '@/context/MessageContext';
+import { Provider as JotaiProvider } from 'jotai';
 import Navbar from './_components/navbar';
 import dynamic from 'next/dynamic';
 
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={worksans.className}>
       <body>
         <ThemeProvider attribute="class">
-          <MessageProvider>
+          <JotaiProvider>
             <TRPCReactProvider>
               <div
                 style={{ backgroundImage: "url('/bg.jpg')" }}
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <Message />
               </div>
             </TRPCReactProvider>
-          </MessageProvider>
+          </JotaiProvider>
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
