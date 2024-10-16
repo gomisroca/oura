@@ -13,7 +13,7 @@ export default async function ProductView({ params }: { params: { id: string } }
     }
 
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center justify-center gap-4">
         <ProductBackButtons product={product} />
         <ProductContent product={product} />
         {product.categoryId && <RelatedProducts productId={params.id} categoryId={product.categoryId} />}

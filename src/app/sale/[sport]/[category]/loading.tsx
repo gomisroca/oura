@@ -1,5 +1,5 @@
-import ProductListLoading from '@/app/_components/product/ProductListLoading';
+import ProductListSkeleton from '@/app/_components/skeletons/ProductListSkeleton';
 
 export default function Loading() {
-  return <ProductListLoading />;
+  return <ProductListSkeleton />;
 }

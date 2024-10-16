@@ -1,6 +1,6 @@
 import React from 'react';
 
-function CartListLoading({ foldableView = false }: { foldableView?: boolean }) {
+function CartListSkeleton({ foldableView = false }: { foldableView?: boolean }) {
   return (
     <div
       className={`animation-pulse mx-auto flex items-center justify-center rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90 ${foldableView ? 'h-[40vh] w-[20rem]' : 'h-[60vh] w-[40rem]'}`}>
@@ -9,4 +9,4 @@ function CartListLoading({ foldableView = false }: { foldableView?: boolean }) {
   );
 }
 
-export default CartListLoading;
+export default CartListSkeleton;
