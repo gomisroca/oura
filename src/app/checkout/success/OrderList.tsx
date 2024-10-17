@@ -13,18 +13,41 @@
 
 import CartItem from '@/app/_components/cart/CartItem';
 import CartListSkeleton from '@/app/_components/skeletons/CartListSkeleton';
+import { type OrderAddress } from '@prisma/client';
 import { Suspense } from 'react';
 import { type OrderItem } from 'types';
 
-function OrderList({ products, id, createdAt }: { products: OrderItem[]; id: string; createdAt: Date }) {
+function OrderList({
+  products,
+  id,
+  createdAt,
+  address,
+}: {
+  products: OrderItem[];
+  id: string;
+  createdAt: Date;
+  address?: OrderAddress;
+}) {
   return (
     <Suspense fallback={<CartListSkeleton foldableView={false} />}>
       <div
         className="mx-auto flex w-full flex-col items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90"
         role="list">
         <div className="flex w-full flex-row items-start justify-evenly">
-          <p>{createdAt.toLocaleString()}</p>
-          <p>{id}</p>
+          <div className="flex flex-col items-start justify-center gap-2">
+            <p>{createdAt.toLocaleString()}</p>
+            <p>{id}</p>
+          </div>
+          {address && (
+            <div className="flex flex-col items-end justify-center gap-2">
+              <p>
+                {address.name}, {address.street}
+              </p>
+              <p>
+                {address.postalCode}, {address.country}
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center gap-2" role="listitem">
           {products && products.length > 0 ? (

@@ -5,15 +5,16 @@
  * <ProductList />
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import ProductCard from './ProductCard';
 import { type ProductWithSizes } from 'types';
 import ProductListSkeleton from '../skeletons/ProductListSkeleton';
 
 async function ProductList({ products }: { products: ProductWithSizes[] }) {
+  const memoizedProducts = useMemo(() => products, [products]);
   return (
     <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2" role="list">
-      {products.map((product) => (
+      {memoizedProducts.map((product) => (
         <div role="listitem" key={product.id}>
           <React.Suspense fallback={<ProductListSkeleton />}>
             <ProductCard key={product.id} product={product} />

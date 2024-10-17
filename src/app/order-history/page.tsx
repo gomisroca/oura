@@ -20,7 +20,12 @@ export default async function OrderHistory() {
           .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
           .map((order) => (
             <div key={order.id}>
-              <OrderList products={order.products} id={order.id} createdAt={order.createdAt} />
+              <OrderList
+                products={order.products}
+                id={order.id}
+                createdAt={order.createdAt}
+                address={order.address ?? undefined}
+              />
             </div>
           ))}
       </div>

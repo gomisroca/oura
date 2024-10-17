@@ -84,7 +84,18 @@ model Order {
     userId          String
     stripeSessionId String?
     confirmed       Boolean        @default(false)
+    address         OrderAddress?
     products        OrderProduct[]
+}
+
+model OrderAddress {
+    id         String @id @default(cuid())
+    name       String
+    street     String
+    postalCode String
+    country    String
+    order      Order  @relation(fields: [orderId], references: [id])
+    orderId    String @unique
 }
 
 enum GENDER {
