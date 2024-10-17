@@ -24,6 +24,7 @@ export const getOrder = async ({
           color: true,
         },
       },
+      address: true,
     },
   });
   return order;
@@ -51,6 +52,7 @@ export const getAllOrders = async ({
           color: true,
         },
       },
+      address: true,
     },
   });
   return orders;
@@ -75,6 +77,38 @@ export const createOrder = async ({
     },
   });
   return order;
+};
+
+export const createAddress = async ({
+  prisma,
+  orderId,
+  name,
+  street,
+  postalCode,
+  country,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  orderId: string;
+  name: string;
+  street: string;
+  postalCode: string;
+  country: string;
+}) => {
+  const address = await prisma.orderAddress.create({
+    data: {
+      orderId: orderId,
+      name: name,
+      street: street,
+      postalCode: postalCode,
+      country: country,
+    },
+  });
+  return address;
 };
 
 // Delete Order

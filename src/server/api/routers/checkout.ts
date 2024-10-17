@@ -5,6 +5,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/
 import { TRPCError } from '@trpc/server';
 import {
   confirmOrder,
+  createAddress,
   createOrder,
   deleteOrder,
   getAllOrders,
@@ -15,6 +16,13 @@ import { getCart } from '../queries/cart';
 import { getUniqueColor, updateColorStock, updateProductSales } from '../queries/product';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+const addressSchema = z.object({
+  name: z.string().min(1),
+  street: z.string().min(1),
+  postalCode: z.string().min(1),
+  country: z.string().min(1),
+});
 
 export const checkoutRouter = createTRPCRouter({
   // Get the order for future viewing
@@ -60,7 +68,7 @@ export const checkoutRouter = createTRPCRouter({
   }),
 
   // Using the user's cart, start a cart and checkout session
-  createSession: publicProcedure.mutation(async ({ ctx }) => {
+  createSession: publicProcedure.input(addressSchema).mutation(async ({ input, ctx }) => {
     try {
       if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
       // Get the user cart using the user id
@@ -71,6 +79,14 @@ export const checkoutRouter = createTRPCRouter({
 
       // And then we use those products to create the order
       const order = await createOrder({ prisma: ctx.db, userId: ctx.session.user.id });
+      await createAddress({
+        prisma: ctx.db,
+        orderId: order.id,
+        name: input.name,
+        street: input.street,
+        postalCode: input.postalCode,
+        country: input.country,
+      });
 
       await ctx.db.$transaction(async (tx) => {
         // First check if all products have sufficient stock

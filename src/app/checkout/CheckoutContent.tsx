@@ -1,15 +1,11 @@
-import CheckoutButton from './CheckoutButton';
+import CheckoutForm from './CheckoutForm';
 import CartList from '../_components/cart/CartList';
 
 function CheckoutContent() {
   return (
     <div className="flex flex-col items-center justify-center gap-6">
-      {/* Cart Summary */}
       <CartList />
-      {/* Before proceeding to checkout, there should an address form */}
-
-      {/* Checkout Button where the checkout logic resides */}
-      <CheckoutButton />
+      <CheckoutForm />
     </div>
   );
 }

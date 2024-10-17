@@ -9,9 +9,18 @@ async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string,
     if (!searchParams?.orderId) return <div>Missing Order ID</div>;
 
     // Get the order details
-    const order: OrderWithProducts | undefined = await api.checkout.getOrder({ orderId: searchParams.orderId });
+    const order: OrderWithProducts = await api.checkout.getOrder({ orderId: searchParams.orderId });
 
-    return <OrderList products={order.products} id={order.id} createdAt={order.createdAt} />;
+    return (
+      <div className="flex">
+        <OrderList
+          products={order.products}
+          id={order.id}
+          createdAt={order.createdAt}
+          address={order.address ?? undefined}
+        />
+      </div>
+    );
   } catch (_error) {
     return notFound();
   }

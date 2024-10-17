@@ -7,6 +7,7 @@ import {
   type OrderProduct,
   type Order,
   type ProductOnSale,
+  type OrderAddress,
 } from '@prisma/client';
 
 // Represents a provider with a name and an icon
@@ -44,6 +45,7 @@ interface CategoryWithSubcategories extends Category {
 // Extends Order to include its associated products
 interface OrderWithProducts extends Order {
   products: OrderItem[]; // Products included in the order
+  address?: OrderAddress | null;
 }
 
 // Represents an item in an order, extending OrderProduct to include product details
