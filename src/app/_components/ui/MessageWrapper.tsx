@@ -1,7 +1,8 @@
 "use client";
 
-import { useMessage } from "@/context/MessageContext";
+import { useSetAtom } from "jotai";
 import { useEffect } from "react";
+import { messageAtom } from "@/atoms/message";
 
 type MessageWrapperProps = {
   message: string;
@@ -14,12 +15,10 @@ const MessageWrapper = ({
   error = true,
   popup = false,
 }: MessageWrapperProps) => {
-  const { setMessage, setError, setPopup } = useMessage();
+  const setMessage = useSetAtom(messageAtom);
 
   useEffect(() => {
-    setMessage(message);
-    setError(error);
-    setPopup(popup);
+    setMessage({ message, error, popup });
   }, [message, error, popup]);
 
   return null;

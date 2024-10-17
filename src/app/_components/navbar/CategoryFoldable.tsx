@@ -10,14 +10,11 @@ import { type SaleCategory } from 'types';
 import { api } from '@/trpc/react';
 import MessageWrapper from '../ui/MessageWrapper';
 import Spinner from '../ui/Spinner';
+import { useAtom, useSetAtom } from 'jotai';
+import { selectedCategoryAtom } from '@/atoms/selectedCategory';
 
-function SaleFoldable({
-  sports,
-  setSelected,
-}: {
-  sports: SaleCategory[];
-  setSelected: React.Dispatch<React.SetStateAction<string | null>>;
-}) {
+function SaleFoldable({ sports }: { sports: SaleCategory[] }) {
+  const setSelected = useSetAtom(selectedCategoryAtom);
   const [activeSport, setActiveSport] = React.useState<number | null>(null);
 
   return (
@@ -52,7 +49,8 @@ function SaleFoldable({
   );
 }
 
-function SportsFoldable({ setSelected }: { setSelected: React.Dispatch<React.SetStateAction<string | null>> }) {
+function SportsFoldable() {
+  const setSelected = useSetAtom(selectedCategoryAtom);
   const [activeSport, setActiveSport] = React.useState<number | null>(null);
   const { data: sports, status } = api.category.getSports.useQuery();
   if (status === 'error') {
@@ -100,13 +98,8 @@ function SportsFoldable({ setSelected }: { setSelected: React.Dispatch<React.Set
   );
 }
 
-function GenderFoldable({
-  gender,
-  setSelected,
-}: {
-  gender: 'man' | 'woman';
-  setSelected: React.Dispatch<React.SetStateAction<string | null>>;
-}) {
+function GenderFoldable({ gender }: { gender: 'man' | 'woman' }) {
+  const setSelected = useSetAtom(selectedCategoryAtom);
   const [activeCategory, setActiveCategory] = React.useState<number | null>(null);
   const { data: sports, status } = api.category.getSportsByGender.useQuery({
     gender: gender === 'man' ? 'MALE' : 'FEMALE',
@@ -166,7 +159,7 @@ function GenderFoldable({
 export default function CategoryFoldable() {
   const { data: sale } = api.category.getSportsInSale.useQuery();
 
-  const [selected, setSelected] = React.useState<string | null>(null);
+  const [selected, setSelected] = useAtom(selectedCategoryAtom);
 
   // Reference to the foldable element for click outside detection
   const foldableRef = useRef<HTMLDivElement>(null);
@@ -176,6 +169,7 @@ export default function CategoryFoldable() {
     if (foldableRef.current && !foldableRef.current.contains(event.target as Node)) {
       setSelected(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -221,10 +215,10 @@ export default function CategoryFoldable() {
           onClick={() => setSelected('FEMALE')}>
           Woman
         </Button>
-        {selected === 'SALE' && sale && <SaleFoldable sports={sale.sports} setSelected={setSelected} />}
-        {selected === 'SPORTS' && <SportsFoldable setSelected={setSelected} />}
-        {selected === 'MALE' && <GenderFoldable gender="man" setSelected={setSelected} />}
-        {selected === 'FEMALE' && <GenderFoldable gender="woman" setSelected={setSelected} />}
+        {selected === 'SALE' && sale && <SaleFoldable sports={sale.sports} />}
+        {selected === 'SPORTS' && <SportsFoldable />}
+        {selected === 'MALE' && <GenderFoldable gender="man" />}
+        {selected === 'FEMALE' && <GenderFoldable gender="woman" />}
       </Foldable>
     </div>
   );

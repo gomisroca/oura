@@ -19,8 +19,9 @@ import { env } from '@/env';
 import Button from '../ui/Button';
 import { api } from '@/trpc/react';
 import { FaTrash } from 'react-icons/fa6';
-import { useMessage } from '@/context/MessageContext';
 import Link from 'next/link';
+import { useSetAtom } from 'jotai';
+import { messageAtom } from '@/atoms/message';
 
 function CartItem({
   product,
@@ -31,18 +32,21 @@ function CartItem({
   orderView?: boolean;
   foldableView?: boolean;
 }) {
-  const { setMessage, setError, setPopup } = useMessage();
+  const setMessage = useSetAtom(messageAtom);
   const utils = api.useUtils();
 
   const handleError = (message: string) => {
-    setMessage(message);
-    setError(true);
-    setPopup(true);
+    setMessage({ message, error: true, popup: true });
+  };
+
+  const handleSuccess = async () => {
+    await utils.cart.get.invalidate();
+    setMessage({ message: `Added ${product.product.name} to cart`, error: false, popup: true });
   };
 
   const remove = api.cart.remove.useMutation({
     onSuccess: async () => {
-      await utils.cart.get.invalidate();
+      await handleSuccess();
     },
     onError: (error) => {
       handleError(error.message);
