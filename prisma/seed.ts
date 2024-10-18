@@ -1,3 +1,4 @@
+import { GENDER } from '@prisma/client';
 import { db } from '../src/server/db';
 
 async function main() {
@@ -17,11 +18,11 @@ async function main() {
 
   await Promise.all(
     sports.map(async (sport) => {
-      await db.sport.upsert({
-        where: { id: Number(sport.id) },
-        update: sport,
-        create: sport,
-      });
+      await db.sport.create({
+        data: {
+          name: sport.name,
+        },
+      })
     })
   );
 
@@ -45,10 +46,11 @@ async function main() {
 
   await Promise.all(
     categories.map(async (category) => {
-      await db.category.upsert({
-        where: { id: category.id },
-        update: category,
-        create: category,
+      await db.category.create({
+        data: {
+          sportId: category.sportId,
+          name: category.name,
+        },
       });
     })
   );
@@ -79,13 +81,119 @@ async function main() {
 
   await Promise.all(
     subcategories.map(async (subcategory) => {
-      await db.subcategory.upsert({
-        where: { id: subcategory.id },
-        update: subcategory,
-        create: subcategory,
-      });
+      await db.subcategory.create({
+        data: {
+          categoryId: subcategory.categoryId,
+          name: subcategory.name,
+        },
+      })
     })
   );
+
+  const products = [
+    {
+      name: 'Basketball Sneakers',
+      description: 'High-performance sneakers for basketball players.',
+      gender: ['MALE', 'FEMALE'],
+      basePrice: 120.0,
+      onSalePrice: 100.0,
+      sportId: 2,
+      categoryId: 5,
+      subcategoryId: 4,
+      sizes: [
+        {
+          name: 'M',
+          colors: [
+            {
+              name: 'red',
+              stock: 50,
+            },
+            {
+              name: 'blue',
+              stock: 30,
+            },
+          ],
+        },
+        {
+          name: 'L',
+          colors: [
+            {
+              name: 'black',
+              stock: 20,
+            },
+            {
+              name: 'white',
+              stock: 40,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Soccer Jersey',
+      description: 'Lightweight and breathable jersey for soccer players.',
+      gender: ['MALE', 'OTHER'],
+      basePrice: 80.0,
+      onSalePrice: 60.0,
+      sportId: 1,
+      categoryId: 1,
+      subcategoryId: 1,
+      sizes: [
+        {
+          name: 'S',
+          colors: [
+            {
+              name: 'green',
+              stock: 35,
+            },
+            {
+              name: 'yellow',
+              stock: 15,
+            },
+          ],
+        },
+        {
+          name: 'M',
+          colors: [
+            {
+              name: 'purple',
+              stock: 10,
+            },
+            {
+              name: 'orange',
+              stock: 5,
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  for (const productData of products) {
+    await db.product.create({
+      data: {
+        name: productData.name,
+        description: productData.description,
+        gender: productData.gender as GENDER[],
+        basePrice: productData.basePrice,
+        onSalePrice: productData.onSalePrice,
+        sportId: productData.sportId,
+        categoryId: productData.categoryId,
+        subcategoryId: productData.subcategoryId,
+        sizes: {
+          create: productData.sizes.map((size) => ({
+            name: size.name,
+            colors: {
+              create: size.colors.map((color) => ({
+                name: color.name,
+                stock: color.stock,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
 }
 
 main()
