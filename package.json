@@ -19,7 +19,7 @@
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
     "e2e": "playwright test",
-    "db-seed": "NODE_ENV=development prisma db seed",
+    "db:seed": "NODE_ENV=development prisma db seed",
     "prepare": "husky"
   },
   "prisma": {
