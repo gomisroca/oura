@@ -104,11 +104,11 @@ function Color({ color }: { color: string }) {
 
 function StockInput({
   sizeObj,
-  setInventory,
+  setForm,
   index,
 }: {
   sizeObj: InventoryItem;
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   index: number;
 }) {
   return (
@@ -127,12 +127,12 @@ function StockInput({
             value={colorObj.stock}
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
             onChange={(e) => {
-              setInventory((prevInventory) => {
-                const updatedInventory = [...prevInventory];
+              setForm((prevForm) => {
+                const updatedInventory = [...prevForm.inventory];
                 if (updatedInventory[index]?.colors[colorIndex]) {
                   updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
                 }
-                return updatedInventory;
+                return { ...prevForm, inventory: updatedInventory };
               });
             }}
           />
@@ -144,10 +144,10 @@ function StockInput({
 
 function ColorSelection({
   inventory,
-  setInventory,
+  setForm,
 }: {
   inventory: InventoryItem[];
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   return (
     <>
@@ -157,13 +157,13 @@ function ColorSelection({
           <select
             onChange={(e) => {
               const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
-              setInventory((prevInventory) => {
-                const updatedInventory = [...prevInventory];
+              setForm((prevForm) => {
+                const updatedInventory = [...prevForm.inventory];
 
                 if (updatedInventory[index]) {
                   updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
                 }
-                return updatedInventory;
+                return { ...prevForm, inventory: updatedInventory };
               });
             }}
             name="color"
@@ -183,7 +183,7 @@ function ColorSelection({
           </select>
           {/* If there are colors for the selected size, require a stock amount for each color */}
           {sizeObj.colors && sizeObj.colors.length > 0 && (
-            <StockInput sizeObj={sizeObj} setInventory={setInventory} index={index} />
+            <StockInput sizeObj={sizeObj} setForm={setForm} index={index} />
           )}
         </div>
       ))}
@@ -193,10 +193,12 @@ function ColorSelection({
 
 function SizeSelection({
   inventory,
-  setInventory,
+  form,
+  setForm,
 }: {
   inventory: InventoryItem[];
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   return (
     <>
@@ -204,12 +206,7 @@ function SizeSelection({
       <select
         onChange={(e) => {
           const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
-          setInventory(
-            selectedSizes.map((name) => ({
-              name,
-              colors: [],
-            }))
-          );
+          setForm({ ...form, inventory: selectedSizes.map((name) => ({ name, colors: [] })) });
         }}
         name="size"
         className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -233,19 +230,21 @@ function SizeSelection({
         ))}
       </select>
       {/* If there are sizes, render a selection of colors for each size */}
-      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setInventory={setInventory} />}
+      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setForm={setForm} />}
     </>
   );
 }
 
 function SubcategorySelection({
   category,
-  setSubcategory,
+  form,
+  setForm,
   productCategory,
   productSubcategory,
 }: {
   category: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
 }) {
@@ -266,7 +265,7 @@ function SubcategorySelection({
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
           setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
-          setSubcategory(Number(selectedOption.value));
+          setForm({ ...form, subcategory: Number(selectedOption.value) });
         }}>
         {productSubcategory && category.id === productCategory?.id ? (
           <option value={productSubcategory.id} selected>
@@ -291,15 +290,15 @@ function SubcategorySelection({
 
 function CategorySelection({
   sport,
-  setSubcategory,
-  setCategory,
+  form,
+  setForm,
   productSport,
   productCategory,
   productSubcategory,
 }: {
   sport: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
-  setCategory: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   productSport?: { id: number; name: string };
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
@@ -321,7 +320,7 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setCategory(Number(selectedOption.value));
+          setForm({ ...form, category: Number(selectedOption.value) });
           setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         {productCategory && sport.id === productSport?.id ? (
@@ -345,7 +344,8 @@ function CategorySelection({
         <SubcategorySelection
           key={selectedCategory.id}
           category={selectedCategory}
-          setSubcategory={setSubcategory}
+          form={form}
+          setForm={setForm}
           productSubcategory={productSubcategory}
         />
       )}
@@ -354,16 +354,14 @@ function CategorySelection({
 }
 
 function SportSelection({
-  setSubcategory,
-  setCategory,
-  setSport,
+  form,
+  setForm,
   productSport,
   productCategory,
   productSubcategory,
 }: {
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
-  setCategory: React.Dispatch<React.SetStateAction<number>>;
-  setSport: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   productSport?: { id: number; name: string };
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
@@ -384,7 +382,7 @@ function SportSelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setSport(Number(selectedOption.value));
+          setForm({ ...form, sport: Number(selectedOption.value) });
           setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         {productSport ? (
@@ -408,8 +406,8 @@ function SportSelection({
         <CategorySelection
           key={selectedSport.id}
           sport={selectedSport}
-          setSubcategory={setSubcategory}
-          setCategory={setCategory}
+          form={form}
+          setForm={setForm}
           productSport={productSport}
           productCategory={productCategory}
           productSubcategory={productSubcategory}
@@ -420,10 +418,12 @@ function SportSelection({
 }
 
 function GenderSelection({
-  setGender,
+  form,
+  setForm,
   productGenders,
 }: {
-  setGender: React.Dispatch<React.SetStateAction<('MALE' | 'FEMALE' | 'OTHER')[]>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   productGenders: ('MALE' | 'FEMALE' | 'OTHER')[];
 }) {
   return (
@@ -440,7 +440,7 @@ function GenderSelection({
             .filter((value): value is 'MALE' | 'FEMALE' | 'OTHER' =>
               GENDERS.includes(value as 'MALE' | 'FEMALE' | 'OTHER')
             );
-          setGender(selectedGenders);
+          setForm({ ...form, gender: selectedGenders });
         }}>
         {GENDERS.map((gender) => (
           <option key={gender} value={gender} selected={productGenders.includes(gender as 'MALE' | 'FEMALE' | 'OTHER')}>
@@ -452,33 +452,51 @@ function GenderSelection({
   );
 }
 
+interface ProductForm {
+  name: string;
+  description: string;
+  basePrice: number;
+  onSalePrice: number;
+  image?: string;
+  inventory: InventoryItem[];
+  subcategory: number;
+  category: number;
+  sport: number;
+  gender: ('MALE' | 'FEMALE' | 'OTHER')[];
+}
+
 export default function ProductUpdate({ productId }: { productId: string }) {
   const utils = api.useUtils();
   const { data: product } = api.product.getUnique.useQuery(productId);
 
   const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [basePrice, setBasePrice] = useState(0);
-  const [onSalePrice, setOnSalePrice] = useState(0);
-  const [image, setImage] = useState<string>();
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [subcategory, setSubcategory] = useState<number>(0);
-  const [category, setCategory] = useState<number>(0);
-  const [sport, setSport] = useState<number>(0);
-  const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
+
+  const [form, setForm] = useState<ProductForm>({
+    name: '',
+    description: '',
+    basePrice: 0,
+    onSalePrice: 0,
+    image: undefined,
+    inventory: [],
+    subcategory: 0,
+    category: 0,
+    sport: 0,
+    gender: [],
+  });
 
   useEffect(() => {
     if (product) {
-      setName(product.name);
-      setDescription(product.description);
-      setBasePrice(product.basePrice);
-      setOnSalePrice(product.onSalePrice);
-      setGender(product.gender);
-      setSubcategory(product.subcategory?.id ?? 0);
-      setCategory(product.category?.id ?? 0);
-      setSport(product.sport?.id ?? 0);
-      setInventory(product.sizes.map((size) => ({ name: size.name, colors: size.colors })));
+      setForm({
+        name: product.name,
+        description: product.description,
+        basePrice: product.basePrice,
+        onSalePrice: product.onSalePrice,
+        gender: product.gender,
+        inventory: product.sizes.map((size) => ({ name: size.name, colors: size.colors })),
+        sport: product.sport?.id ?? 0,
+        category: product.category?.id ?? 0,
+        subcategory: product.subcategory?.id ?? 0,
+      });
     }
   }, [product]);
 
@@ -487,8 +505,8 @@ export default function ProductUpdate({ productId }: { productId: string }) {
       setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
     },
     onSuccess: async () => {
-      await utils.product.invalidate();
       setFormMessage({ error: false, message: 'Product updated successfully!' });
+      await utils.product.invalidate();
     },
   });
 
@@ -522,10 +540,17 @@ export default function ProductUpdate({ productId }: { productId: string }) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageData = e.target!.result;
-        setImage(imageData as string);
+        setForm({ ...form, image: imageData as string });
       };
       reader.readAsDataURL(selectedFile);
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -534,16 +559,9 @@ export default function ProductUpdate({ productId }: { productId: string }) {
 
     updateProduct.mutate({
       id: productId,
-      name,
-      description,
-      basePrice,
-      onSalePrice,
-      gender,
-      subcategory,
-      category,
-      sport,
-      inventory,
-      image,
+      ...form,
+      basePrice: Number(form.basePrice),
+      onSalePrice: Number(form.onSalePrice),
     });
   };
 
@@ -561,8 +579,8 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             name="name"
             type="text"
             placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={handleChange}
             required
           />
           <input
@@ -571,8 +589,8 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             type="text"
             placeholder="Description"
             required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={form.description}
+            onChange={handleChange}
           />
           <input
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -582,8 +600,8 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             required
             min={0}
             step={0.01}
-            value={basePrice}
-            onChange={(e) => setBasePrice(Number(e.target.value))}
+            value={form.basePrice}
+            onChange={handleChange}
           />
           <input
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -593,81 +611,27 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             required
             min={0}
             step={0.01}
-            value={onSalePrice}
-            onChange={(e) => setOnSalePrice(Number(e.target.value))}
+            value={form.onSalePrice}
+            onChange={handleChange}
           />
-          <GenderSelection setGender={setGender} productGenders={gender} />
+          <GenderSelection productGenders={form.gender} form={form} setForm={setForm} />
           <SportSelection
-            setSubcategory={setSubcategory}
-            setCategory={setCategory}
-            setSport={setSport}
+            form={form}
+            setForm={setForm}
             productSport={product?.sport ?? undefined}
             productCategory={product?.category ?? undefined}
             productSubcategory={product?.subcategory ?? undefined}
           />
           <h1 className="text-xl">Size Selection</h1>
-          <SizeSelection inventory={inventory} setInventory={setInventory} />
+          <SizeSelection inventory={form.inventory} form={form} setForm={setForm} />
           {product.image ? (
             <Image
               unoptimized
               src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-              alt={name}
+              alt={form.name}
               width={200}
               height={250}
               className="m-auto rounded-xl"
-            />
-          ) : (
-            <p>No image uploaded</p>
-          )}
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="description"
-            type="text"
-            placeholder="Description"
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="basePrice"
-            type="number"
-            placeholder="Base Price"
-            required
-            min={0}
-            step={0.01}
-            value={basePrice}
-            onChange={(e) => setBasePrice(Number(e.target.value))}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="onSalePrice"
-            type="number"
-            placeholder="On Sale Price"
-            required
-            min={0}
-            step={0.01}
-            value={onSalePrice}
-            onChange={(e) => setOnSalePrice(Number(e.target.value))}
-          />
-          <GenderSelection setGender={setGender} productGenders={gender} />
-          <SportSelection
-            setSubcategory={setSubcategory}
-            setCategory={setCategory}
-            setSport={setSport}
-            productSport={product?.sport ?? undefined}
-            productCategory={product?.category ?? undefined}
-            productSubcategory={product?.subcategory ?? undefined}
-          />
-          <h1 className="text-xl">Size Selection</h1>
-          <SizeSelection inventory={inventory} setInventory={setInventory} />
-          {product.image ? (
-            <Image
-              unoptimized
-              src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-              alt={name}
-              width={200}
-              height={250}
             />
           ) : (
             <p>No image uploaded</p>
@@ -681,8 +645,8 @@ export default function ProductUpdate({ productId }: { productId: string }) {
             onChange={(e) => handleImage(e)}
           />
           <Button type="submit">Submit</Button>
-          {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
         </form>
+        <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
       </div>
     );
   }
