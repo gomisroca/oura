@@ -10,11 +10,13 @@ import { useState } from 'react';
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 function CheckoutForm() {
-  const [name, setName] = useState('');
-  const [street, setStreet] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('');
   const [error, setError] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    street: '',
+    postalCode: '',
+    country: '',
+  });
 
   const createCheckoutSession = api.checkout.createSession.useMutation({
     onSuccess: (data) => {
@@ -25,12 +27,19 @@ function CheckoutForm() {
     },
   });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   // Create and redirect to stripe checkout session
   const handleCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const stripe = await stripePromise;
-      const data = await createCheckoutSession.mutateAsync({ name, street, postalCode, country });
+      const data = await createCheckoutSession.mutateAsync(form);
       if (stripe && data) {
         await stripe.redirectToCheckout({
           sessionId: data.sessionId,
@@ -50,7 +59,7 @@ function CheckoutForm() {
           name="name"
           type="text"
           placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleChange}
           required
         />
         <input
@@ -58,7 +67,7 @@ function CheckoutForm() {
           name="street"
           type="text"
           placeholder="Street Name and Number"
-          onChange={(e) => setStreet(e.target.value)}
+          onChange={handleChange}
           required
         />
 
@@ -67,7 +76,7 @@ function CheckoutForm() {
           name="postalCode"
           type="text"
           placeholder="Postal Code"
-          onChange={(e) => setPostalCode(e.target.value)}
+          onChange={handleChange}
           required
         />
 
@@ -76,7 +85,7 @@ function CheckoutForm() {
           name="country"
           type="text"
           placeholder="Country"
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={handleChange}
           required
         />
         {error && <MessageWrapper message="Error creating checkout session" popup={true} />}
