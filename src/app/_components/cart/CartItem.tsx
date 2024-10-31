@@ -65,6 +65,7 @@ function CartItem({
         className="h-full w-1/2 cursor-pointer overflow-y-hidden rounded-l-xl"
         href={`/product/${product.product.id}`}>
         <Image
+          unoptimized
           className={`h-full min-h-[10rem] w-full cursor-pointer rounded-l-xl object-cover duration-200 ease-in-out hover:contrast-[1.1] md:min-h-[15rem]`}
           src={
             product.product.image

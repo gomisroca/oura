@@ -52,6 +52,7 @@ function ProductCard({
       )}
       aria-label={`Product Card for ${product.name}`}>
       <Image
+        unoptimized
         className="h-full w-full cursor-pointer rounded-t-xl object-cover duration-200 ease-in-out group-hover:contrast-[1.05]"
         src={
           product.image

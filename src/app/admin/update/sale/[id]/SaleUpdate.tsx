@@ -184,6 +184,7 @@ export default function SaleUpdate({ id }: { id: string }) {
           />
           {sale.image ? (
             <Image
+              unoptimized
               src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${sale.image}`}
               alt={name}
               width={200}

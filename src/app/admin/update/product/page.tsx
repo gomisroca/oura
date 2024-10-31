@@ -15,6 +15,7 @@ export default function ProductUpdateList() {
           <Link href={`/admin/update/product/${product.id}`} key={product.id} className="h-[20rem] w-[20rem]">
             <div className="flex h-full w-full flex-col items-center gap-2 rounded-xl border border-slate-600/10 bg-slate-200/30 hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:hover:bg-slate-700/30">
               <Image
+                unoptimized
                 src={
                   product.image
                     ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}?width=200&height=250`
