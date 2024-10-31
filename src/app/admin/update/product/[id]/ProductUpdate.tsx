@@ -609,6 +609,7 @@ export default function ProductUpdate({ productId }: { productId: string }) {
           <SizeSelection inventory={inventory} setInventory={setInventory} />
           {product.image ? (
             <Image
+              unoptimized
               src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
               alt={name}
               width={200}
@@ -662,6 +663,7 @@ export default function ProductUpdate({ productId }: { productId: string }) {
           <SizeSelection inventory={inventory} setInventory={setInventory} />
           {product.image ? (
             <Image
+              unoptimized
               src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
               alt={name}
               width={200}

@@ -30,6 +30,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
       key={product.id}
       className="relative flex h-[60vh] w-[75wv] flex-col items-center justify-center rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-700/30 md:h-[70vh] md:w-[60vw]">
       <Image
+        unoptimized
         className="h-full w-full rounded-t-xl object-cover"
         src={
           product.image
