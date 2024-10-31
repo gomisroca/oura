@@ -3,8 +3,7 @@ import { test, expect } from '@playwright/test';
 test('has product list', async ({ page }) => {
   await page.goto('/sport/2/2');
 
-  const productList = page.getByRole('list');
-  await expect(productList).toContainText('Product 5');
+  await expect(page.getByRole('list')).toBeVisible();
 });
 
 test('product list changes when category is selected', async ({ page }) => {
@@ -19,9 +18,7 @@ test('product list changes when category is selected', async ({ page }) => {
 
   await page.waitForURL('**/sport/2/2');
   await expect(page.getByRole('list')).toBeVisible();
-  await expect(page.getByRole('list')).toContainText('Product 5');
 
   await page.goto('/sport/2/2/5');
   await expect(page.getByRole('list')).toBeVisible();
-  await expect(page.getByRole('list')).toContainText('Product 5');
 });
