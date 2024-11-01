@@ -248,7 +248,9 @@ function SubcategorySelection({
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
 }) {
-  const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: Number(category.id) });
+  const { data: subcategories, status } = api.category.getAllSubcategories.useQuery({
+    categoryId: Number(category.id),
+  });
   const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
 
   return status === 'pending' ? (

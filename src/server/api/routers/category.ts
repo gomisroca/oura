@@ -10,6 +10,7 @@ import {
   deleteCategory,
   deleteSport,
   deleteSubcategory,
+  getAllSubcategoriesInCategory,
   getCategoriesInSport,
   getSports,
   getSportsByGender,
@@ -139,6 +140,21 @@ export const categoryRouter = createTRPCRouter({
         }
       }
     }),
+
+  getAllSubcategories: publicProcedure.input(z.object({ categoryId: z.number() })).query(async ({ ctx, input }) => {
+    try {
+      const subcategories = await getAllSubcategoriesInCategory({ prisma: ctx.db, categoryId: input.categoryId });
+      return subcategories;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get all subcategories:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get all subcategories' });
+      }
+    }
+  }),
 
   getSportsByGender: publicProcedure
     .input(z.object({ gender: z.enum(['MALE', 'FEMALE', 'OTHER']) }))

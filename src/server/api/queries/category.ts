@@ -286,6 +286,28 @@ export const getUniqueSubcategory = async ({
   return subcategory;
 };
 
+// Get All Subcategories in Category
+export const getAllSubcategoriesInCategory = async ({
+  prisma,
+  categoryId,
+}: {
+  prisma:
+    | Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    | PrismaClient;
+  categoryId: number;
+  gender?: GENDER;
+}) => {
+  const subcategories = await prisma.subcategory.findMany({
+    where: {
+      categoryId: categoryId,
+    },
+  });
+  return subcategories;
+};
+
 // Get Subcategories in Category
 export const getSubcategoriesInCategory = async ({
   prisma,

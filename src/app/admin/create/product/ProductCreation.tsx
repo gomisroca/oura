@@ -10,7 +10,6 @@
 import { useState } from 'react';
 
 import { api } from '@/trpc/react';
-import InputField from '@/app/_components/ui/InputField';
 import Button from '@/app/_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 import Spinner from '@/app/_components/ui/Spinner';
@@ -94,6 +93,19 @@ interface Category {
   id: number;
 }
 
+interface ProductForm {
+  name: string;
+  description: string;
+  basePrice: number;
+  onSalePrice: number;
+  image?: string;
+  inventory: InventoryItem[];
+  subcategory: number;
+  category: number;
+  sport: number;
+  gender: ('MALE' | 'FEMALE' | 'OTHER')[];
+}
+
 function Color({ color }: { color: string }) {
   return (
     <span
@@ -103,11 +115,11 @@ function Color({ color }: { color: string }) {
 
 function StockInput({
   sizeObj,
-  setInventory,
+  setForm,
   index,
 }: {
   sizeObj: InventoryItem;
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   index: number;
 }) {
   return (
@@ -126,12 +138,12 @@ function StockInput({
             value={colorObj.stock}
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
             onChange={(e) => {
-              setInventory((prevInventory) => {
-                const updatedInventory = [...prevInventory];
+              setForm((prevForm) => {
+                const updatedInventory = [...prevForm.inventory];
                 if (updatedInventory[index]?.colors[colorIndex]) {
                   updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
                 }
-                return updatedInventory;
+                return { ...prevForm, inventory: updatedInventory };
               });
             }}
           />
@@ -143,10 +155,10 @@ function StockInput({
 
 function ColorSelection({
   inventory,
-  setInventory,
+  setForm,
 }: {
   inventory: InventoryItem[];
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   return (
     <>
@@ -156,13 +168,13 @@ function ColorSelection({
           <select
             onChange={(e) => {
               const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
-              setInventory((prevInventory) => {
-                const updatedInventory = [...prevInventory];
+              setForm((prevForm) => {
+                const updatedInventory = [...prevForm.inventory];
 
                 if (updatedInventory[index]) {
                   updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
                 }
-                return updatedInventory;
+                return { ...prevForm, inventory: updatedInventory };
               });
             }}
             name="color"
@@ -178,7 +190,7 @@ function ColorSelection({
           </select>
           {/* If there are colors for the selected size, require a stock amount for each color */}
           {sizeObj.colors && sizeObj.colors.length > 0 && (
-            <StockInput sizeObj={sizeObj} setInventory={setInventory} index={index} />
+            <StockInput sizeObj={sizeObj} setForm={setForm} index={index} />
           )}
         </div>
       ))}
@@ -188,10 +200,12 @@ function ColorSelection({
 
 function SizeSelection({
   inventory,
-  setInventory,
+  form,
+  setForm,
 }: {
   inventory: InventoryItem[];
-  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   return (
     <>
@@ -199,12 +213,7 @@ function SizeSelection({
       <select
         onChange={(e) => {
           const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
-          setInventory(
-            selectedSizes.map((name) => ({
-              name,
-              colors: [],
-            }))
-          );
+          setForm({ ...form, inventory: selectedSizes.map((name) => ({ name, colors: [] })) });
         }}
         name="size"
         className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -228,19 +237,23 @@ function SizeSelection({
         ))}
       </select>
       {/* If there are sizes, render a selection of colors for each size */}
-      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setInventory={setInventory} />}
+      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setForm={setForm} />}
     </>
   );
 }
 
 function SubcategorySelection({
   category,
-  setSubcategory,
+  form,
+  setForm,
 }: {
   category: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
-  const { data: subcategories, status } = api.category.getSubcategories.useQuery({ categoryId: Number(category.id) });
+  const { data: subcategories, status } = api.category.getAllSubcategories.useQuery({
+    categoryId: Number(category.id),
+  });
   const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
 
   return status === 'pending' ? (
@@ -257,7 +270,7 @@ function SubcategorySelection({
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
           setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
-          setSubcategory(Number(selectedOption.value));
+          setForm({ ...form, subcategory: Number(selectedOption.value) });
         }}>
         <option value="" disabled selected={!selectedSubcategory}>
           Select Subcategory
@@ -274,12 +287,12 @@ function SubcategorySelection({
 
 function CategorySelection({
   sport,
-  setSubcategory,
-  setCategory,
+  form,
+  setForm,
 }: {
   sport: Category;
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
-  setCategory: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   const { data: categories, status } = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
 
@@ -298,7 +311,7 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setCategory(Number(selectedOption.value));
+          setForm({ ...form, category: Number(selectedOption.value) });
           setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         <option value="" disabled selected={!selectedCategory}>
@@ -311,20 +324,18 @@ function CategorySelection({
         ))}
       </select>
       {selectedCategory && (
-        <SubcategorySelection key={selectedCategory.id} category={selectedCategory} setSubcategory={setSubcategory} />
+        <SubcategorySelection key={selectedCategory.id} category={selectedCategory} form={form} setForm={setForm} />
       )}
     </>
   );
 }
 
 function SportSelection({
-  setSubcategory,
-  setCategory,
-  setSport,
+  form,
+  setForm,
 }: {
-  setSubcategory: React.Dispatch<React.SetStateAction<number>>;
-  setCategory: React.Dispatch<React.SetStateAction<number>>;
-  setSport: React.Dispatch<React.SetStateAction<number>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   const { data: sports, status } = api.category.getSports.useQuery();
   const [selectedSport, setSelectedSport] = useState<Category>();
@@ -342,7 +353,7 @@ function SportSelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setSport(Number(selectedOption.value));
+          setForm({ ...form, sport: Number(selectedOption.value) });
           setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         <option value="" disabled selected={!selectedSport}>
@@ -355,21 +366,18 @@ function SportSelection({
         ))}
       </select>
       {selectedSport && (
-        <CategorySelection
-          key={selectedSport.id}
-          sport={selectedSport}
-          setSubcategory={setSubcategory}
-          setCategory={setCategory}
-        />
+        <CategorySelection key={selectedSport.id} sport={selectedSport} form={form} setForm={setForm} />
       )}
     </>
   );
 }
 
 function GenderSelection({
-  setGender,
+  form,
+  setForm,
 }: {
-  setGender: React.Dispatch<React.SetStateAction<('MALE' | 'FEMALE' | 'OTHER')[]>>;
+  form: ProductForm;
+  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
 }) {
   return (
     <>
@@ -385,7 +393,7 @@ function GenderSelection({
             .filter((value): value is 'MALE' | 'FEMALE' | 'OTHER' =>
               GENDERS.includes(value as 'MALE' | 'FEMALE' | 'OTHER')
             );
-          setGender(selectedGenders);
+          setForm({ ...form, gender: selectedGenders });
         }}>
         {GENDERS.map((gender) => (
           <option key={gender} value={gender}>
@@ -401,16 +409,19 @@ export default function ProductCreation() {
   const utils = api.useUtils();
 
   const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [basePrice, setBasePrice] = useState(0);
-  const [onSalePrice, setOnSalePrice] = useState(0);
-  const [image, setImage] = useState<string>();
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [subcategory, setSubcategory] = useState<number>(0);
-  const [category, setCategory] = useState<number>(0);
-  const [sport, setSport] = useState<number>(0);
-  const [gender, setGender] = useState<('MALE' | 'FEMALE' | 'OTHER')[]>([]);
+
+  const [form, setForm] = useState<ProductForm>({
+    name: '',
+    description: '',
+    basePrice: 0,
+    onSalePrice: 0,
+    image: undefined,
+    inventory: [],
+    subcategory: 0,
+    category: 0,
+    sport: 0,
+    gender: [],
+  });
 
   const createProduct = api.product.create.useMutation({
     onError: () => {
@@ -442,10 +453,17 @@ export default function ProductCreation() {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageData = e.target!.result;
-        setImage(imageData as string);
+        setForm({ ...form, image: imageData as string });
       };
       reader.readAsDataURL(selectedFile);
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -453,67 +471,66 @@ export default function ProductCreation() {
     e.preventDefault();
 
     createProduct.mutate({
-      name,
-      description,
-      basePrice,
-      onSalePrice,
-      gender,
-      subcategory,
-      category,
-      sport,
-      inventory,
-      image,
+      ...form,
+      basePrice: Number(form.basePrice),
+      onSalePrice: Number(form.onSalePrice),
     });
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-      <InputField
-        name="name"
-        type="text"
-        placeholder="Name"
-        handleValueChange={(value: string) => setName(value)}
-        required
-      />
-      <InputField
-        name="description"
-        type="text"
-        placeholder="Description"
-        required
-        handleValueChange={(value: string) => setDescription(value)}
-      />
-      <InputField
-        name="basePrice"
-        type="number"
-        placeholder="Base Price"
-        required
-        min={0}
-        step={0.01}
-        handleValueChange={(value: string) => setBasePrice(Number(value))}
-      />
-      <InputField
-        name="onSalePrice"
-        type="number"
-        placeholder="On Sale Price"
-        required
-        min={0}
-        step={0.01}
-        handleValueChange={(value: string) => setOnSalePrice(Number(value))}
-      />
-      <GenderSelection setGender={setGender} />
-      <SportSelection setSubcategory={setSubcategory} setCategory={setCategory} setSport={setSport} />
-      <SizeSelection inventory={inventory} setInventory={setInventory} />
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        type="file"
-        name="image"
-        accept="image/png, image/jpeg, image/jpg"
-        onChange={(e) => handleImage(e)}
-      />
-      <Button type="submit" disabled={createProduct.isPending}>
-        {createProduct.isPending ? 'Submitting...' : 'Submit'}
-      </Button>
-      {formMessage.message && <MessageWrapper error={formMessage.error} message={formMessage.message} />}
-    </form>
+    <div className="flex flex-col items-center justify-center gap-4">
+      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="name"
+          type="text"
+          placeholder="Name"
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="description"
+          type="text"
+          placeholder="Description"
+          required
+          onChange={handleChange}
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="basePrice"
+          type="number"
+          placeholder="Base Price"
+          required
+          min={0}
+          step={0.01}
+          onChange={handleChange}
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="onSalePrice"
+          type="number"
+          placeholder="On Sale Price"
+          required
+          min={0}
+          step={0.01}
+          onChange={handleChange}
+        />
+        <GenderSelection form={form} setForm={setForm} />
+        <SportSelection form={form} setForm={setForm} />
+        <SizeSelection inventory={form.inventory} form={form} setForm={setForm} />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          type="file"
+          name="image"
+          accept="image/png, image/jpeg, image/jpg"
+          onChange={(e) => handleImage(e)}
+        />
+        <Button type="submit" disabled={createProduct.isPending}>
+          {createProduct.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </form>
+      <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
+    </div>
   );
 }
