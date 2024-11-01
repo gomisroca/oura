@@ -9,21 +9,36 @@ import { type Product } from '@prisma/client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+interface SaleForm {
+  name: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  image?: string;
+  selectedProducts: string[];
+}
+
 function ProductSelector({
   products,
   saleProducts,
-  setSelectedProducts,
+  form,
+  setForm,
 }: {
   products: Product[];
   saleProducts: string[];
-  setSelectedProducts: React.Dispatch<React.SetStateAction<string[]>>;
+  form: SaleForm;
+  setForm: React.Dispatch<React.SetStateAction<SaleForm>>;
 }) {
   return (
     <select
       name="products"
       className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
       multiple
-      onChange={(e) => setSelectedProducts(Array.from(e.target.selectedOptions, (option) => option.value))}>
+      onChange={(e) => {
+        const selectedProducts = Array.from(e.target.selectedOptions, (option) => option.value);
+        setForm({ ...form, selectedProducts });
+      }}>
       {products.map((product) => (
         <option key={product.id} value={product.id} selected={saleProducts.includes(product.id)}>
           {product.name}
@@ -39,26 +54,27 @@ export default function SaleUpdate({ id }: { id: string }) {
   const { data: products } = api.product.getAll.useQuery();
 
   const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-  const [name, setName] = useState('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [startTime, setStartTime] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
-  const [image, setImage] = useState<string>();
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [form, setForm] = useState<SaleForm>({
+    name: '',
+    startDate: '',
+    startTime: '',
+    endDate: '',
+    endTime: '',
+    selectedProducts: [],
+  });
 
   useEffect(() => {
     if (sale) {
-      setName(sale.name);
+      const name = sale.name;
       const startDateObj = new Date(sale.startDate);
-      setStartDate(startDateObj.toISOString().split('T')[0]!);
-      setStartTime(startDateObj.toTimeString().slice(0, 5));
+      const startDate = startDateObj.toISOString().split('T')[0]!;
+      const startTime = startDateObj.toTimeString().slice(0, 5);
 
-      // Format endDate and endTime from sale.endDate
       const endDateObj = new Date(sale.endDate);
-      setEndDate(endDateObj.toISOString().split('T')[0]!);
-      setEndTime(endDateObj.toTimeString().slice(0, 5));
-      setSelectedProducts(sale.products.map((product) => product.productId));
+      const endDate = endDateObj.toISOString().split('T')[0]!;
+      const endTime = endDateObj.toTimeString().slice(0, 5);
+      const selectedProducts = sale.products.map((product) => product.productId);
+      setForm({ name, startDate, startTime, endDate, endTime, selectedProducts });
     }
   }, [sale]);
 
@@ -102,26 +118,33 @@ export default function SaleUpdate({ id }: { id: string }) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageData = e.target!.result;
-        setImage(imageData as string);
+        setForm({ ...form, image: imageData as string });
       };
       reader.readAsDataURL(selectedFile);
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setFormMessage({ error: false, message: '' });
     e.preventDefault();
 
-    const startDateTime = new Date(`${startDate}T${startTime}`);
-    const endDateTime = new Date(`${endDate}T${endTime}`);
+    const startDateTime = new Date(`${form.startDate}T${form.startTime}`);
+    const endDateTime = new Date(`${form.endDate}T${form.endTime}`);
 
     updateSale.mutate({
       id,
-      name,
+      name: form.name,
       startDate: startDateTime,
       endDate: endDateTime,
-      image,
-      selectedProducts,
+      image: form.image,
+      selectedProducts: form.selectedProducts,
     });
   };
 
@@ -140,8 +163,8 @@ export default function SaleUpdate({ id }: { id: string }) {
             name="name"
             type="text"
             placeholder="Sale Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={handleChange}
             required
           />
           <p>Start Date</p>
@@ -150,8 +173,8 @@ export default function SaleUpdate({ id }: { id: string }) {
             name="startDate"
             type="date"
             placeholder="Start Date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={form.startDate}
+            onChange={handleChange}
             required
           />
           <input
@@ -159,8 +182,8 @@ export default function SaleUpdate({ id }: { id: string }) {
             name="startTime"
             type="time"
             placeholder="Start Time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            value={form.startTime}
+            onChange={handleChange}
             required
           />
           <p>End Date</p>
@@ -169,8 +192,8 @@ export default function SaleUpdate({ id }: { id: string }) {
             name="endDate"
             type="date"
             placeholder="End Date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            value={form.endDate}
+            onChange={handleChange}
             required
           />
           <input
@@ -178,15 +201,15 @@ export default function SaleUpdate({ id }: { id: string }) {
             name="endTime"
             type="time"
             placeholder="End Time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            value={form.endTime}
+            onChange={handleChange}
             required
           />
           {sale.image ? (
             <Image
               unoptimized
               src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${sale.image}`}
-              alt={name}
+              alt={form.name}
               width={200}
               height={250}
               className="m-auto rounded-xl"
@@ -208,17 +231,16 @@ export default function SaleUpdate({ id }: { id: string }) {
               <ProductSelector
                 products={products}
                 saleProducts={sale.products.map((product) => product.productId)}
-                setSelectedProducts={setSelectedProducts}
+                form={form}
+                setForm={setForm}
               />
             </>
           )}
           <Button type="submit" disabled={updateSale.isPending}>
             {updateSale.isPending ? 'Submitting...' : 'Submit'}
           </Button>
-          {formMessage.message && (
-            <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
-          )}
         </form>
+        <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
       </div>
     );
   }
