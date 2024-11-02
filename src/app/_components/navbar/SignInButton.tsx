@@ -16,7 +16,11 @@ import Button from '../ui/Button';
 import Modal from '../ui/Modal';
 import { type Provider } from 'types';
 
-function EmailSignInButton({ provider }: { provider: Provider }) {
+interface SignInProps {
+  provider: Provider;
+}
+
+function EmailSignInButton({ provider }: SignInProps) {
   const [email, setEmail] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prompt, setPrompt] = useState<string | null>(null);
@@ -62,7 +66,7 @@ function EmailSignInButton({ provider }: { provider: Provider }) {
   );
 }
 
-function SignInButton({ provider }: { provider: Provider }) {
+function SignInButton({ provider }: SignInProps) {
   return provider.name !== 'email' ? (
     <Button name={provider.name} onClick={() => signIn(provider.name)}>
       <span>{provider.icon}</span>
