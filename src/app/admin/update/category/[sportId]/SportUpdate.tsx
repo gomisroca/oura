@@ -174,7 +174,6 @@ export default function SportUpdate({ id }: SportUpdateProps) {
       </div>
     );
   }
-
   if (fetchError || !sport) {
     return (
       <div className="flex flex-col items-center gap-4">

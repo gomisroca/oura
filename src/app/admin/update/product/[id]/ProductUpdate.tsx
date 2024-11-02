@@ -16,21 +16,9 @@ import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 import { env } from '@/env';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-interface Category {
-  name: string;
-  subcategory?: Category[];
-  id: number;
-}
-
-interface InventoryItem {
-  name: string;
-  colors: {
-    name: string;
-    stock: number;
-  }[];
-}
-
+// Constants
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
   SHOE: [
@@ -95,6 +83,72 @@ const COLORS = [
 
 const GENDERS = ['MALE', 'FEMALE', 'OTHER'];
 
+// Types
+interface Category {
+  name: string;
+  subcategory?: Category[];
+  id: number;
+}
+
+interface InventoryItem {
+  name: string;
+  colors: {
+    name: string;
+    stock: number;
+  }[];
+}
+
+interface ProductUpdateProps {
+  productId: string;
+}
+
+interface FormMessage {
+  error: boolean;
+  message: string;
+}
+
+interface FormState {
+  name: string;
+  description: string;
+  basePrice: number;
+  onSalePrice: number;
+  image?: string;
+  inventory: InventoryItem[];
+  subcategory: number;
+  category: number;
+  sport: number;
+  gender: ('MALE' | 'FEMALE' | 'OTHER')[];
+  isSubmitting: boolean;
+  isDeleting: boolean;
+  message: FormMessage | null;
+}
+
+const INITIAL_FORM_STATE: FormState = {
+  name: '',
+  description: '',
+  basePrice: 0,
+  onSalePrice: 0,
+  image: undefined,
+  inventory: [],
+  subcategory: 0,
+  category: 0,
+  sport: 0,
+  gender: [],
+  isSubmitting: false,
+  isDeleting: false,
+  message: null,
+};
+
+const ERROR_MESSAGES = {
+  FETCH_ERROR: 'Unable to fetch sport details',
+  UPDATE_ERROR: 'Failed to update sport. Please try again.',
+  DELETE_ERROR: 'Failed to delete sport. Please try again.',
+  IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
+  IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
+  IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
+  NAME_REQUIRED: 'Sport name is required',
+} as const;
+
 function Color({ color }: { color: string }) {
   return (
     <span
@@ -108,7 +162,7 @@ function StockInput({
   index,
 }: {
   sizeObj: InventoryItem;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
   index: number;
 }) {
   return (
@@ -127,12 +181,12 @@ function StockInput({
             value={colorObj.stock}
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
             onChange={(e) => {
-              setForm((prevForm) => {
-                const updatedInventory = [...prevForm.inventory];
+              setForm((prev) => {
+                const updatedInventory = [...prev.inventory];
                 if (updatedInventory[index]?.colors[colorIndex]) {
                   updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
                 }
-                return { ...prevForm, inventory: updatedInventory };
+                return { ...prev, inventory: updatedInventory };
               });
             }}
           />
@@ -147,7 +201,7 @@ function ColorSelection({
   setForm,
 }: {
   inventory: InventoryItem[];
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <>
@@ -157,13 +211,13 @@ function ColorSelection({
           <select
             onChange={(e) => {
               const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
-              setForm((prevForm) => {
-                const updatedInventory = [...prevForm.inventory];
+              setForm((prev) => {
+                const updatedInventory = [...prev.inventory];
 
                 if (updatedInventory[index]) {
                   updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
                 }
-                return { ...prevForm, inventory: updatedInventory };
+                return { ...prev, inventory: updatedInventory };
               });
             }}
             name="color"
@@ -193,12 +247,10 @@ function ColorSelection({
 
 function SizeSelection({
   inventory,
-  form,
   setForm,
 }: {
   inventory: InventoryItem[];
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <>
@@ -206,7 +258,7 @@ function SizeSelection({
       <select
         onChange={(e) => {
           const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
-          setForm({ ...form, inventory: selectedSizes.map((name) => ({ name, colors: [] })) });
+          setForm((prev) => ({ ...prev, inventory: selectedSizes.map((name) => ({ name, colors: [] })) }));
         }}
         name="size"
         className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -237,21 +289,18 @@ function SizeSelection({
 
 function SubcategorySelection({
   category,
-  form,
   setForm,
-  productCategory,
   productSubcategory,
 }: {
   category: Category;
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
 }) {
   const { data: subcategories, status } = api.category.getAllSubcategories.useQuery({
     categoryId: Number(category.id),
   });
-  const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Category | undefined>(productSubcategory);
 
   return status === 'pending' ? (
     <Spinner />
@@ -267,24 +316,16 @@ function SubcategorySelection({
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
           setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
-          setForm({ ...form, subcategory: Number(selectedOption.value) });
+          setForm((prev) => ({ ...prev, subcategory: Number(selectedOption.value) }));
         }}>
-        {productSubcategory && category.id === productCategory?.id ? (
-          <option value={productSubcategory.id} selected>
-            {productSubcategory.name}
+        <option value="" disabled selected={!selectedSubcategory}>
+          Select Subcategory
+        </option>
+        {subcategories.map((subcategory) => (
+          <option key={subcategory.id} value={subcategory.id}>
+            {subcategory.name}
           </option>
-        ) : (
-          <option value="" disabled selected={!selectedSubcategory}>
-            Select Subcategory
-          </option>
-        )}
-        {subcategories
-          ?.filter((c) => c.id !== productSubcategory?.id)
-          .map((subcategory) => (
-            <option key={subcategory.id} value={subcategory.id}>
-              {subcategory.name}
-            </option>
-          ))}
+        ))}
       </select>
     </>
   );
@@ -292,22 +333,19 @@ function SubcategorySelection({
 
 function CategorySelection({
   sport,
-  form,
   setForm,
-  productSport,
   productCategory,
   productSubcategory,
 }: {
   sport: Category;
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
   productSport?: { id: number; name: string };
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
 }) {
   const { data: categories, status } = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
 
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
+  const [selectedCategory, setSelectedCategory] = useState<Category | undefined>(productCategory);
 
   return status === 'pending' ? (
     <Spinner />
@@ -322,31 +360,22 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setForm({ ...form, category: Number(selectedOption.value) });
+          setForm((prev) => ({ ...prev, category: Number(selectedOption.value) }));
           setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
-        {productCategory && sport.id === productSport?.id ? (
-          <option value={productCategory.id} selected>
-            {productCategory.name}
+        <option value="" disabled selected={!selectedCategory}>
+          Select Category
+        </option>
+        {categories.map((category) => (
+          <option key={category.id} value={category.id}>
+            {category.name}
           </option>
-        ) : (
-          <option value="" disabled selected={!selectedCategory}>
-            Select Category
-          </option>
-        )}
-        {categories
-          .filter((c) => c.id !== productCategory?.id)
-          .map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
+        ))}
       </select>
       {selectedCategory && (
         <SubcategorySelection
           key={selectedCategory.id}
           category={selectedCategory}
-          form={form}
           setForm={setForm}
           productSubcategory={productSubcategory}
         />
@@ -356,20 +385,18 @@ function CategorySelection({
 }
 
 function SportSelection({
-  form,
   setForm,
   productSport,
   productCategory,
   productSubcategory,
 }: {
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
   productSport?: { id: number; name: string };
   productCategory?: { id: number; name: string };
   productSubcategory?: { id: number; name: string };
 }) {
   const { data: sports, status } = api.category.getSports.useQuery();
-  const [selectedSport, setSelectedSport] = useState<Category>();
+  const [selectedSport, setSelectedSport] = useState<Category | undefined>(productSport);
 
   return status === 'pending' ? (
     <Spinner />
@@ -384,31 +411,22 @@ function SportSelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setForm({ ...form, sport: Number(selectedOption.value) });
+          setForm((prev) => ({ ...prev, sport: Number(selectedOption.value) }));
           setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
-        {productSport ? (
-          <option value={productSport.id} selected>
-            {productSport.name}
+        <option value="" disabled selected={!selectedSport}>
+          Select Sport
+        </option>
+        {sports.map((sport) => (
+          <option key={sport.id} value={sport.id}>
+            {sport.name}
           </option>
-        ) : (
-          <option value="" disabled selected={!selectedSport}>
-            Select Sport
-          </option>
-        )}
-        {sports
-          .filter((s) => s.id !== productSport?.id)
-          .map((sport) => (
-            <option key={sport.id} value={sport.id}>
-              {sport.name}
-            </option>
-          ))}
+        ))}
       </select>
       {selectedSport && (
         <CategorySelection
           key={selectedSport.id}
           sport={selectedSport}
-          form={form}
           setForm={setForm}
           productSport={productSport}
           productCategory={productCategory}
@@ -420,12 +438,10 @@ function SportSelection({
 }
 
 function GenderSelection({
-  form,
   setForm,
   productGenders,
 }: {
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
   productGenders: ('MALE' | 'FEMALE' | 'OTHER')[];
 }) {
   return (
@@ -442,7 +458,7 @@ function GenderSelection({
             .filter((value): value is 'MALE' | 'FEMALE' | 'OTHER' =>
               GENDERS.includes(value as 'MALE' | 'FEMALE' | 'OTHER')
             );
-          setForm({ ...form, gender: selectedGenders });
+          setForm((prev) => ({ ...prev, gender: selectedGenders }));
         }}>
         {GENDERS.map((gender) => (
           <option key={gender} value={gender} selected={productGenders.includes(gender as 'MALE' | 'FEMALE' | 'OTHER')}>
@@ -454,41 +470,91 @@ function GenderSelection({
   );
 }
 
-interface ProductForm {
-  name: string;
-  description: string;
-  basePrice: number;
-  onSalePrice: number;
-  image?: string;
-  inventory: InventoryItem[];
-  subcategory: number;
-  category: number;
-  sport: number;
-  gender: ('MALE' | 'FEMALE' | 'OTHER')[];
-}
-
-export default function ProductUpdate({ productId }: { productId: string }) {
+export default function ProductUpdate({ productId }: ProductUpdateProps) {
+  const router = useRouter();
   const utils = api.useUtils();
-  const { data: product } = api.product.getUnique.useQuery(productId);
+  const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
 
-  const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-
-  const [form, setForm] = useState<ProductForm>({
-    name: '',
-    description: '',
-    basePrice: 0,
-    onSalePrice: 0,
-    image: undefined,
-    inventory: [],
-    subcategory: 0,
-    category: 0,
-    sport: 0,
-    gender: [],
+  // Query for fetching category details
+  const {
+    data: product,
+    error: fetchError,
+    isLoading,
+  } = api.product.getUnique.useQuery(productId, {
+    retry: 2,
+    enabled: Boolean(productId),
   });
 
+  // Update mutation
+  const updateProduct = api.product.update.useMutation({
+    onMutate: () => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: true,
+        message: null,
+      }));
+    },
+    onError: (error) => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: true,
+          message: error.message || ERROR_MESSAGES.UPDATE_ERROR,
+        },
+      }));
+    },
+    onSuccess: async () => {
+      await utils.category.invalidate();
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: false,
+          message: 'Sport updated successfully!',
+        },
+      }));
+    },
+  });
+
+  // Delete mutation
+  const deleteProduct = api.product.delete.useMutation({
+    onMutate: () => {
+      setFormState((prev) => ({
+        ...prev,
+        isDeleting: true,
+        message: null,
+      }));
+    },
+    onError: (error) => {
+      setFormState((prev) => ({
+        ...prev,
+        isDeleting: false,
+        message: {
+          error: true,
+          message: error.message || ERROR_MESSAGES.DELETE_ERROR,
+        },
+      }));
+    },
+    onSuccess: async () => {
+      await utils.category.invalidate();
+      router.back();
+      setFormState((prev) => ({
+        ...prev,
+        isDeleting: false,
+        message: {
+          error: false,
+          message: 'Sport deleted successfully!',
+        },
+      }));
+    },
+  });
+
+  // Set initial form data
   useEffect(() => {
     if (product) {
-      setForm({
+      setFormState((prev) => ({
+        ...prev,
         name: product.name,
         description: product.description,
         basePrice: product.basePrice,
@@ -498,158 +564,182 @@ export default function ProductUpdate({ productId }: { productId: string }) {
         sport: product.sport?.id ?? 0,
         category: product.category?.id ?? 0,
         subcategory: product.subcategory?.id ?? 0,
-      });
+      }));
     }
   }, [product]);
 
-  const updateProduct = api.product.update.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
-    },
-    onSuccess: async () => {
-      setFormMessage({ error: false, message: 'Product updated successfully!' });
-      await utils.product.invalidate();
-    },
-  });
-
-  const deleteProduct = api.product.delete.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
-    },
-    onSuccess: async () => {
-      await utils.product.invalidate();
-      setFormMessage({ error: false, message: 'Product deleted successfully!' });
-    },
-  });
-
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files![0];
+    try {
+      const selectedFile = e.target.files![0];
 
-    if (selectedFile) {
-      setFormMessage({ error: false, message: '' });
-      // Validate file type and size
-      const isValidFileType = checkFileType(selectedFile);
-      if (!isValidFileType) {
-        setFormMessage({ error: true, message: 'Please upload a valid image file' });
-        return;
-      }
-      const isValidFileSize = checkFileSize(selectedFile);
-      if (!isValidFileSize) {
-        setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
-        return;
-      }
+      if (selectedFile) {
+        // Validate file type and size
+        const isValidFileType = checkFileType(selectedFile);
+        if (!isValidFileType) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_TYPE_ERROR,
+            },
+          }));
+          return;
+        }
+        const isValidFileSize = checkFileSize(selectedFile);
+        if (!isValidFileSize) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_SIZE_ERROR,
+            },
+          }));
+          return;
+        }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target!.result;
-        setForm({ ...form, image: imageData as string });
-      };
-      reader.readAsDataURL(selectedFile);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = e.target!.result;
+          setFormState((prev) => ({ ...prev, image: imageData as string }));
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    } catch (_error) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.IMAGE_UPLOAD_ERROR,
+        },
+      }));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
+    setFormState((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      deleteProduct.mutate({ id: productId });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setFormMessage({ error: false, message: '' });
     e.preventDefault();
 
     updateProduct.mutate({
       id: productId,
-      ...form,
-      basePrice: Number(form.basePrice),
-      onSalePrice: Number(form.onSalePrice),
+      ...formState,
+      basePrice: Number(formState.basePrice),
+      onSalePrice: Number(formState.onSalePrice),
     });
   };
 
-  if (product) {
+  // Loading and error states
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4">
-        <Button
-          className="bg-red-500 px-4 py-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 xl:bg-red-500 xl:dark:bg-red-600"
-          onClick={() => deleteProduct.mutate({ id: productId })}>
-          Delete Product
-        </Button>
-        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="name"
-            type="text"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="description"
-            type="text"
-            placeholder="Description"
-            required
-            value={form.description}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="basePrice"
-            type="number"
-            placeholder="Base Price"
-            required
-            min={0}
-            step={0.01}
-            value={form.basePrice}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            name="onSalePrice"
-            type="number"
-            placeholder="On Sale Price"
-            required
-            min={0}
-            step={0.01}
-            value={form.onSalePrice}
-            onChange={handleChange}
-          />
-          <GenderSelection productGenders={form.gender} form={form} setForm={setForm} />
-          <SportSelection
-            form={form}
-            setForm={setForm}
-            productSport={product?.sport ?? undefined}
-            productCategory={product?.category ?? undefined}
-            productSubcategory={product?.subcategory ?? undefined}
-          />
-          <h1 className="text-xl">Size Selection</h1>
-          <SizeSelection inventory={form.inventory} form={form} setForm={setForm} />
-          {product.image ? (
-            <Image
-              unoptimized
-              src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
-              alt={form.name}
-              width={200}
-              height={250}
-              className="m-auto rounded-xl"
-            />
-          ) : (
-            <p>No image uploaded</p>
-          )}
-          <p>New Image (optional)</p>
-          <input
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-            type="file"
-            name="image"
-            accept="image/png, image/jpeg, image/jpg"
-            onChange={(e) => handleImage(e)}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-        <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
+      <div className="flex h-48 items-center justify-center">
+        <div className="text-lg">Loading product details...</div>
       </div>
     );
   }
+  if (fetchError || !product) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <MessageWrapper error={true} message={ERROR_MESSAGES.FETCH_ERROR} />
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <Button
+        className="bg-red-500 px-4 py-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 xl:bg-red-500 xl:dark:bg-red-600"
+        onClick={handleDelete}
+        disabled={formState.isDeleting}>
+        {formState.isDeleting ? 'Deleting...' : 'Delete'}
+      </Button>
+      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="name"
+          type="text"
+          placeholder="Name"
+          value={formState.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="description"
+          type="text"
+          placeholder="Description"
+          required
+          value={formState.description}
+          onChange={handleChange}
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="basePrice"
+          type="number"
+          placeholder="Base Price"
+          required
+          min={0}
+          step={0.01}
+          value={formState.basePrice}
+          onChange={handleChange}
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="onSalePrice"
+          type="number"
+          placeholder="On Sale Price"
+          required
+          min={0}
+          step={0.01}
+          value={formState.onSalePrice}
+          onChange={handleChange}
+        />
+        <GenderSelection productGenders={formState.gender} setForm={setFormState} />
+        <SportSelection
+          setForm={setFormState}
+          productSport={product.sport ?? undefined}
+          productCategory={product.category ?? undefined}
+          productSubcategory={product.subcategory ?? undefined}
+        />
+        <h1 className="text-xl">Size Selection</h1>
+        <SizeSelection inventory={formState.inventory} setForm={setFormState} />
+        {product.image ? (
+          <Image
+            unoptimized
+            src={`https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`}
+            alt={formState.name}
+            width={200}
+            height={250}
+            className="m-auto rounded-xl"
+          />
+        ) : (
+          <p>No image uploaded</p>
+        )}
+        <p>New Image (optional)</p>
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          type="file"
+          name="image"
+          accept="image/png, image/jpeg, image/jpg"
+          onChange={(e) => handleImage(e)}
+        />
+        <Button type="submit" className="w-full" disabled={formState.isSubmitting}>
+          {formState.isSubmitting ? 'Updating...' : 'Update'}
+        </Button>
+      </form>
+      {formState.message && (
+        <MessageWrapper error={formState.message.error} message={formState.message.message} popup={true} />
+      )}
+    </div>
+  );
 }
