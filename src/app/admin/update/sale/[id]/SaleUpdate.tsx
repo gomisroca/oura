@@ -51,7 +51,7 @@ const ERROR_MESSAGES = {
   IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
   IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
   IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
-  NAME_REQUIRED: 'Sale name is required',
+  MISSING_REQUIRED: 'Please fill out all required fields.',
 } as const;
 
 function ProductSelector({
@@ -254,12 +254,19 @@ export default function SaleUpdate({ id }: SaleUpdateProps) {
     e.preventDefault();
 
     const trimmedName = formState.name.trim();
-    if (!trimmedName) {
+    if (
+      !trimmedName ||
+      !formState.startDate ||
+      !formState.startTime ||
+      !formState.endDate ||
+      !formState.endTime ||
+      !formState.selectedProducts
+    ) {
       setFormState((prev) => ({
         ...prev,
         message: {
           error: true,
-          message: ERROR_MESSAGES.NAME_REQUIRED,
+          message: ERROR_MESSAGES.MISSING_REQUIRED,
         },
       }));
       return;

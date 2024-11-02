@@ -146,7 +146,7 @@ const ERROR_MESSAGES = {
   IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
   IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
   IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
-  NAME_REQUIRED: 'Sport name is required',
+  MISSING_REQUIRED: 'Please fill out all required fields.',
 } as const;
 
 function Color({ color }: { color: string }) {
@@ -630,7 +630,26 @@ export default function ProductUpdate({ productId }: ProductUpdateProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (
+      !formState.name ||
+      !formState.description ||
+      !formState.basePrice ||
+      !formState.onSalePrice ||
+      !formState.gender ||
+      !formState.sport ||
+      !formState.category ||
+      !formState.subcategory ||
+      !formState.inventory
+    ) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.MISSING_REQUIRED,
+        },
+      }));
+      return;
+    }
     updateProduct.mutate({
       id: productId,
       ...formState,
