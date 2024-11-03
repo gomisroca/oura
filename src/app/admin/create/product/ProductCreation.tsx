@@ -12,9 +12,10 @@ import { useState } from 'react';
 import { api } from '@/trpc/react';
 import Button from '@/app/_components/ui/Button';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
-import Spinner from '@/app/_components/ui/Spinner';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
+import { useRouter } from 'next/navigation';
 
+// Constants
 const SIZES = {
   CLOTH: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
   SHOE: [
@@ -79,6 +80,22 @@ const COLORS = [
 
 const GENDERS = ['MALE', 'FEMALE', 'OTHER'];
 
+const ERROR_MESSAGES = {
+  FETCH_ERROR: 'Unable to fetch category details',
+  CREATE_ERROR: 'Failed to create product. Please try again.',
+  IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
+  IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
+  IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
+  MISSING_REQUIRED: 'Please fill out all required fields.',
+} as const;
+
+// Types
+interface Category {
+  name: string;
+  subcategory?: Category[];
+  id: number;
+}
+
 interface InventoryItem {
   name: string;
   colors: {
@@ -87,13 +104,12 @@ interface InventoryItem {
   }[];
 }
 
-interface Category {
-  name: string;
-  subcategory?: Category[];
-  id: number;
+interface FormMessage {
+  error: boolean;
+  message: string;
 }
 
-interface ProductForm {
+interface FormState {
   name: string;
   description: string;
   basePrice: number;
@@ -104,7 +120,26 @@ interface ProductForm {
   category: number;
   sport: number;
   gender: ('MALE' | 'FEMALE' | 'OTHER')[];
+  isSubmitting: boolean;
+  isDeleting: boolean;
+  message: FormMessage | null;
 }
+
+const INITIAL_FORM_STATE: FormState = {
+  name: '',
+  description: '',
+  basePrice: 0,
+  onSalePrice: 0,
+  image: undefined,
+  inventory: [],
+  subcategory: 0,
+  category: 0,
+  sport: 0,
+  gender: [],
+  isSubmitting: false,
+  isDeleting: false,
+  message: null,
+};
 
 function Color({ color }: { color: string }) {
   return (
@@ -115,11 +150,11 @@ function Color({ color }: { color: string }) {
 
 function StockInput({
   sizeObj,
-  setForm,
+  setFormState,
   index,
 }: {
   sizeObj: InventoryItem;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
   index: number;
 }) {
   return (
@@ -138,12 +173,12 @@ function StockInput({
             value={colorObj.stock}
             className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
             onChange={(e) => {
-              setForm((prevForm) => {
-                const updatedInventory = [...prevForm.inventory];
+              setFormState((prev) => {
+                const updatedInventory = [...prev.inventory];
                 if (updatedInventory[index]?.colors[colorIndex]) {
                   updatedInventory[index].colors[colorIndex].stock = Number(e.target.value);
                 }
-                return { ...prevForm, inventory: updatedInventory };
+                return { ...prev, inventory: updatedInventory };
               });
             }}
           />
@@ -155,10 +190,10 @@ function StockInput({
 
 function ColorSelection({
   inventory,
-  setForm,
+  setFormState,
 }: {
   inventory: InventoryItem[];
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <>
@@ -168,13 +203,13 @@ function ColorSelection({
           <select
             onChange={(e) => {
               const selectedColors = Array.from(e.target.selectedOptions, (option) => option.value);
-              setForm((prevForm) => {
-                const updatedInventory = [...prevForm.inventory];
+              setFormState((prev) => {
+                const updatedInventory = [...prev.inventory];
 
                 if (updatedInventory[index]) {
                   updatedInventory[index].colors = selectedColors.map((color) => ({ name: color, stock: 0 }));
                 }
-                return { ...prevForm, inventory: updatedInventory };
+                return { ...prev, inventory: updatedInventory };
               });
             }}
             name="color"
@@ -190,7 +225,7 @@ function ColorSelection({
           </select>
           {/* If there are colors for the selected size, require a stock amount for each color */}
           {sizeObj.colors && sizeObj.colors.length > 0 && (
-            <StockInput sizeObj={sizeObj} setForm={setForm} index={index} />
+            <StockInput sizeObj={sizeObj} setFormState={setFormState} index={index} />
           )}
         </div>
       ))}
@@ -200,12 +235,10 @@ function ColorSelection({
 
 function SizeSelection({
   inventory,
-  form,
-  setForm,
+  setFormState,
 }: {
   inventory: InventoryItem[];
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <>
@@ -213,7 +246,7 @@ function SizeSelection({
       <select
         onChange={(e) => {
           const selectedSizes = Array.from(e.target.selectedOptions, (option) => option.value);
-          setForm({ ...form, inventory: selectedSizes.map((name) => ({ name, colors: [] })) });
+          setFormState((prev) => ({ ...prev, inventory: selectedSizes.map((name) => ({ name, colors: [] })) }));
         }}
         name="size"
         className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
@@ -237,30 +270,45 @@ function SizeSelection({
         ))}
       </select>
       {/* If there are sizes, render a selection of colors for each size */}
-      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setForm={setForm} />}
+      {inventory && inventory.length > 0 && <ColorSelection inventory={inventory} setFormState={setFormState} />}
     </>
   );
 }
 
 function SubcategorySelection({
   category,
-  form,
-  setForm,
+  setFormState,
 }: {
   category: Category;
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
-  const { data: subcategories, status } = api.category.getAllSubcategories.useQuery({
+  const router = useRouter();
+  const {
+    data: subcategories,
+    error: fetchError,
+    isLoading,
+  } = api.category.getAllSubcategories.useQuery({
     categoryId: Number(category.id),
   });
   const [selectedSubcategory, setSelectedSubcategory] = useState<Category>();
 
-  return status === 'pending' ? (
-    <Spinner />
-  ) : status === 'error' ? (
-    <MessageWrapper message="Unable to fetch subcategories at this time" />
-  ) : (
+  // Loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex h-48 items-center justify-center">
+        <div className="text-lg">Loading subcategory details...</div>
+      </div>
+    );
+  }
+  if (fetchError || !subcategories) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <MessageWrapper error={true} message={ERROR_MESSAGES.FETCH_ERROR} />
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
+  return (
     <>
       <p>{category.name} Subcategories</p>
       <select
@@ -270,7 +318,7 @@ function SubcategorySelection({
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
           setSelectedSubcategory({ name: selectedOption.text, id: Number(selectedOption.value) });
-          setForm({ ...form, subcategory: Number(selectedOption.value) });
+          setFormState((prev) => ({ ...prev, subcategory: Number(selectedOption.value) }));
         }}>
         <option value="" disabled selected={!selectedSubcategory}>
           Select Subcategory
@@ -287,22 +335,37 @@ function SubcategorySelection({
 
 function CategorySelection({
   sport,
-  form,
-  setForm,
+  setFormState,
 }: {
   sport: Category;
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
-  const { data: categories, status } = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
+  const router = useRouter();
+  const {
+    data: categories,
+    error: fetchError,
+    isLoading,
+  } = api.category.getCategories.useQuery({ sportId: Number(sport.id) });
 
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
-  return status === 'pending' ? (
-    <Spinner />
-  ) : status === 'error' ? (
-    <MessageWrapper message="Unable to fetch categories at this time" />
-  ) : (
+  // Loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex h-48 items-center justify-center">
+        <div className="text-lg">Loading category details...</div>
+      </div>
+    );
+  }
+  if (fetchError || !categories) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <MessageWrapper error={true} message={ERROR_MESSAGES.FETCH_ERROR} />
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
+  return (
     <>
       <p>{sport.name} Categories</p>
       <select
@@ -311,7 +374,7 @@ function CategorySelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setForm({ ...form, category: Number(selectedOption.value) });
+          setFormState((prev) => ({ ...prev, category: Number(selectedOption.value) }));
           setSelectedCategory({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         <option value="" disabled selected={!selectedCategory}>
@@ -324,27 +387,35 @@ function CategorySelection({
         ))}
       </select>
       {selectedCategory && (
-        <SubcategorySelection key={selectedCategory.id} category={selectedCategory} form={form} setForm={setForm} />
+        <SubcategorySelection key={selectedCategory.id} category={selectedCategory} setFormState={setFormState} />
       )}
     </>
   );
 }
 
-function SportSelection({
-  form,
-  setForm,
-}: {
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
-}) {
-  const { data: sports, status } = api.category.getSports.useQuery();
+function SportSelection({ setFormState }: { setFormState: React.Dispatch<React.SetStateAction<FormState>> }) {
+  const router = useRouter();
+  const { data: sports, error: fetchError, isLoading } = api.category.getSports.useQuery();
+
   const [selectedSport, setSelectedSport] = useState<Category>();
 
-  return status === 'pending' ? (
-    <Spinner />
-  ) : status === 'error' ? (
-    <MessageWrapper message="Unable to fetch sports at this time" />
-  ) : (
+  // Loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex h-48 items-center justify-center">
+        <div className="text-lg">Loading sport details...</div>
+      </div>
+    );
+  }
+  if (fetchError || !sports) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <MessageWrapper error={true} message={ERROR_MESSAGES.FETCH_ERROR} />
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
+  return (
     <>
       <p>Sport</p>
       <select
@@ -353,7 +424,7 @@ function SportSelection({
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
-          setForm({ ...form, sport: Number(selectedOption.value) });
+          setFormState((prev) => ({ ...prev, sport: Number(selectedOption.value) }));
           setSelectedSport({ name: selectedOption.text, id: Number(selectedOption.value) });
         }}>
         <option value="" disabled selected={!selectedSport}>
@@ -365,20 +436,12 @@ function SportSelection({
           </option>
         ))}
       </select>
-      {selectedSport && (
-        <CategorySelection key={selectedSport.id} sport={selectedSport} form={form} setForm={setForm} />
-      )}
+      {selectedSport && <CategorySelection key={selectedSport.id} sport={selectedSport} setFormState={setFormState} />}
     </>
   );
 }
 
-function GenderSelection({
-  form,
-  setForm,
-}: {
-  form: ProductForm;
-  setForm: React.Dispatch<React.SetStateAction<ProductForm>>;
-}) {
+function GenderSelection({ setFormState }: { setFormState: React.Dispatch<React.SetStateAction<FormState>> }) {
   return (
     <>
       <p>Gender</p>
@@ -393,7 +456,7 @@ function GenderSelection({
             .filter((value): value is 'MALE' | 'FEMALE' | 'OTHER' =>
               GENDERS.includes(value as 'MALE' | 'FEMALE' | 'OTHER')
             );
-          setForm({ ...form, gender: selectedGenders });
+          setFormState((prev) => ({ ...prev, gender: selectedGenders }));
         }}>
         {GENDERS.map((gender) => (
           <option key={gender} value={gender}>
@@ -407,73 +470,122 @@ function GenderSelection({
 
 export default function ProductCreation() {
   const utils = api.useUtils();
+  const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
 
-  const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-
-  const [form, setForm] = useState<ProductForm>({
-    name: '',
-    description: '',
-    basePrice: 0,
-    onSalePrice: 0,
-    image: undefined,
-    inventory: [],
-    subcategory: 0,
-    category: 0,
-    sport: 0,
-    gender: [],
-  });
-
+  // Create mutation
   const createProduct = api.product.create.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+    onMutate: () => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: true,
+        message: null,
+      }));
+    },
+    onError: (error) => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: true,
+          message: error.message || ERROR_MESSAGES.CREATE_ERROR,
+        },
+      }));
     },
     onSuccess: async () => {
-      await utils.product.invalidate();
-      setFormMessage({ error: false, message: 'Product created successfully!' });
+      await utils.category.invalidate();
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: false,
+          message: 'Product created successfully!',
+        },
+      }));
     },
   });
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files![0];
+    try {
+      const selectedFile = e.target.files![0];
 
-    if (selectedFile) {
-      setFormMessage({ error: false, message: '' });
-      // Validate file type and size
-      const isValidFileType = checkFileType(selectedFile);
-      if (!isValidFileType) {
-        setFormMessage({ error: true, message: 'Please upload a valid image file' });
-        return;
-      }
-      const isValidFileSize = checkFileSize(selectedFile);
-      if (!isValidFileSize) {
-        setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
-        return;
-      }
+      if (selectedFile) {
+        // Validate file type and size
+        const isValidFileType = checkFileType(selectedFile);
+        if (!isValidFileType) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_TYPE_ERROR,
+            },
+          }));
+          return;
+        }
+        const isValidFileSize = checkFileSize(selectedFile);
+        if (!isValidFileSize) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_SIZE_ERROR,
+            },
+          }));
+          return;
+        }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target!.result;
-        setForm({ ...form, image: imageData as string });
-      };
-      reader.readAsDataURL(selectedFile);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = e.target!.result;
+          setFormState((prev) => ({ ...prev, image: imageData as string }));
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    } catch (_error) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.IMAGE_UPLOAD_ERROR,
+        },
+      }));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
+    setFormState((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setFormMessage({ error: false, message: '' });
     e.preventDefault();
 
+    if (
+      !formState.name ||
+      !formState.description ||
+      !formState.basePrice ||
+      !formState.onSalePrice ||
+      !formState.image ||
+      !formState.gender ||
+      !formState.sport ||
+      !formState.category ||
+      !formState.subcategory ||
+      !formState.inventory
+    ) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.MISSING_REQUIRED,
+        },
+      }));
+      return;
+    }
     createProduct.mutate({
-      ...form,
-      basePrice: Number(form.basePrice),
-      onSalePrice: Number(form.onSalePrice),
+      ...formState,
+      basePrice: Number(formState.basePrice),
+      onSalePrice: Number(formState.onSalePrice),
     });
   };
 
@@ -516,9 +628,9 @@ export default function ProductCreation() {
           step={0.01}
           onChange={handleChange}
         />
-        <GenderSelection form={form} setForm={setForm} />
-        <SportSelection form={form} setForm={setForm} />
-        <SizeSelection inventory={form.inventory} form={form} setForm={setForm} />
+        <GenderSelection setFormState={setFormState} />
+        <SportSelection setFormState={setFormState} />
+        <SizeSelection inventory={formState.inventory} setFormState={setFormState} />
         <input
           className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
           type="file"
@@ -530,7 +642,9 @@ export default function ProductCreation() {
           {createProduct.isPending ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
-      <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
+      {formState.message && (
+        <MessageWrapper error={formState.message.error} message={formState.message.message} popup={true} />
+      )}
     </div>
   );
 }

@@ -5,9 +5,15 @@ import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import { api } from '@/trpc/react';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 import { type Product } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-interface SaleForm {
+interface FormMessage {
+  error: boolean;
+  message: string;
+}
+
+interface FormState {
   name: string;
   startDate: string;
   startTime: string;
@@ -15,16 +21,39 @@ interface SaleForm {
   endTime: string;
   image: string;
   selectedProducts: string[];
+  isSubmitting: boolean;
+  isDeleting: boolean;
+  message: FormMessage | null;
 }
+
+const INITIAL_FORM_STATE: FormState = {
+  name: '',
+  startDate: '',
+  startTime: '',
+  endDate: '',
+  endTime: '',
+  image: '',
+  selectedProducts: [],
+  isSubmitting: false,
+  isDeleting: false,
+  message: null,
+};
+
+const ERROR_MESSAGES = {
+  FETCH_ERROR: 'Unable to fetch products.',
+  CREATE_ERROR: 'Failed to create sale. Please try again.',
+  IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
+  IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
+  IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
+  MISSING_REQUIRED: 'Please fill out all required fields.',
+} as const;
 
 function ProductSelector({
   products,
-  form,
-  setForm,
+  setFormState,
 }: {
   products: Product[];
-  form: SaleForm;
-  setForm: React.Dispatch<React.SetStateAction<SaleForm>>;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <select
@@ -32,7 +61,10 @@ function ProductSelector({
       className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
       multiple
       onChange={(e) =>
-        setForm({ ...form, selectedProducts: Array.from(e.target.selectedOptions, (option) => option.value) })
+        setFormState((prev) => ({
+          ...prev,
+          selectedProducts: Array.from(e.target.selectedOptions, (option) => option.value),
+        }))
       }>
       {products.map((product) => (
         <option key={product.id} value={product.id}>
@@ -44,142 +76,216 @@ function ProductSelector({
 }
 
 export default function SaleCreation() {
+  const router = useRouter();
   const utils = api.useUtils();
-  const { data: products } = api.product.getAll.useQuery();
+  const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
 
-  const [formMessage, setFormMessage] = useState({ error: true, message: '' });
-  const [form, setForm] = useState<SaleForm>({
-    name: '',
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
-    image: '',
-    selectedProducts: [],
-  });
+  // Query for fetching products
+  const { data: products, error: fetchError, isLoading } = api.product.getAll.useQuery();
 
+  // Create mutation
   const createSale = api.sale.create.useMutation({
-    onError: () => {
-      setFormMessage({ error: true, message: 'Something went wrong. Please try again.' });
+    onMutate: () => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: true,
+        message: null,
+      }));
+    },
+    onError: (error) => {
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: true,
+          message: error.message || ERROR_MESSAGES.CREATE_ERROR,
+        },
+      }));
     },
     onSuccess: async () => {
-      await utils.sale.invalidate();
-      setFormMessage({ error: false, message: 'Sale created successfully!' });
+      await utils.category.invalidate();
+      setFormState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: {
+          error: false,
+          message: 'Sale created successfully!',
+        },
+      }));
     },
   });
 
+  // Form handlers
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files![0];
+    try {
+      const selectedFile = e.target.files![0];
 
-    if (selectedFile) {
-      setFormMessage({ error: false, message: '' });
+      if (selectedFile) {
+        const isValidFileType = checkFileType(selectedFile);
+        if (!isValidFileType) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_TYPE_ERROR,
+            },
+          }));
+          return;
+        }
+        const isValidFileSize = checkFileSize(selectedFile);
+        if (!isValidFileSize) {
+          setFormState((prev) => ({
+            ...prev,
+            message: {
+              error: true,
+              message: ERROR_MESSAGES.IMAGE_UPLOAD_SIZE_ERROR,
+            },
+          }));
+          return;
+        }
 
-      const isValidFileType = checkFileType(selectedFile);
-      if (!isValidFileType) {
-        setFormMessage({ error: true, message: 'Please upload a valid image file' });
-        return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = e.target!.result;
+          setFormState((prev) => ({ ...prev, image: imageData as string }));
+        };
+        reader.readAsDataURL(selectedFile);
       }
-      const isValidFileSize = checkFileSize(selectedFile);
-      if (!isValidFileSize) {
-        setFormMessage({ error: true, message: 'Please upload a file smaller than 2MB' });
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target!.result;
-        setForm({ ...form, image: imageData as string });
-      };
-      reader.readAsDataURL(selectedFile);
+    } catch (_error) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.IMAGE_UPLOAD_ERROR,
+        },
+      }));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
+    setFormState((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setFormMessage({ error: false, message: '' });
     e.preventDefault();
 
-    const startDateTime = new Date(`${form.startDate}T${form.startTime}`);
-    const endDateTime = new Date(`${form.endDate}T${form.endTime}`);
+    if (
+      !formState.name ||
+      !formState.startDate ||
+      !formState.startTime ||
+      !formState.endDate ||
+      !formState.endTime ||
+      !formState.image ||
+      !formState.selectedProducts
+    ) {
+      setFormState((prev) => ({
+        ...prev,
+        message: {
+          error: true,
+          message: ERROR_MESSAGES.MISSING_REQUIRED,
+        },
+      }));
+      return;
+    }
+
+    const startDateTime = new Date(`${formState.startDate}T${formState.startTime}`);
+    const endDateTime = new Date(`${formState.endDate}T${formState.endTime}`);
 
     createSale.mutate({
-      name: form.name,
+      name: formState.name,
       startDate: startDateTime,
       endDate: endDateTime,
-      image: form.image,
-      selectedProducts: form.selectedProducts,
+      image: formState.image,
+      selectedProducts: formState.selectedProducts,
     });
   };
 
+  // Loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex h-48 items-center justify-center">
+        <div className="text-lg">Loading product details...</div>
+      </div>
+    );
+  }
+  if (fetchError || !products) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <MessageWrapper error={true} message={ERROR_MESSAGES.FETCH_ERROR} />
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </div>
+    );
+  }
   return (
-    <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-      <p>Name</p>
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        name="name"
-        type="text"
-        placeholder="Sale Name"
-        onChange={handleChange}
-        required
-      />
-      <p>Start Date</p>
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        name="startDate"
-        type="date"
-        placeholder="Start Date"
-        onChange={handleChange}
-        required
-      />
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        name="startTime"
-        type="time"
-        placeholder="Start Time"
-        onChange={handleChange}
-        required
-      />
-      <p>End Date</p>
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        name="endDate"
-        type="date"
-        placeholder="End Date"
-        onChange={handleChange}
-        required
-      />
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        name="endTime"
-        type="time"
-        placeholder="End Time"
-        onChange={handleChange}
-        required
-      />
-      <p>Image</p>
-      <input
-        className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
-        type="file"
-        name="image"
-        accept="image/png, image/jpeg, image/jpg"
-        onChange={(e) => handleImage(e)}
-      />
-      {products && (
-        <>
-          <p>Products</p>
-          <ProductSelector products={products} form={form} setForm={setForm} />
-        </>
+    <div className="flex flex-col items-center justify-center gap-4">
+      <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+        <p>Name</p>
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="name"
+          type="text"
+          placeholder="Sale Name"
+          onChange={handleChange}
+          required
+        />
+        <p>Start Date</p>
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="startDate"
+          type="date"
+          placeholder="Start Date"
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="startTime"
+          type="time"
+          placeholder="Start Time"
+          onChange={handleChange}
+          required
+        />
+        <p>End Date</p>
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="endDate"
+          type="date"
+          placeholder="End Date"
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          name="endTime"
+          type="time"
+          placeholder="End Time"
+          onChange={handleChange}
+          required
+        />
+        <p>Image</p>
+        <input
+          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          type="file"
+          name="image"
+          accept="image/png, image/jpeg, image/jpg"
+          onChange={(e) => handleImage(e)}
+        />
+        {products && (
+          <>
+            <p>Products</p>
+            <ProductSelector products={products} setFormState={setFormState} />
+          </>
+        )}
+        <Button type="submit" disabled={createSale.isPending}>
+          {createSale.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </form>
+      {formState.message && (
+        <MessageWrapper error={formState.message.error} message={formState.message.message} popup={true} />
       )}
-      <Button type="submit" disabled={createSale.isPending}>
-        {createSale.isPending ? 'Submitting...' : 'Submit'}
-      </Button>
-      <MessageWrapper error={formMessage.error} message={formMessage.message} popup={true} />
-    </form>
+    </div>
   );
 }
