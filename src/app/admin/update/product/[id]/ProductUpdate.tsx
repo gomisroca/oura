@@ -83,6 +83,16 @@ const COLORS = [
 
 const GENDERS = ['MALE', 'FEMALE', 'OTHER'];
 
+const ERROR_MESSAGES = {
+  FETCH_ERROR: 'Unable to fetch product details',
+  UPDATE_ERROR: 'Failed to update product. Please try again.',
+  DELETE_ERROR: 'Failed to delete product. Please try again.',
+  IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
+  IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
+  IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
+  MISSING_REQUIRED: 'Please fill out all required fields.',
+} as const;
+
 // Types
 interface Category {
   name: string;
@@ -138,16 +148,6 @@ const INITIAL_FORM_STATE: FormState = {
   isDeleting: false,
   message: null,
 };
-
-const ERROR_MESSAGES = {
-  FETCH_ERROR: 'Unable to fetch sport details',
-  UPDATE_ERROR: 'Failed to update sport. Please try again.',
-  DELETE_ERROR: 'Failed to delete sport. Please try again.',
-  IMAGE_UPLOAD_ERROR: 'Failed to upload image. Please try again.',
-  IMAGE_UPLOAD_SIZE_ERROR: 'Image size exceeds the limit of 2MB',
-  IMAGE_UPLOAD_TYPE_ERROR: 'Please upload a valid image file',
-  MISSING_REQUIRED: 'Please fill out all required fields.',
-} as const;
 
 function Color({ color }: { color: string }) {
   return (
@@ -511,7 +511,7 @@ export default function ProductUpdate({ productId }: ProductUpdateProps) {
         isSubmitting: false,
         message: {
           error: false,
-          message: 'Sport updated successfully!',
+          message: 'Product updated successfully!',
         },
       }));
     },
@@ -568,6 +568,7 @@ export default function ProductUpdate({ productId }: ProductUpdateProps) {
     }
   }, [product]);
 
+  // Form handlers
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const selectedFile = e.target.files![0];
