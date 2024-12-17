@@ -50,6 +50,14 @@
         <li><a href="#checkout">Checkout</a></li>
       </ul>
     </li>
+    <li>
+      <a href="#adjustments">Adjusting the Codebase</a>
+      <ul>
+        <li><a href="#login-providers">Login Providers</a></li>
+        <li><a href="#database-options">Database Options</a></li>
+        <li><a href="#image-handling">Image Handling</a></li>
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
