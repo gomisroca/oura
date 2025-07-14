@@ -1,4 +1,4 @@
-import { notFound, useSearchParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import React from 'react';
 import { type OrderWithProducts } from 'types';
 
@@ -6,9 +6,8 @@ import { api } from '@/trpc/server';
 
 import OrderList from './OrderList';
 
-async function CheckoutSuccess() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get('orderId');
+async function CheckoutSuccess({ searchParams }: { searchParams: Promise<{ orderId: string }> }) {
+  const orderId = (await searchParams).orderId;
   try {
     if (!orderId) return <div>Missing Order ID</div>;
 
