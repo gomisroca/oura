@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import Button from '@/app/_components/ui/Button';
@@ -8,7 +8,10 @@ import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import Spinner from '@/app/_components/ui/Spinner';
 import { api } from '@/trpc/react';
 
-function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
+function CheckoutConfirmation() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
+  const sessionId = searchParams.get('sessionId');
   const router = useRouter();
   const [message, setMessage] = useState({ error: true, message: '' });
   const [success, setSuccess] = useState(false);
@@ -28,15 +31,15 @@ function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, 
 
   // If the order is confirmed, redirect to the success page
   const handleRedirect = () => {
-    router.push(`/checkout/success?orderId=${searchParams?.orderId}`);
+    router.push(`/checkout/success?orderId=${orderId}`);
   };
 
   // Ensure the order is confirmed only once
   useEffect(() => {
-    if (!hasConfirmedRef.current && searchParams?.sessionId && searchParams?.orderId) {
+    if (!hasConfirmedRef.current && sessionId && orderId) {
       hasConfirmedRef.current = true; // Set ref to true, preventing future triggers
-      confirmOrder.mutate({ sessionId: searchParams.sessionId, orderId: searchParams.orderId });
-    } else if (!searchParams?.sessionId || !searchParams?.orderId) {
+      confirmOrder.mutate({ sessionId, orderId });
+    } else if (!sessionId || !orderId) {
       setMessage({ error: true, message: 'Missing Order or Session ID' });
     }
   }, [searchParams, confirmOrder]);
