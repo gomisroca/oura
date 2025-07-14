@@ -8,13 +8,19 @@ export default async function SubcategoryList({
   params,
   searchParams,
 }: {
-  params: { sport: string; category: string; subcategory: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ sport: string; category: string; subcategory: string }>;
+  searchParams: Promise<{ gender: 'man' | 'woman' }>;
 }) {
-  const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+  const paramsData = await params;
+  const searchParamsData = await searchParams;
+  const gender =
+    searchParamsData?.gender === 'man' ? 'MALE' : searchParamsData?.gender === 'woman' ? 'FEMALE' : undefined;
 
   try {
-    const products = await api.product.getBySubcategory({ subcategoryId: Number(params.subcategory), gender: gender });
+    const products = await api.product.getBySubcategory({
+      subcategoryId: Number(paramsData.subcategory),
+      gender: gender,
+    });
 
     if (products.length === 0) notFound();
     return (

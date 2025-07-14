@@ -8,13 +8,16 @@ export default async function SportList({
   params,
   searchParams,
 }: {
-  params: { sport: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ sport: string }>;
+  searchParams: Promise<{ gender: 'man' | 'woman' }>;
 }) {
-  const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+  const paramsData = await params;
+  const searchParamsData = await searchParams;
+  const gender =
+    searchParamsData?.gender === 'man' ? 'MALE' : searchParamsData?.gender === 'woman' ? 'FEMALE' : undefined;
 
   try {
-    const products = await api.product.getBySport({ sportId: Number(params.sport), gender: gender });
+    const products = await api.product.getBySport({ sportId: Number(paramsData.sport), gender: gender });
 
     if (products.length === 0) notFound();
     return (

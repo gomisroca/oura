@@ -4,12 +4,10 @@ import { api } from '@/trpc/server';
 
 import SportList from '../_components/ui/SportList';
 
-export default async function SportsList({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
-  const gender = searchParams.gender === 'man' ? 'MALE' : searchParams.gender === 'woman' ? 'FEMALE' : undefined;
+export default async function SportsList({ searchParams }: { searchParams: Promise<{ gender: 'man' | 'woman' }> }) {
+  const searchParamsData = await searchParams;
+  const gender =
+    searchParamsData.gender === 'man' ? 'MALE' : searchParamsData.gender === 'woman' ? 'FEMALE' : undefined;
 
   try {
     const [products, sports] = await Promise.all([api.product.getAll(gender), api.category.getSports()]);

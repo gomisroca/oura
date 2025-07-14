@@ -8,13 +8,16 @@ export default async function CategoryList({
   params,
   searchParams,
 }: {
-  params: { sport: string; category: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ sport: string; category: string }>;
+  searchParams: Promise<{ gender: 'man' | 'woman' }>;
 }) {
-  const gender = searchParams?.gender === 'man' ? 'MALE' : searchParams?.gender === 'woman' ? 'FEMALE' : undefined;
+  const paramsData = await params;
+  const searchParamsData = await searchParams;
+  const gender =
+    searchParamsData?.gender === 'man' ? 'MALE' : searchParamsData?.gender === 'woman' ? 'FEMALE' : undefined;
 
   try {
-    const sale = await api.sale.getProductsByCategory({ categoryId: Number(params.category), gender: gender });
+    const sale = await api.sale.getProductsByCategory({ categoryId: Number(paramsData.category), gender: gender });
 
     if (!sale || sale.products.length === 0) notFound();
     return (
