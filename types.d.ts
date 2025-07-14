@@ -1,14 +1,14 @@
 import {
-  type Product,
+  type Category,
   type Color,
+  type Order,
+  type OrderAddress,
+  type OrderProduct,
+  type Product,
+  type ProductOnSale,
   type Size,
   type Sport,
-  type Category,
-  type OrderProduct,
-  type Order,
-  type ProductOnSale,
-  type OrderAddress,
-} from '@prisma/client';
+} from 'generated/prisma';
 
 // Represents a provider with a name and an icon
 interface Provider {

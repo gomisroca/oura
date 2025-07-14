@@ -21,3 +21,4 @@ README.md
 prisma/
 public/
 .env.example
+generated/
