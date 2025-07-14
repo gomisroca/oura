@@ -17,7 +17,6 @@ const config = {
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:vitest-globals/recommended",
-    "plugin:storybook/recommended"
   ],
   "rules": {
     "simple-import-sort/imports": "error",
