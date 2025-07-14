@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'uploadthing/tw/v4';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source "../../node_modules/@uploadthing/react/dist";

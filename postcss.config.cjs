@@ -1,9 +1,5 @@
-const config = {
+export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-    ...(process.env.NODE_ENV === 'production' ? { cssnano: {} } : {}),
+    '@tailwindcss/postcss': {},
   },
 };
-
-module.exports = config;
