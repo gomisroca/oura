@@ -229,13 +229,10 @@ export const categoryRouter = createTRPCRouter({
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Sport not found' });
           }
 
-          // Try to find the category associated with the sport
-          let category = await getUniqueCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId });
-
-          // If the category doesn't exist, create it
-          if (!category) {
-            category = await createCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId });
-          }
+          // Find or create the category
+          const category =
+            (await getUniqueCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId })) ??
+            (await createCategory({ prisma: tx, categoryName: input.category, sportId: input.sportId }));
 
           return category;
         });

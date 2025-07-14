@@ -40,12 +40,10 @@ export const cartRouter = createTRPCRouter({
     try {
       if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not authorized' });
 
-      // Get the user cart using the user id
-      let cart = await getCart({ prisma: ctx.db, userId: ctx.session.user.id });
-      if (!cart) {
-        // If the user has no cart, create one for them
-        cart = await createCart({ prisma: ctx.db, userId: ctx.session.user.id });
-      }
+      // Get or create the user cart using the user id
+      const cart =
+        (await getCart({ prisma: ctx.db, userId: ctx.session.user.id })) ??
+        (await createCart({ prisma: ctx.db, userId: ctx.session.user.id }));
 
       return await ctx.db.$transaction(async (tx) => {
         // Fetch the product with sizes and colors included
