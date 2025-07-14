@@ -13,19 +13,19 @@ import Navbar from './_components/navbar';
 export const metadata: Metadata = {
   title: 'OURA Clothing',
   description: 'Eco-friendly sports clothing',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon.ico',
+    },
+  ],
 };
 
-const worksans = Work_Sans({
-  subsets: ['latin'],
-  weight: ['400', '600'], // Add specific weights if needed
-});
+const worksans = Work_Sans({ subsets: ['latin'], weight: ['400', '600'] });
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={worksans.className}>
+    <html lang="en" className={worksans.className} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class">
           <JotaiProvider>
