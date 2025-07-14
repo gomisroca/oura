@@ -12,6 +12,9 @@ import GeneralMenuFoldable from './GeneralMenuFoldable';
 import CartFoldable from './CartFoldable';
 import SubcategoryFoldableWrapper from './SubcategoryFoldable';
 import CategoryFoldable from './CategoryFoldable';
+import dynamic from 'next/dynamic';
+
+const Message = dynamic(() => import('@/app/_components/ui/Message'));
 
 const LogoIcons = () => {
   const icons = [
@@ -90,15 +93,18 @@ const LogoIcons = () => {
 
 function Navbar() {
   return (
-    <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
-      <LogoIcons />
-      <div className="relative flex flex-row items-start justify-end gap-2">
-        <SubcategoryFoldableWrapper />
-        <CategoryFoldable />
-        <CartFoldable />
-        <GeneralMenuFoldable />
+    <>
+      <Message />
+      <div className="fixed top-0 right-0 left-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
+        <LogoIcons />
+        <div className="relative flex flex-row items-start justify-end gap-2">
+          <SubcategoryFoldableWrapper />
+          <CategoryFoldable />
+          <CartFoldable />
+          <GeneralMenuFoldable />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
