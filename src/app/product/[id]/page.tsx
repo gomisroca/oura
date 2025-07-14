@@ -1,9 +1,11 @@
-import { api } from '@/trpc/server';
-import { type ProductWithSizes } from 'types';
-import ProductContent from './ProductContent';
-import ProductBackButtons from './ProductBackButtons';
-import RelatedProducts from './RelatedProducts';
 import { notFound } from 'next/navigation';
+import { type ProductWithSizes } from 'types';
+
+import { api } from '@/trpc/server';
+
+import ProductBackButtons from './ProductBackButtons';
+import ProductContent from './ProductContent';
+import RelatedProducts from './RelatedProducts';
 
 export default async function ProductView({ params }: { params: { id: string } }) {
   try {

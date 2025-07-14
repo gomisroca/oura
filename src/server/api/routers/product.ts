@@ -1,22 +1,23 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import uploadImage from '@/utils/uploadImage';
-import { TRPCError } from '@trpc/server';
+
 import {
   createColors,
   createProduct,
   createSizes,
+  deleteProduct,
   getProducts,
   getProductsbyCategory,
   getProductsbySport,
   getProductsbySubcategory,
   getUniqueProduct,
+  updateColors,
   updateProduct,
   updateProductVisits,
   updateSizes,
-  updateColors,
-  deleteProduct,
 } from '../queries/product';
 
 const createSchema = z.object({

@@ -1,5 +1,7 @@
-import { getServerAuthSession } from '@/server/auth';
 import { redirect } from 'next/navigation';
+
+import { getServerAuthSession } from '@/server/auth';
+
 import SportUpdate from './SportUpdate';
 
 export default async function Admin({ params }: { params: { sportId: string } }) {

@@ -1,5 +1,7 @@
-import { getServerAuthSession } from '@/server/auth';
 import { redirect } from 'next/navigation';
+
+import { getServerAuthSession } from '@/server/auth';
+
 import CategoryCreation from './CategoryCreation';
 
 export default async function Admin() {

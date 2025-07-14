@@ -1,13 +1,14 @@
 import '@/styles/globals.css';
 
-import { Work_Sans } from 'next/font/google';
-import { type Metadata } from 'next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Provider as JotaiProvider } from 'jotai';
+import { type Metadata } from 'next';
+import { Work_Sans } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
 
 import { TRPCReactProvider } from '@/trpc/react';
-import { ThemeProvider } from 'next-themes';
-import { Provider as JotaiProvider } from 'jotai';
+
 import Navbar from './_components/navbar';
 
 export const metadata: Metadata = {

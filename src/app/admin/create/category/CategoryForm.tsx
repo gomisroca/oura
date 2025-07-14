@@ -1,11 +1,12 @@
 'use client';
 
-import { api } from '@/trpc/react';
+import { type Category } from '@prisma/client';
 import React, { useState } from 'react';
 import { type SportWithCategories } from 'types';
+
 import Button from '@/app/_components/ui/Button';
-import { type Category } from '@prisma/client';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
+import { api } from '@/trpc/react';
 
 interface FormMessage {
   error: boolean;
@@ -134,7 +135,7 @@ export default function CategoryForm({ sports }: { sports: SportWithCategories[]
               )}
               <input
                 id="name"
-                className="w-full rounded-full bg-slate-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700"
+                className="w-full rounded-full bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
                 name="name"
                 placeholder="Enter category name"
                 onChange={handleNameChange}

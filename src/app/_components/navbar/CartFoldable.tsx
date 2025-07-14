@@ -1,8 +1,10 @@
 import React from 'react';
-import Foldable from '../ui/Foldable';
 import { FaCartShopping } from 'react-icons/fa6';
-import CartList from '../cart/CartList';
+
 import { getServerAuthSession } from '@/server/auth';
+
+import CartList from '../cart/CartList';
+import Foldable from '../ui/Foldable';
 
 async function CartFoldable() {
   const session = await getServerAuthSession();

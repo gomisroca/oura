@@ -1,6 +1,8 @@
-import { api } from '@/trpc/server';
-import SportList from '../_components/ui/SportList';
 import { notFound } from 'next/navigation';
+
+import { api } from '@/trpc/server';
+
+import SportList from '../_components/ui/SportList';
 
 export default async function SaleList({
   searchParams,

@@ -11,17 +11,19 @@
  * <CartItem product={product} orderView={true} />
  */
 
-import Image from 'next/image';
-import React from 'react';
-import { type OrderItem } from 'types';
-import ColorBubble from '../ui/ColorBubble';
-import { env } from '@/env';
-import Button from '../ui/Button';
-import { api } from '@/trpc/react';
-import { FaTrash } from 'react-icons/fa6';
-import Link from 'next/link';
 import { useSetAtom } from 'jotai';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { FaTrash } from 'react-icons/fa6';
+import { type OrderItem } from 'types';
+
 import { messageAtom } from '@/atoms/message';
+import { env } from '@/env';
+import { api } from '@/trpc/react';
+
+import Button from '../ui/Button';
+import ColorBubble from '../ui/ColorBubble';
 
 function CartItem({
   product,
@@ -60,7 +62,7 @@ function CartItem({
   return (
     <div
       key={product.id}
-      className={`mx-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:bg-slate-200/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[10rem] w-[15rem] md:h-[15rem] md:w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
+      className={`mx-2 flex flex-row items-center rounded-xl border border-slate-600/10 bg-slate-200/90 xl:bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[10rem] w-[15rem] md:h-[15rem] md:w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
       <Link
         className="h-full w-1/2 cursor-pointer overflow-y-hidden rounded-l-xl"
         href={`/product/${product.product.id}`}>

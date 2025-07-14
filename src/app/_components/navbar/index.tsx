@@ -2,17 +2,18 @@
  * Navbar component that displays the logo, sign in/out dropdown, and theme button.
  */
 
-import React from 'react';
-import Link from 'next/link';
-import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
-import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } from 'react-icons/gi';
-import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
-import Button from '../ui/Button';
-import GeneralMenuFoldable from './GeneralMenuFoldable';
-import CartFoldable from './CartFoldable';
-import SubcategoryFoldableWrapper from './SubcategoryFoldable';
-import CategoryFoldable from './CategoryFoldable';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import React from 'react';
+import { GiHighKick, GiHighPunch, GiRun, GiThrowingBall, GiWeightLiftingUp } from 'react-icons/gi';
+import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
+import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
+
+import Button from '../ui/Button';
+import CartFoldable from './CartFoldable';
+import CategoryFoldable from './CategoryFoldable';
+import GeneralMenuFoldable from './GeneralMenuFoldable';
+import SubcategoryFoldableWrapper from './SubcategoryFoldable';
 
 const Message = dynamic(() => import('@/app/_components/ui/Message'));
 

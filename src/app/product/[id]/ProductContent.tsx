@@ -1,10 +1,11 @@
 'use client';
 
-import ColorBubble from '@/app/_components/ui/ColorBubble';
-import { env } from '@/env';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { type ProductWithSizes } from 'types';
+
+import ColorBubble from '@/app/_components/ui/ColorBubble';
+import { env } from '@/env';
 
 function ProductContent({ product }: { product: ProductWithSizes }) {
   const renderedSizes = useMemo(
@@ -28,7 +29,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
   return (
     <div
       key={product.id}
-      className="relative flex h-[60vh] w-[75wv] flex-col items-center justify-center rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-700/30 md:h-[70vh] md:w-[60vw]">
+      className="relative flex h-[60vh] w-[75wv] flex-col items-center justify-center rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-300/30 md:h-[70vh] md:w-[60vw] dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-700/30">
       <Image
         unoptimized
         className="h-full w-full rounded-t-xl object-cover"
@@ -49,7 +50,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
           {product.sales.length > 0 && (
             <div className="flex flex-row gap-2">
               <p className="text-sm line-through">{product.basePrice}€</p>
-              <p className="text-sm font-bold uppercase text-red-600">ON SALE</p>
+              <p className="text-sm font-bold text-red-600 uppercase">ON SALE</p>
             </div>
           )}
           {product.sales.length > 0 && <p className="text-xl font-bold">{product.onSalePrice}€</p>}

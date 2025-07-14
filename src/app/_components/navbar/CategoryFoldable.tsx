@@ -1,17 +1,19 @@
 'use client';
 
+import { useAtom, useSetAtom } from 'jotai';
+import Link from 'next/link';
 import React, { useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import Foldable from '../ui/Foldable';
-import Button from '../ui/Button';
 import { FaCaretLeft } from 'react-icons/fa6';
-import Link from 'next/link';
 import { type SaleCategory } from 'types';
+
+import { selectedCategoryAtom } from '@/atoms/selectedCategory';
 import { api } from '@/trpc/react';
+
+import Button from '../ui/Button';
+import Foldable from '../ui/Foldable';
 import MessageWrapper from '../ui/MessageWrapper';
 import Spinner from '../ui/Spinner';
-import { useAtom, useSetAtom } from 'jotai';
-import { selectedCategoryAtom } from '@/atoms/selectedCategory';
 
 function SaleFoldable({ sports }: { sports: SaleCategory[] }) {
   const setSelected = useSetAtom(selectedCategoryAtom);
@@ -58,7 +60,7 @@ function SportsFoldable() {
   }
   if (status === 'pending') {
     return (
-      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 whitespace-nowrap text-nowrap rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:bg-slate-200/80 xl:dark:bg-slate-800/80">
+      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold text-nowrap whitespace-nowrap shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 xl:bg-slate-200/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:dark:bg-slate-800/80">
         <Spinner />
       </div>
     );
@@ -109,7 +111,7 @@ function GenderFoldable({ gender }: { gender: 'man' | 'woman' }) {
   }
   if (status === 'pending') {
     return (
-      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 whitespace-nowrap text-nowrap rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:bg-slate-200/80 xl:dark:bg-slate-800/80">
+      <div className="flex cursor-not-allowed flex-row items-center justify-center gap-2 rounded-full border border-slate-600/10 bg-slate-200/95 px-10 py-1 font-semibold text-nowrap whitespace-nowrap shadow-md backdrop-blur-sm transition duration-200 ease-in-out hover:bg-slate-300/80 xl:bg-slate-200/80 dark:border-slate-400/10 dark:bg-slate-800/95 dark:shadow-slate-500/10 dark:hover:bg-slate-700/80 xl:dark:bg-slate-800/80">
         <Spinner />
       </div>
     );

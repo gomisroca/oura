@@ -1,8 +1,10 @@
-import { api } from '@/trpc/server';
+import { notFound } from 'next/navigation';
 import React from 'react';
 import { type OrderWithProducts } from 'types';
+
+import { api } from '@/trpc/server';
+
 import OrderList from './OrderList';
-import { notFound } from 'next/navigation';
 
 async function CheckoutSuccess({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
   try {

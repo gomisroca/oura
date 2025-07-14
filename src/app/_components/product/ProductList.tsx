@@ -6,9 +6,10 @@
  */
 
 import React, { useMemo } from 'react';
-import ProductCard from './ProductCard';
 import { type ProductWithSizes } from 'types';
+
 import ProductListSkeleton from '../skeletons/ProductListSkeleton';
+import ProductCard from './ProductCard';
 
 async function ProductList({ products }: { products: ProductWithSizes[] }) {
   const memoizedProducts = useMemo(() => products, [products]);

@@ -1,7 +1,9 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
-import { getCart, createCart, addProductToCart, removeProductFromCart } from '../queries/cart';
+import { z } from 'zod';
+
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+
+import { addProductToCart, createCart, getCart, removeProductFromCart } from '../queries/cart';
 import { getUniqueColor, getUniqueProduct } from '../queries/product';
 
 const product = z.object({

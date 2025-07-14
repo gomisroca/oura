@@ -1,11 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+
 import Button from '@/app/_components/ui/Button';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import Spinner from '@/app/_components/ui/Spinner';
 import { api } from '@/trpc/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
 
 function CheckoutConfirmation({ searchParams }: { searchParams?: Record<string, string | undefined> }) {
   const router = useRouter();

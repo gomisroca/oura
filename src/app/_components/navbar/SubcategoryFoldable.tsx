@@ -1,13 +1,15 @@
 'use client';
 
-import Button from '../ui/Button';
-import { useParams, usePathname, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { FaFilter } from 'react-icons/fa6';
-import Foldable from '../ui/Foldable';
-import { api } from '@/trpc/react';
-import { Suspense } from 'react';
 import { skipToken } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useParams, usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { FaFilter } from 'react-icons/fa6';
+
+import { api } from '@/trpc/react';
+
+import Button from '../ui/Button';
+import Foldable from '../ui/Foldable';
 
 function SubcategoryFoldableWrapper() {
   return (
@@ -60,7 +62,7 @@ function SubcategoryFoldable() {
             <Button
               key={subcategory.id}
               name={subcategory.name}
-              className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''}`}
+              className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''}`}
               disabled={subcategoryId === subcategory.id}>
               {subcategory.name}
             </Button>

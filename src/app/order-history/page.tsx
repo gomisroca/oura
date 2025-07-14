@@ -1,7 +1,9 @@
+import { redirect } from 'next/navigation';
+
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
+
 import OrderList from '../checkout/success/OrderList';
-import { redirect } from 'next/navigation';
 
 export default async function OrderHistory() {
   const session = await getServerAuthSession();

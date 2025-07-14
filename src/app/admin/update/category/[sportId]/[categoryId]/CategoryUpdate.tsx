@@ -1,10 +1,11 @@
 'use client';
 
-import { api } from '@/trpc/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 import Button from '@/app/_components/ui/Button';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
-import { useRouter } from 'next/navigation';
+import { api } from '@/trpc/react';
 
 // Types
 interface CategoryUpdateProps {
@@ -190,7 +191,7 @@ export default function CategoryUpdate({ id }: CategoryUpdateProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Update Category</h2>
           <Button
-            className="bg-red-500 px-4 py-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 xl:bg-red-500 xl:dark:bg-red-600"
+            className="bg-red-500 px-4 py-2 hover:bg-red-600 xl:bg-red-500 dark:bg-red-600 dark:hover:bg-red-700 xl:dark:bg-red-600"
             onClick={handleDelete}
             disabled={formState.isDeleting}>
             {formState.isDeleting ? 'Deleting...' : 'Delete'}
@@ -204,7 +205,7 @@ export default function CategoryUpdate({ id }: CategoryUpdateProps) {
             </label>
             <input
               id="name"
-              className="w-full rounded-full bg-slate-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700"
+              className="w-full rounded-full bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
               name="name"
               type="text"
               placeholder="Enter category name"

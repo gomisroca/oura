@@ -1,14 +1,15 @@
 'use client';
 
+import { type Product } from '@prisma/client';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 import Button from '@/app/_components/ui/Button';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 import { env } from '@/env';
 import { api } from '@/trpc/react';
 import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
-import { type Product } from '@prisma/client';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 interface SaleUpdateProps {
   id: string;
@@ -303,7 +304,7 @@ export default function SaleUpdate({ id }: SaleUpdateProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <Button
-        className="bg-red-500 px-4 py-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 xl:bg-red-500 xl:dark:bg-red-600"
+        className="bg-red-500 px-4 py-2 hover:bg-red-600 xl:bg-red-500 dark:bg-red-600 dark:hover:bg-red-700 xl:dark:bg-red-600"
         onClick={handleDelete}
         disabled={formState.isDeleting}>
         {formState.isDeleting ? 'Deleting...' : 'Delete'}

@@ -1,5 +1,7 @@
-import { getServerAuthSession } from '@/server/auth';
 import { redirect } from 'next/navigation';
+
+import { getServerAuthSession } from '@/server/auth';
+
 import ProductUpdate from './ProductUpdate';
 
 export default async function Admin({ params }: { params: { id: string } }) {

@@ -7,13 +7,13 @@
  * <ProductForm />
  */
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { api } from '@/trpc/react';
 import Button from '@/app/_components/ui/Button';
-import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
-import { useRouter } from 'next/navigation';
+import { api } from '@/trpc/react';
+import { checkFileSize, checkFileType } from '@/utils/uploadChecks';
 
 // Constants
 const SIZES = {

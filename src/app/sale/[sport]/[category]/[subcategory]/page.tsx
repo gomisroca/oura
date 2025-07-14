@@ -1,7 +1,8 @@
+import { notFound } from 'next/navigation';
+
 import ProductList from '@/app/_components/product/ProductList';
 import BackButton from '@/app/_components/ui/BackButton';
 import { api } from '@/trpc/server';
-import { notFound } from 'next/navigation';
 
 export default async function SubcategoryList({
   params,
@@ -21,7 +22,7 @@ export default async function SubcategoryList({
     if (!sale || sale.products.length === 0) notFound();
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row items-center justify-center md:absolute md:left-0 md:right-0 md:top-24">
+        <div className="flex flex-row items-center justify-center md:absolute md:top-24 md:right-0 md:left-0">
           <BackButton steps={-3}>Sale</BackButton>
           <BackButton steps={-2}>{sale.products[0]?.product.sport?.name ?? 'Sport'}</BackButton>
           <BackButton>{sale.products[0]?.product.category?.name ?? 'Category'}</BackButton>

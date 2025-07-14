@@ -1,11 +1,12 @@
 import { type Sale } from '@prisma/client';
 import { type ProductWithSizes } from 'types';
+
 import Carousel from './_components/ui/Carousel';
 import BrowseButton from './BrowseButton';
 
 export default function LandingContent({ sale, products }: { sale?: Sale; products?: ProductWithSizes[] }) {
   return (
-    <div className="absolute left-0 right-0 top-0 flex min-h-screen flex-col items-center justify-evenly overflow-hidden">
+    <div className="absolute top-0 right-0 left-0 flex min-h-screen flex-col items-center justify-evenly overflow-hidden">
       {/* Sale Title */}
       <div className="mx-4 mt-6 flex flex-col items-center border-4 border-slate-200 bg-slate-950/20 p-4 md:mx-0 md:mt-0">
         {sale && (
@@ -16,7 +17,7 @@ export default function LandingContent({ sale, products }: { sale?: Sale; produc
         <h1 className="text-center text-5xl font-bold text-slate-200 drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)] md:text-7xl">
           {sale ? sale.name.toUpperCase() : 'OURA'}
         </h1>
-        <p className="text-center font-bold uppercase text-slate-200 drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)]">
+        <p className="text-center font-bold text-slate-200 uppercase drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)]">
           {sale
             ? `${sale.startDate.toLocaleDateString()} - ${sale.endDate.toLocaleDateString()}`
             : 'Sports with a purpose'}
