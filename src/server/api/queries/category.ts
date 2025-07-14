@@ -1,5 +1,5 @@
-import { type GENDER, type Prisma, type PrismaClient } from '@prisma/client';
-import { type DefaultArgs } from '@prisma/client/runtime/library';
+import { type GENDER, type Prisma, type PrismaClient } from 'generated/prisma';
+import { type DefaultArgs } from 'generated/prisma/runtime/library';
 
 // Get Unique Sport
 export const getUniqueSport = async ({

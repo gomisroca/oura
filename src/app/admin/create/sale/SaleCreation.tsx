@@ -1,6 +1,6 @@
 'use client';
 
-import { type Product } from '@prisma/client';
+import { type Product } from 'generated/prisma';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 

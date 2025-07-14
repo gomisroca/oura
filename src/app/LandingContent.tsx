@@ -1,4 +1,4 @@
-import { type Sale } from '@prisma/client';
+import { type Sale } from 'generated/prisma';
 import { type ProductWithSizes } from 'types';
 
 import Carousel from './_components/ui/Carousel';

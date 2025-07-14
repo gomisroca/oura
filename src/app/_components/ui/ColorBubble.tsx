@@ -1,7 +1,7 @@
 'use client';
 
 import { api } from '@/trpc/react';
-import { Color, Product } from '@prisma/client';
+import { Color, Product } from 'generated/prisma';
 import { ProductWithSizes } from 'types';
 import { useSetAtom } from 'jotai';
 import { messageAtom } from "@/atoms/message";

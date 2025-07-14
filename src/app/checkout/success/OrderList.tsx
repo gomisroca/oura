@@ -11,7 +11,7 @@
  * <CartList />
  */
 
-import { type OrderAddress } from '@prisma/client';
+import { type OrderAddress } from 'generated/prisma';
 import { Suspense } from 'react';
 import { type OrderItem } from 'types';
 

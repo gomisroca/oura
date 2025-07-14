@@ -1,6 +1,6 @@
 'use client';
 
-import { type Sport } from '@prisma/client';
+import { type Sport } from 'generated/prisma';
 import React, { useState } from 'react';
 import { type SportWithCategories } from 'types';
 

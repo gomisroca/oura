@@ -1,6 +1,6 @@
 'use client';
 
-import { type Subcategory } from '@prisma/client';
+import { type Subcategory } from 'generated/prisma';
 import React, { useState } from 'react';
 import { type CategoryWithSubcategories, type SportWithCategories } from 'types';
 
