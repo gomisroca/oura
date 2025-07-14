@@ -11,7 +11,7 @@ import { type ProductWithSizes } from 'types';
 import ProductListSkeleton from '../skeletons/ProductListSkeleton';
 import ProductCard from './ProductCard';
 
-async function ProductList({ products }: { products: ProductWithSizes[] }) {
+function ProductList({ products }: { products: ProductWithSizes[] }) {
   const memoizedProducts = useMemo(() => products, [products]);
   return (
     <div className="mx-auto flex w-full flex-wrap items-center justify-center gap-2" role="list">
