@@ -1,8 +1,9 @@
 import React from 'react';
-import UserDropdown from './UserDropdown';
 import { FaBars } from 'react-icons/fa6';
-import ThemeButton from './ThemeButton';
+
 import Foldable from '../ui/Foldable';
+import ThemeButton from './ThemeButton';
+import UserDropdown from './UserDropdown';
 
 function GeneralMenuFoldable() {
   return (

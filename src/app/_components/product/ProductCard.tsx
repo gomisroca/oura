@@ -1,14 +1,16 @@
 'use client';
 
-import { env } from '@/env';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 import { type ProductWithSizes } from 'types';
-import ColorBubble from '../ui/ColorBubble';
-import { FaSearch } from 'react-icons/fa';
-import Link from 'next/link';
+
+import { env } from '@/env';
+
 import Button from '../ui/Button';
+import ColorBubble from '../ui/ColorBubble';
 
 function ProductCard({
   product,
@@ -70,13 +72,13 @@ function ProductCard({
       <div
         className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-slate-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
         <h2 className="line-clamp-1 text-lg font-semibold md:line-clamp-2">{product.name}</h2>
-        <p className="line-clamp-2 text-ellipsis text-sm md:line-clamp-3">{product.description}</p>
+        <p className="line-clamp-2 text-sm text-ellipsis md:line-clamp-3">{product.description}</p>
         <div className="relative items-center justify-center text-center">
           {product.sales.length > 0 ? (
             <>
               <div className="flex flex-row gap-2">
                 <p className="text-sm line-through">{product.basePrice}€</p>
-                <p className="text-sm font-bold uppercase text-red-600">ON SALE</p>
+                <p className="text-sm font-bold text-red-600 uppercase">ON SALE</p>
               </div>
               <p className="text-xl font-bold">{product.onSalePrice}€</p>
             </>
@@ -88,7 +90,7 @@ function ProductCard({
         <div className="flex flex-wrap gap-2">{renderedSizes}</div>
         <Link
           href={`/product/${product.id}`}
-          className="absolute right-4 top-4"
+          className="absolute top-4 right-4"
           aria-label={`View details for ${product.name}`}>
           <Button className="px-[0.75rem]">
             <FaSearch size={20} />

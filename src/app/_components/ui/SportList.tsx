@@ -1,6 +1,6 @@
 'use client';
 
-import { type Sport } from '@prisma/client';
+import { type Sport } from 'generated/prisma';
 import React from 'react';
 import { type ProductWithSizes } from 'types';
 import Carousel from './Carousel';

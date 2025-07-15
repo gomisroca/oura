@@ -1,9 +1,11 @@
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { type ProductWithSizes } from 'types';
+
 import { env } from '@/env';
 import { api } from '@/trpc/server';
-import { type ProductWithSizes } from 'types';
+
 import LandingContent from './LandingContent';
-import { notFound } from 'next/navigation';
 
 async function LandingHero() {
   // Fetch ongoing sale info, wrapped in try-catch for error handling
@@ -28,7 +30,7 @@ async function LandingHero() {
     : '/landing.jpg';
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 top-0">
+    <div className="absolute top-0 right-0 bottom-0 left-0">
       {/* Landing Image */}
       <Image
         src={landingImageSrc}
@@ -36,7 +38,7 @@ async function LandingHero() {
         priority
         fill
         loading="eager"
-        className={`pointer-events-none absolute bottom-0 left-0 right-0 top-0 min-h-screen w-full object-cover object-center dark:brightness-50 xl:h-full ${!sale && 'opacity-50 grayscale'}`}
+        className={`pointer-events-none absolute top-0 right-0 bottom-0 left-0 min-h-screen w-full object-cover object-center xl:h-full dark:brightness-50 ${!sale && 'opacity-50 grayscale'}`}
       />
 
       {/* Render content only if products are available */}

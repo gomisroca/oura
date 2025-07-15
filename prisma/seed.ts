@@ -1,4 +1,4 @@
-import { GENDER } from '@prisma/client';
+import { GENDER } from 'generated/prisma';
 import { db } from '../src/server/db';
 
 async function main() {

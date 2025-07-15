@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+
 import Button from './_components/ui/Button';
 
 function BrowseButton({ sale }: { sale?: boolean }) {

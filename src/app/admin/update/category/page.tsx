@@ -1,8 +1,9 @@
 'use client';
 
-import { api } from '@/trpc/react';
 import Link from 'next/link';
 import React from 'react';
+
+import { api } from '@/trpc/react';
 
 export default function ProductUpdateList() {
   const { data: sports } = api.category.getSports.useQuery();

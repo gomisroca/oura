@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
-import Button from '../_components/ui/Button';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
+import Button from '../_components/ui/Button';
 
 function AdminPanel() {
   const router = useRouter();

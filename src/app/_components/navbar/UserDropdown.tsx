@@ -1,14 +1,16 @@
-import Link from 'next/link';
 import Image from 'next/image';
-import { getServerAuthSession } from '@/server/auth';
-import { MdMailOutline } from 'react-icons/md';
+import Link from 'next/link';
+import { type Session } from 'next-auth';
 import { FaGoogle, FaUser } from 'react-icons/fa6';
-import Dropdown from '../ui/Dropdown';
-import Button from '../ui/Button';
+import { MdMailOutline } from 'react-icons/md';
 import { type Provider } from 'types';
+
+import { getServerAuthSession } from '@/server/auth';
+
+import Button from '../ui/Button';
+import Dropdown from '../ui/Dropdown';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
-import { type Session } from 'next-auth';
 
 const providers: Provider[] = [
   {

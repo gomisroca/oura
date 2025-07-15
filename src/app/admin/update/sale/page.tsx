@@ -1,10 +1,11 @@
 'use client';
 
-import { env } from '@/env';
-import { api } from '@/trpc/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+
+import { env } from '@/env';
+import { api } from '@/trpc/react';
 
 export default function ProductUpdateList() {
   const { data: sales } = api.sale.getAll.useQuery();

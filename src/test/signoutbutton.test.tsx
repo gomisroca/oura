@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, vi, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { signOut } from 'next-auth/react';
+import { describe, expect, it, vi } from 'vitest';
+
 import SignOutButton from '../app/_components/navbar/SignOutButton';
 
 // Mock the signOut function from next-auth/react

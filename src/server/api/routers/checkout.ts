@@ -1,8 +1,11 @@
-import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import Stripe from 'stripe';
+import { z } from 'zod';
+
 import { env } from '@/env';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
-import { TRPCError } from '@trpc/server';
+
+import { getCart } from '../queries/cart';
 import {
   confirmOrder,
   createAddress,
@@ -12,7 +15,6 @@ import {
   getOrder,
   transferProductsToOrder,
 } from '../queries/checkout';
-import { getCart } from '../queries/cart';
 import { getUniqueColor, updateColorStock, updateProductSales } from '../queries/product';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

@@ -11,11 +11,12 @@
  * <CartList />
  */
 
-import CartItem from '@/app/_components/cart/CartItem';
-import CartListSkeleton from '@/app/_components/skeletons/CartListSkeleton';
-import { type OrderAddress } from '@prisma/client';
+import { type OrderAddress } from 'generated/prisma';
 import { Suspense } from 'react';
 import { type OrderItem } from 'types';
+
+import CartItem from '@/app/_components/cart/CartItem';
+import CartListSkeleton from '@/app/_components/skeletons/CartListSkeleton';
 
 function OrderList({
   products,

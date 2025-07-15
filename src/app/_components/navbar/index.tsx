@@ -2,16 +2,20 @@
  * Navbar component that displays the logo, sign in/out dropdown, and theme button.
  */
 
-import React from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import React from 'react';
+import { GiHighKick, GiHighPunch, GiRun, GiThrowingBall, GiWeightLiftingUp } from 'react-icons/gi';
 import { MdOutlineSportsGymnastics, MdOutlineSportsMartialArts, MdSportsHandball } from 'react-icons/md';
-import { GiRun, GiWeightLiftingUp, GiThrowingBall, GiHighPunch, GiHighKick } from 'react-icons/gi';
 import { TbPlayFootball, TbPlayVolleyball } from 'react-icons/tb';
+
 import Button from '../ui/Button';
-import GeneralMenuFoldable from './GeneralMenuFoldable';
 import CartFoldable from './CartFoldable';
-import SubcategoryFoldableWrapper from './SubcategoryFoldable';
 import CategoryFoldable from './CategoryFoldable';
+import GeneralMenuFoldable from './GeneralMenuFoldable';
+import SubcategoryFoldableWrapper from './SubcategoryFoldable';
+
+const Message = dynamic(() => import('@/app/_components/ui/Message'));
 
 const LogoIcons = () => {
   const icons = [
@@ -90,15 +94,18 @@ const LogoIcons = () => {
 
 function Navbar() {
   return (
-    <div className="fixed left-0 right-0 top-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
-      <LogoIcons />
-      <div className="relative flex flex-row items-start justify-end gap-2">
-        <SubcategoryFoldableWrapper />
-        <CategoryFoldable />
-        <CartFoldable />
-        <GeneralMenuFoldable />
+    <>
+      <Message />
+      <div className="fixed top-0 right-0 left-0 z-10 flex flex-row items-start justify-between gap-4 p-4">
+        <LogoIcons />
+        <div className="relative flex flex-row items-start justify-end gap-2">
+          <SubcategoryFoldableWrapper />
+          <CategoryFoldable />
+          <CartFoldable />
+          <GeneralMenuFoldable />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

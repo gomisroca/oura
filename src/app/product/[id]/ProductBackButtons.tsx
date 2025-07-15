@@ -7,7 +7,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
   const router = useRouter();
 
   return (
-    <div className="flex flex-row items-center justify-center md:absolute md:left-0 md:right-0 md:top-24">
+    <div className="flex flex-row items-center justify-center md:absolute md:top-24 md:right-0 md:left-0">
       <div
         onClick={() => router.push('/sport/' + product.sport?.id)}
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">

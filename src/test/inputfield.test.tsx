@@ -1,7 +1,9 @@
-import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import InputField from '../app/_components/ui/InputField';
+
+import { fireEvent, render } from '@testing-library/react';
 import { expect, vi } from 'vitest';
+
+import InputField from '../app/_components/ui/InputField';
 
 describe('Input Field', () => {
   it('renders with default props', () => {

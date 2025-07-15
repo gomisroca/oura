@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, vi, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useTheme } from 'next-themes';
+import { describe, expect, it, vi } from 'vitest';
+
 import ThemeButton from '../app/_components/navbar/ThemeButton';
 
 // Mock the useTheme hook

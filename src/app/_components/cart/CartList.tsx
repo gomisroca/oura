@@ -10,13 +10,15 @@
  * <CartList />
  */
 
-import React, { useMemo } from 'react';
-import CartItem from './CartItem';
-import { api } from '@/trpc/react';
-import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
-import MessageWrapper from '../ui/MessageWrapper';
+import React, { useMemo } from 'react';
+
+import { api } from '@/trpc/react';
+
 import CartListSkeleton from '../skeletons/CartListSkeleton';
+import Button from '../ui/Button';
+import MessageWrapper from '../ui/MessageWrapper';
+import CartItem from './CartItem';
 
 function CartList({ foldableView = false }: { foldableView?: boolean }) {
   const router = useRouter();
@@ -34,7 +36,7 @@ function CartList({ foldableView = false }: { foldableView?: boolean }) {
       role="list">
       <div
         role="listitem"
-        className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-y-auto overflow-x-hidden rounded-xl' : ''}`}>
+        className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-x-hidden overflow-y-auto rounded-xl' : ''}`}>
         {products && products.length > 0 ? (
           products.map((product) => (
             <CartItem key={product.id} product={product} orderView={false} foldableView={foldableView} />

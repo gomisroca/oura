@@ -1,13 +1,15 @@
 'use client';
 
-import { api } from '@/trpc/react';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { type SportWithCategories } from 'types';
+
 import Button from '@/app/_components/ui/Button';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
-import { useRouter } from 'next/navigation';
-import SportForm from './SportForm';
+import { api } from '@/trpc/react';
+
 import CategoryForm from './CategoryForm';
+import SportForm from './SportForm';
 import SubcategoryForm from './SubcategoryForm';
 
 const ERROR_MESSAGES = {
@@ -42,7 +44,7 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('SPORT')}
           disabled={selectedForm === 'SPORT'}
           className={
-            selectedForm === 'SPORT' ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''
+            selectedForm === 'SPORT' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
           }>
           Create Sport
         </Button>
@@ -50,7 +52,7 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('CATEGORY')}
           disabled={selectedForm === 'CATEGORY'}
           className={
-            selectedForm === 'CATEGORY' ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''
+            selectedForm === 'CATEGORY' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
           }>
           Create Category
         </Button>
@@ -58,7 +60,7 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('SUBCATEGORY')}
           disabled={selectedForm === 'SUBCATEGORY'}
           className={
-            selectedForm === 'SUBCATEGORY' ? 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700' : ''
+            selectedForm === 'SUBCATEGORY' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
           }>
           Create Subcategory
         </Button>

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
 
 export default function Error() {

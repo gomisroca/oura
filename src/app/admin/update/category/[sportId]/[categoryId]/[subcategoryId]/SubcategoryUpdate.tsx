@@ -1,11 +1,12 @@
 'use client';
 
-import { api } from '@/trpc/react';
+import { type Product } from 'generated/prisma';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 import Button from '@/app/_components/ui/Button';
 import MessageWrapper from '@/app/_components/ui/MessageWrapper';
-import { useRouter } from 'next/navigation';
-import { type Product } from '@prisma/client';
+import { api } from '@/trpc/react';
 
 // Types
 interface SubcategoryUpdateProps {
@@ -49,7 +50,7 @@ function ProductSelector({ products, selectedProducts, disabled, onChange }: Pro
     <div className="relative">
       <select
         name="products"
-        className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
+        className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
         multiple
         size={Math.min(products.length, 6)}
         disabled={disabled}
@@ -217,7 +218,7 @@ export default function SubcategoryUpdate({ id, sportId, categoryId }: Subcatego
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Update Subcategory</h2>
           <Button
-            className="bg-red-500 px-4 py-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 xl:bg-red-500 xl:dark:bg-red-600"
+            className="bg-red-500 px-4 py-2 hover:bg-red-600 xl:bg-red-500 dark:bg-red-600 dark:hover:bg-red-700 xl:dark:bg-red-600"
             onClick={handleDelete}
             disabled={formState.isDeleting}>
             {formState.isDeleting ? 'Deleting...' : 'Delete'}
@@ -231,7 +232,7 @@ export default function SubcategoryUpdate({ id, sportId, categoryId }: Subcatego
             </label>
             <input
               id="name"
-              className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
+              className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
               name="name"
               type="text"
               placeholder="Enter subcategory name"

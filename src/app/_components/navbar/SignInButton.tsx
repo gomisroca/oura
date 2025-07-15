@@ -9,12 +9,13 @@
  * <SignInButton provider={Provider.Google} />
  */
 
-import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import InputField from '../ui/InputField';
-import Button from '../ui/Button';
-import Modal from '../ui/Modal';
+import { useState } from 'react';
 import { type Provider } from 'types';
+
+import Button from '../ui/Button';
+import InputField from '../ui/InputField';
+import Modal from '../ui/Modal';
 
 interface SignInProps {
   provider: Provider;

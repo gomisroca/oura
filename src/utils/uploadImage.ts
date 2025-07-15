@@ -1,5 +1,6 @@
-import supabase from '@/supabase';
 import { v4 as uuidv4 } from 'uuid';
+
+import supabase from '@/supabase';
 
 async function getToken(id: string, bucket: string) {
   const { data } = await supabase.storage.from(bucket).createSignedUploadUrl(`${id}.png`);
