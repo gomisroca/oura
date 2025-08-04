@@ -36,7 +36,7 @@ function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?:
     <>
       <span 
       onClick={() => color.stock && clickable ? handleAddToCart(product as ProductWithSizes, sizeId, color.id) : null}
-      className={`h-4 w-4 rounded-full border border-slate-800 shadow-md transition duration-200 ease-in-out dark:border-slate-200 
+      className={`h-4 w-4 rounded-sm border border-slate-800 shadow-md transition duration-200 ease-in-out dark:border-slate-200 
         ${color.name === 'black' ? 'bg-black' : color.name === 'white' ? 'bg-white' : `bg-${color.name}-500`} 
         ${!clickable ? 'cursor-default' : color.stock ? 'cursor-pointer opacity-100 hover:brightness-[1.25]' : color.stock === 0 ? 'cursor-default opacity-30' : ''}`}>
       </span>

@@ -50,7 +50,7 @@ function ProductSelector({ products, selectedProducts, disabled, onChange }: Pro
     <div className="relative">
       <select
         name="products"
-        className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
+        className="w-full rounded-sm bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
         multiple
         size={Math.min(products.length, 6)}
         disabled={disabled}
@@ -214,7 +214,7 @@ export default function SubcategoryUpdate({ id, sportId, categoryId }: Subcatego
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-slate-800">
+      <div className="w-full max-w-md rounded-sm bg-white p-6 shadow-lg dark:bg-slate-800">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Update Subcategory</h2>
           <Button
@@ -232,7 +232,7 @@ export default function SubcategoryUpdate({ id, sportId, categoryId }: Subcatego
             </label>
             <input
               id="name"
-              className="w-full rounded-lg bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
+              className="w-full rounded-sm bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-700"
               name="name"
               type="text"
               placeholder="Enter subcategory name"

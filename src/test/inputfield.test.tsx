@@ -10,7 +10,7 @@ describe('Input Field', () => {
     const handleValueChange = vi.fn();
     const { getByRole } = render(<InputField name="default-input" handleValueChange={handleValueChange} />);
     expect(getByRole('textbox')).toBeInTheDocument();
-    expect(getByRole('textbox')).toHaveClass('w-full rounded-full px-4 py-2');
+    expect(getByRole('textbox')).toHaveClass('w-full rounded-sm px-4 py-2');
   });
 
   it('renders with custom type and placeholder', () => {

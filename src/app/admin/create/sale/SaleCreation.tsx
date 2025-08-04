@@ -59,7 +59,7 @@ function ProductSelector({
   return (
     <select
       name="products"
-      className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+      className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
       multiple
       onChange={(e) =>
         setFormState((prev) => ({
@@ -225,7 +225,7 @@ export default function SaleCreation() {
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
         <p>Name</p>
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           name="name"
           type="text"
           placeholder="Sale Name"
@@ -234,7 +234,7 @@ export default function SaleCreation() {
         />
         <p>Start Date</p>
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           name="startDate"
           type="date"
           placeholder="Start Date"
@@ -242,7 +242,7 @@ export default function SaleCreation() {
           required
         />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           name="startTime"
           type="time"
           placeholder="Start Time"
@@ -251,7 +251,7 @@ export default function SaleCreation() {
         />
         <p>End Date</p>
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           name="endDate"
           type="date"
           placeholder="End Date"
@@ -259,7 +259,7 @@ export default function SaleCreation() {
           required
         />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           name="endTime"
           type="time"
           placeholder="End Time"
@@ -268,7 +268,7 @@ export default function SaleCreation() {
         />
         <p>Image</p>
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
           type="file"
           name="image"
           accept="image/png, image/jpeg, image/jpg"

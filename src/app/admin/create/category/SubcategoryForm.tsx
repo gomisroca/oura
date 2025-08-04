@@ -102,12 +102,12 @@ export default function SubcategoryForm({ sports }: { sports: SportWithCategorie
 
   return (
     sports && (
-      <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-white p-6 shadow-lg dark:bg-slate-800">
+      <div className="flex w-full max-w-md flex-col gap-6 rounded-sm bg-white p-6 shadow-lg dark:bg-slate-800">
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <select
             id="sport"
             value={String(selectedSport?.id) ?? ''}
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
             required
             onChange={(e) => {
               setSelectedSport(sports.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
@@ -124,7 +124,7 @@ export default function SubcategoryForm({ sports }: { sports: SportWithCategorie
           {selectedSport && (
             <select
               value={String(selectedCategory?.id) ?? ''}
-              className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+              className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
               required
               onChange={(e) => {
                 setSelectedCategory(
@@ -150,7 +150,7 @@ export default function SubcategoryForm({ sports }: { sports: SportWithCategorie
                   <span>Existing Subcategories</span>
                   <div className="flex flex-row gap-2">
                     {selectedCategory.subcategories.map((subcategory: Subcategory) => (
-                      <span className="rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700" key={subcategory.id}>
+                      <span className="rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700" key={subcategory.id}>
                         {subcategory.name}
                       </span>
                     ))}
@@ -159,7 +159,7 @@ export default function SubcategoryForm({ sports }: { sports: SportWithCategorie
               )}
               <input
                 id="name"
-                className="w-full rounded-full bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
+                className="w-full rounded-sm bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
                 name="name"
                 type="text"
                 placeholder="Enter subcategory name"

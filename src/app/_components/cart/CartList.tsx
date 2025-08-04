@@ -32,11 +32,11 @@ function CartList({ foldableView = false }: { foldableView?: boolean }) {
     <MessageWrapper message="Unable to fetch your cart at this time" />
   ) : (
     <div
-      className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 rounded-xl bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90 ${foldableView ? 'flex-col' : ''}`}
+      className={`mx-auto flex w-full flex-wrap items-center justify-center gap-2 rounded-sm bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90 ${foldableView ? 'flex-col' : ''}`}
       role="list">
       <div
         role="listitem"
-        className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-x-hidden overflow-y-auto rounded-xl' : ''}`}>
+        className={`flex flex-col items-center gap-2 ${foldableView ? 'mb-2 max-h-[40vh] overflow-x-hidden overflow-y-auto rounded-sm' : ''}`}>
         {products && products.length > 0 ? (
           products.map((product) => (
             <CartItem key={product.id} product={product} orderView={false} foldableView={foldableView} />
