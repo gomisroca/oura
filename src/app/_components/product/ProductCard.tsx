@@ -55,15 +55,14 @@ function ProductCard({
       aria-label={`Product Card for ${product.name}`}>
       <Image
         unoptimized
-        className="h-full w-full cursor-pointer rounded-t-sm object-cover duration-200 ease-in-out group-hover:contrast-[1.05]"
+        className="cursor-pointer rounded-sm duration-200 ease-in-out group-hover:contrast-[1.05]"
         src={
           product.image
             ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}?width=200&height=250`
             : `/ph_item.png`
         }
         alt={product.name}
-        height={250}
-        width={200}
+        fill
         blurDataURL="/ph_item.png"
         placeholder="blur"
         priority={loadingMethod === 'eager'}
