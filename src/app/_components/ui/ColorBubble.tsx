@@ -5,6 +5,30 @@ import { Color, Product } from 'generated/prisma';
 import { ProductWithSizes } from 'types';
 import { useSetAtom } from 'jotai';
 import { messageAtom } from "@/atoms/message";
+import { twMerge } from 'tailwind-merge';
+
+// const COLORS = [
+//   'bg-white',
+//   'bg-black',
+//   'bg-gray-500',
+//   'bg-red-500',
+//   'bg-orange-500',
+//   'bg-amber-500',
+//   'bg-yellow-500',
+//   'bg-lime-500',
+//   'bg-green-500',
+//   'bg-emerald-500',
+//   'bg-teal-500',
+//   'bg-cyan-500',
+//   'bg-sky-500',
+//   'bg-blue-500',
+//   'bg-indigo-500',
+//   'bg-violet-500',        
+//   'bg-purple-500',
+//   'bg-fuchsia-500',
+//   'bg-pink-500',
+//   'bg-rose-500',
+// ];
 
 function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?: boolean, product: ProductWithSizes | Product, sizeId: string, color: Color }) {
   const setMessage = useSetAtom(messageAtom);
@@ -36,9 +60,14 @@ function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?:
     <>
       <span 
       onClick={() => color.stock && clickable ? handleAddToCart(product as ProductWithSizes, sizeId, color.id) : null}
-      className={`h-4 w-4 rounded-sm border border-slate-800 shadow-md transition duration-200 ease-in-out dark:border-slate-200 
-        ${color.name === 'black' ? 'bg-black' : color.name === 'white' ? 'bg-white' : `bg-${color.name}-500`} 
-        ${!clickable ? 'cursor-default' : color.stock ? 'cursor-pointer opacity-100 hover:brightness-[1.25]' : color.stock === 0 ? 'cursor-default opacity-30' : ''}`}>
+      className={twMerge(
+        "h-4 w-4 rounded-sm border border-slate-400 shadow-sm transition duration-200 ease-in-out dark:border-slate-600",
+        color.name === 'black' ? 
+          'bg-black' 
+        : color.name === 'white' ? 
+          'bg-white' 
+        : `bg-${color.name}-500`,
+        !clickable ? 'cursor-default' : color.stock ? 'cursor-pointer opacity-100 hover:brightness-[1.25]' : color.stock === 0 && 'cursor-default opacity-30')}>
       </span>
     </>
   )
