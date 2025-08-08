@@ -29,10 +29,10 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
   return (
     <div
       key={product.id}
-      className="flex flex-row items-center justify-center rounded-sm border border-slate-600/10 bg-slate-100/60 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-50/60 dark:border-slate-400/10 dark:bg-slate-900/60 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-950/60">
+      className="flex max-w-5xl flex-col items-center justify-center rounded-sm border border-slate-600/10 bg-slate-100/60 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-50/60 lg:flex-row dark:border-slate-400/10 dark:bg-slate-900/60 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-950/60">
       <Image
         unoptimized
-        className="h-full rounded-l-sm object-cover"
+        className="w-full rounded-t-sm object-cover lg:h-full lg:w-auto lg:rounded-sm lg:p-4"
         src={
           product.image
             ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}`
@@ -42,7 +42,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
         width={400}
         height={400}
       />
-      <div className="flex flex-col items-center justify-center gap-8 px-[10rem] py-10">
+      <div className="flex flex-col items-center justify-center gap-8 px-10 py-8 lg:px-20 lg:py-4">
         {/* Basic Information */}
         <h2 className="line-clamp-2 text-2xl font-semibold">{product.name}</h2>
         <p>{product.description}</p>
