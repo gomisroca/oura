@@ -100,12 +100,12 @@ export default function CategoryForm({ sports }: { sports: SportWithCategories[]
 
   return (
     sports && (
-      <div className="flex w-full max-w-md flex-col gap-6 rounded-sm bg-white p-6 shadow-lg dark:bg-slate-800">
+      <div className="flex w-full max-w-md flex-col gap-6 rounded-sm bg-white p-6 shadow-lg dark:bg-neutral-800">
         <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
           <select
             id="sport"
             value={String(selectedSport?.id) ?? ''}
-            className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
             required
             onChange={(e) => {
               setSelectedSport(sports.find((sport: SportWithCategories) => sport.id === Number(e.target.value)));
@@ -126,7 +126,7 @@ export default function CategoryForm({ sports }: { sports: SportWithCategories[]
                   <span>Existing Categories</span>
                   <div className="flex flex-row gap-2">
                     {selectedSport.categories.map((category: Category) => (
-                      <span className="rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700" key={category.id}>
+                      <span className="rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700" key={category.id}>
                         {category.name}
                       </span>
                     ))}
@@ -135,7 +135,7 @@ export default function CategoryForm({ sports }: { sports: SportWithCategories[]
               )}
               <input
                 id="name"
-                className="w-full rounded-sm bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
+                className="w-full rounded-sm bg-neutral-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-700"
                 name="name"
                 placeholder="Enter category name"
                 onChange={handleNameChange}

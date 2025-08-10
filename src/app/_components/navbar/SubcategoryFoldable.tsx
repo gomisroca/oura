@@ -62,7 +62,7 @@ function SubcategoryFoldable() {
             <Button
               key={subcategory.id}
               name={subcategory.name}
-              className={`w-full ${subcategoryId === subcategory.id ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''}`}
+              className={`w-full ${subcategoryId === subcategory.id ? 'bg-neutral-300 xl:bg-neutral-300 dark:bg-neutral-700 xl:dark:bg-neutral-700' : ''}`}
               disabled={subcategoryId === subcategory.id}>
               {subcategory.name}
             </Button>

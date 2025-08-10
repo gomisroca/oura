@@ -25,7 +25,7 @@ export default async function CategoryList({
         <div className="flex flex-row items-center justify-center md:absolute md:top-24 md:right-0 md:left-0">
           <BackButton>{products[0]?.sport?.name ?? 'Sport'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{products[0]?.category?.name}</span>
+            <span className="text-neutral-800 dark:text-neutral-400">{products[0]?.category?.name}</span>
           </div>
         </div>
         <ProductList products={products} />

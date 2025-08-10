@@ -61,7 +61,7 @@ function ColorBubble({ clickable = true, product, sizeId, color }: { clickable?:
       <span 
       onClick={() => color.stock && clickable ? handleAddToCart(product as ProductWithSizes, sizeId, color.id) : null}
       className={twMerge(
-        "h-4 w-4 rounded-sm border border-slate-400 shadow-sm transition duration-200 ease-in-out dark:border-slate-600",
+        "h-4 w-4 rounded-sm border border-neutral-400 shadow-sm transition duration-200 ease-in-out dark:border-neutral-600",
         color.name === 'black' ? 
           'bg-black' 
         : color.name === 'white' ? 

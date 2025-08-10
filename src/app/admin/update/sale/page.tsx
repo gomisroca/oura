@@ -14,7 +14,7 @@ export default function ProductUpdateList() {
       <div className="flex flex-wrap items-center justify-center gap-2">
         {sales.map((sale) => (
           <Link href={`/admin/update/sale/${sale.id}`} key={sale.id} className="h-[20rem] w-[20rem]">
-            <div className="flex h-full w-full flex-col items-center gap-2 rounded-sm border border-slate-600/10 bg-slate-200/30 hover:border-slate-600/40 hover:bg-slate-300/30 dark:border-slate-400/10 dark:bg-slate-800/30 dark:hover:bg-slate-700/30">
+            <div className="flex h-full w-full flex-col items-center gap-2 rounded-sm border border-neutral-600/10 bg-neutral-200/30 hover:border-neutral-600/40 hover:bg-neutral-300/30 dark:border-neutral-400/10 dark:bg-neutral-800/30 dark:hover:bg-neutral-700/30">
               <Image
                 unoptimized
                 src={

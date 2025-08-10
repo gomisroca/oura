@@ -28,7 +28,7 @@ function BackButton({ children, steps = -1 }: { children: React.ReactNode; steps
 
   return (
     <div onClick={goBack} className='flex flex-row items-center justify-center text-sm uppercase group cursor-pointer mr-2'>
-      <span className='group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors duration-200'>{children}</span>
+      <span className='group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors duration-200'>{children}</span>
       <span className='pl-1'>/</span>
     </div>
   );

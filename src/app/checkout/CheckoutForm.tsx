@@ -57,7 +57,7 @@ function CheckoutForm() {
     <>
       <form onSubmit={(e) => handleCheckout(e)} className="flex flex-col gap-2">
         <input
-          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="name"
           type="text"
           placeholder="Name"
@@ -65,7 +65,7 @@ function CheckoutForm() {
           required
         />
         <input
-          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="street"
           type="text"
           placeholder="Street Name and Number"
@@ -74,7 +74,7 @@ function CheckoutForm() {
         />
 
         <input
-          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="postalCode"
           type="text"
           placeholder="Postal Code"
@@ -83,7 +83,7 @@ function CheckoutForm() {
         />
 
         <input
-          className="w-full rounded-sm bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="country"
           type="text"
           placeholder="Country"

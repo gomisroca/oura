@@ -11,7 +11,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
       <div
         onClick={() => router.push('/sport/' + product.sport?.id)}
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">
-        <span className="transition-colors duration-200 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span className="transition-colors duration-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
           {product.sport?.name ?? 'Sport'}
         </span>
         <span className="pl-1">/</span>
@@ -19,7 +19,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
       <div
         onClick={() => router.push('/sport/' + product.category?.id + '/' + product.category?.id)}
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">
-        <span className="transition-colors duration-200 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span className="transition-colors duration-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
           {product.category?.name ?? 'Category'}
         </span>
         <span className="pl-1">/</span>
@@ -29,7 +29,7 @@ function ProductBackButton({ product }: { product: ProductWithSizes }) {
           router.push('/sport/' + product.sport?.id + '/' + product.category?.id + '/' + product.subcategory?.id)
         }
         className="group mr-2 flex cursor-pointer flex-row items-center justify-center text-sm uppercase">
-        <span className="transition-colors duration-200 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span className="transition-colors duration-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
           {product.subcategory?.name ?? 'Subcategory'}
         </span>
       </div>

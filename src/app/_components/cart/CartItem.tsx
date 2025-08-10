@@ -62,7 +62,7 @@ function CartItem({
   return (
     <div
       key={product.id}
-      className={`mx-2 flex flex-row items-center rounded-sm border border-slate-600/10 bg-slate-200/90 xl:bg-slate-200/90 dark:border-slate-400/10 dark:bg-slate-800/90 xl:dark:bg-slate-800/90 ${foldableView ? 'h-[10rem] w-[15rem] md:h-[15rem] md:w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
+      className={`mx-2 flex flex-row items-center rounded-sm border border-neutral-600/10 bg-neutral-200/90 xl:bg-neutral-200/90 dark:border-neutral-400/10 dark:bg-neutral-800/90 xl:dark:bg-neutral-800/90 ${foldableView ? 'h-[10rem] w-[15rem] md:h-[15rem] md:w-[20rem]' : 'h-[20rem] w-[40rem]'} ${!orderView && product.color.stock <= 0 ? 'border-red-600 dark:border-red-600' : ''}`}>
       <Link
         className="h-full w-1/2 cursor-pointer overflow-y-hidden rounded-l-sm"
         href={`/product/${product.product.id}`}>

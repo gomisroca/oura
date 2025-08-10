@@ -55,7 +55,7 @@ function Foldable({ button, addCaret = true, children, className }: FoldableProp
     <div className="relative flex flex-col items-end w-full" ref={foldableRef} data-testid="foldable">
       <Button 
       name={button?.name ?? 'Foldable Button'}
-      className={twMerge('transition duration-200 ease-in-out', isOpen && 'bg-slate-300 dark:bg-slate-700 xl:bg-slate-300 xl:dark:bg-slate-700', button?.className)}
+      className={twMerge('transition duration-200 ease-in-out', isOpen && 'bg-neutral-300 dark:bg-neutral-700 xl:bg-neutral-300 xl:dark:bg-neutral-700', button?.className)}
       onClick={toggleOpen}
       >
         {button?.text}

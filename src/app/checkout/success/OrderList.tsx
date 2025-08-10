@@ -32,7 +32,7 @@ function OrderList({
   return (
     <Suspense fallback={<CartListSkeleton foldableView={false} />}>
       <div
-        className="mx-auto flex w-full flex-col items-center justify-center gap-2 rounded-sm bg-slate-200/90 p-4 shadow-md dark:bg-slate-800/90"
+        className="mx-auto flex w-full flex-col items-center justify-center gap-2 rounded-sm bg-neutral-200/90 p-4 shadow-md dark:bg-neutral-800/90"
         role="list">
         <div className="flex w-full flex-row items-start justify-evenly">
           <div className="flex flex-col items-start justify-center gap-2">

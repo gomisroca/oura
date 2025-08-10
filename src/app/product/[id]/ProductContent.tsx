@@ -14,7 +14,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
         // should be maybe flex wrap?
         <div
           key={size.name}
-          className="flex flex-row items-center justify-between gap-2 rounded-sm border border-slate-600/10 px-2 py-1 dark:border-slate-400/10">
+          className="flex flex-row items-center justify-between gap-2 rounded-sm border border-neutral-600/10 px-2 py-1 dark:border-neutral-400/10">
           <p className="font-bold">{size.name}</p>
           <div className="flex flex-row items-center gap-2">
             {size.colors.map((color) => (
@@ -29,7 +29,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
   return (
     <div
       key={product.id}
-      className="flex max-w-5xl flex-col items-center justify-center rounded-sm border border-slate-600/10 bg-slate-100/60 shadow-md transition duration-500 ease-in-out hover:border-slate-600/40 hover:bg-slate-50/60 lg:flex-row dark:border-slate-400/10 dark:bg-slate-900/60 dark:shadow-slate-500/10 hover:dark:border-slate-400/40 dark:hover:bg-slate-950/60">
+      className="flex max-w-5xl flex-col items-center justify-center rounded-sm border border-neutral-600/10 bg-neutral-100/60 shadow-md transition duration-500 ease-in-out hover:border-neutral-600/40 hover:bg-neutral-50/60 lg:flex-row dark:border-neutral-400/10 dark:bg-neutral-900/60 dark:shadow-neutral-500/10 hover:dark:border-neutral-400/40 dark:hover:bg-neutral-950/60">
       <Image
         unoptimized
         className="w-full rounded-t-sm object-cover lg:h-full lg:w-auto lg:rounded-sm lg:p-4"
