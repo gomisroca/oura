@@ -2,15 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { type ProductWithSizes } from 'types';
 
 import { env } from '@/env';
-
-import Button from '../ui/Button';
-import ColorBubble from '../ui/ColorBubble';
 
 function ProductCard({
   product,
@@ -24,23 +20,6 @@ function ProductCard({
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => setShowDetails((prev) => !prev);
-
-  const renderedSizes = useMemo(
-    () =>
-      product.sizes.map((size) => (
-        <div
-          key={size.name}
-          className="flex flex-row items-center justify-between gap-2 rounded-sm border border-slate-600/10 px-2 py-1 dark:border-slate-400/10">
-          <p className="font-bold">{size.name}</p>
-          <div className="flex flex-row items-center gap-2">
-            {size.colors.map((color) => (
-              <ColorBubble key={color.id + color.name} product={product} sizeId={size.id} color={color} />
-            ))}
-          </div>
-        </div>
-      )),
-    [product]
-  );
 
   return (
     <div
@@ -70,7 +49,9 @@ function ProductCard({
       />
       <div
         className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-slate-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-slate-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
-        <h2 className="line-clamp-1 text-lg font-semibold md:line-clamp-2">{product.name}</h2>
+        <Link href={`/product/${product.id}`} aria-label={`View details for ${product.name}`}>
+          <h2 className="line-clamp-1 text-center text-lg font-semibold md:line-clamp-2">{product.name}</h2>
+        </Link>
         <p className="line-clamp-2 text-sm text-ellipsis md:line-clamp-3">{product.description}</p>
         <div className="relative items-center justify-center text-center">
           {product.sales.length > 0 ? (
@@ -85,16 +66,6 @@ function ProductCard({
             <p className="text-xl font-bold"> {product.basePrice}€</p>
           )}
         </div>
-        {/* Size and Color Information */}
-        <div className="flex flex-wrap gap-2">{renderedSizes}</div>
-        <Link
-          href={`/product/${product.id}`}
-          className="absolute top-4 right-4"
-          aria-label={`View details for ${product.name}`}>
-          <Button className="px-[0.75rem]">
-            <FaSearch size={20} />
-          </Button>
-        </Link>
       </div>
     </div>
   );
