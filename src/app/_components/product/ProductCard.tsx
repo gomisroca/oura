@@ -28,7 +28,7 @@ function ProductCard({
       onClick={toggleDetails}
       onKeyDown={(e) => e.key === 'Enter' && toggleDetails()}
       className={twMerge(
-        'group relative flex h-[25rem] w-[20rem] flex-col items-center justify-center gap-2 overflow-hidden rounded-sm border border-neutral-600/10 bg-neutral-200/30 shadow-md transition duration-500 ease-in-out hover:border-neutral-600/40 hover:bg-neutral-300/30 dark:border-neutral-400/10 dark:bg-neutral-800/30 dark:shadow-neutral-500/10 hover:dark:border-neutral-400/40 dark:hover:bg-neutral-700/30',
+        'group relative flex h-[20rem] w-[17rem] flex-col items-center justify-center gap-2 overflow-hidden rounded-sm bg-neutral-100 shadow-sm md:h-[25rem] md:w-[20rem] dark:bg-neutral-900 dark:shadow-neutral-500/10',
         className
       )}
       aria-label={`Product Card for ${product.name}`}>
@@ -48,9 +48,9 @@ function ProductCard({
         loading={loadingMethod}
       />
       <div
-        className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-neutral-200/90 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-neutral-800/90 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
+        className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-neutral-100/95 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-neutral-900/95 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
         <Link href={`/product/${product.id}`} aria-label={`View details for ${product.name}`}>
-          <h2 className="line-clamp-1 text-center text-lg font-semibold underline underline-offset-4 hover:scale-105 md:line-clamp-2">
+          <h2 className="line-clamp-1 text-center text-lg font-semibold underline underline-offset-4 transition-transform duration-200 hover:scale-105 md:line-clamp-2">
             {product.name}
           </h2>
         </Link>
