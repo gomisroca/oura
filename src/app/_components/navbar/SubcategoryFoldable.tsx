@@ -45,9 +45,7 @@ function SubcategoryFoldable() {
   }
   return (
     <div>
-      <Foldable
-        button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-[0.75rem] xl:px-10' }}
-        addCaret={false}>
+      <Foldable button={{ name: 'Subcategories', text: <FaFilter size={20} />, className: 'px-3' }} addCaret={false}>
         {subcategories.map((subcategory) => (
           <Link
             key={subcategory.id}

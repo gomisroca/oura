@@ -183,9 +183,7 @@ export default function CategoryFoldable() {
 
   return (
     <div ref={foldableRef}>
-      <Foldable
-        button={{ name: 'Categories', text: <FaSearch size={20} />, className: 'px-[0.75rem] xl:px-10' }}
-        addCaret={false}>
+      <Foldable button={{ name: 'Categories', text: <FaSearch size={20} />, className: 'px-3' }} addCaret={false}>
         {sale && (
           <Button
             name="Sale"

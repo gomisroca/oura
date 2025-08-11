@@ -11,7 +11,7 @@ async function CartFoldable() {
   if (!session) return;
   return (
     <Foldable
-      button={{ name: 'Cart', text: <FaCartShopping size={20} />, className: 'px-[0.75rem] xl:px-10' }}
+      button={{ name: 'Cart', text: <FaCartShopping size={20} />, className: 'px-3' }}
       className="w-max"
       addCaret={false}>
       <CartList foldableView={true} />

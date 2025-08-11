@@ -28,7 +28,7 @@ function Button({ name, type = 'button', disabled = false, onClick, className, c
     name={name || 'Button'}
     type={type} 
     onClick={onClick} 
-    className={twMerge('justify-center cursor-pointer whitespace-nowrap text-nowrap border dark:border-neutral-400/10 duration-200 ease-in border-neutral-600/10 rounded-sm bg-neutral-200/95 active:scale-x-110 dark:bg-neutral-800/95 backdrop-blur-sm xl:bg-neutral-200/80 xl:dark:bg-neutral-800/80 dark:shadow-neutral-500/10 dark:hover:bg-neutral-700/80 px-10 py-3 shadow-sm font-semibold transition hover:bg-neutral-300/80 active:duration-100 active:bg-neutral-300/90 dark:active:bg-neutral-700/90 flex flex-row gap-2 items-center', className, disabled && 'cursor-not-allowed')} disabled={disabled}>
+    className={twMerge('justify-center cursor-pointer whitespace-nowrap text-nowrap duration-100 ease-in rounded-sm hover:scale-110 bg-neutral-100 active:scale-90 dark:bg-neutral-800 backdrop-blur-sm  dark:shadow-neutral-500/10 dark:hover:bg-neutral-900 px-10 py-3 shadow-md font-semibold transition hover:bg-neutral-200 active:duration-100 active:bg-neutral-300 dark:active:bg-neutral-950 flex flex-row gap-2 items-center', className, disabled && 'cursor-not-allowed')} disabled={disabled}>
       {children}
     </button>	
   )

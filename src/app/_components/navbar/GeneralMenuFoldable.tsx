@@ -7,9 +7,7 @@ import UserDropdown from './UserDropdown';
 
 function GeneralMenuFoldable() {
   return (
-    <Foldable
-      button={{ name: 'General Menu', text: <FaBars size={20} />, className: 'px-[0.75rem] xl:px-10' }}
-      addCaret={false}>
+    <Foldable button={{ name: 'General Menu', text: <FaBars size={20} />, className: 'px-3' }} addCaret={false}>
       <UserDropdown />
       <ThemeButton />
     </Foldable>
