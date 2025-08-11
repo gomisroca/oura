@@ -12,9 +12,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
     () =>
       product.sizes.map((size) => (
         // should be maybe flex wrap?
-        <div
-          key={size.name}
-          className="flex flex-row items-center justify-between gap-2 rounded-sm border border-neutral-600/10 px-2 py-1 dark:border-neutral-400/10">
+        <div key={size.name} className="flex flex-row items-center justify-between gap-2 rounded-sm px-2 py-1">
           <p className="font-bold">{size.name}</p>
           <div className="flex flex-row items-center gap-2">
             {size.colors.map((color) => (
@@ -29,7 +27,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
   return (
     <div
       key={product.id}
-      className="flex max-w-5xl flex-col items-center justify-center rounded-sm border border-neutral-600/10 bg-neutral-100/60 shadow-md transition duration-500 ease-in-out hover:border-neutral-600/40 hover:bg-neutral-50/60 lg:flex-row dark:border-neutral-400/10 dark:bg-neutral-900/60 dark:shadow-neutral-500/10 hover:dark:border-neutral-400/40 dark:hover:bg-neutral-950/60">
+      className="flex max-w-5xl flex-col items-center justify-center rounded-sm bg-neutral-100/60 shadow-md transition duration-500 ease-in-out hover:bg-neutral-50/60 lg:flex-row dark:bg-neutral-900/60 dark:shadow-neutral-500/10 dark:hover:bg-neutral-950/60">
       <Image
         unoptimized
         className="w-full rounded-t-sm object-cover lg:h-full lg:w-auto lg:rounded-sm lg:p-4"
@@ -44,7 +42,7 @@ function ProductContent({ product }: { product: ProductWithSizes }) {
       />
       <div className="flex flex-col items-center justify-center gap-8 px-10 py-8 lg:px-20 lg:py-4">
         {/* Basic Information */}
-        <h2 className="line-clamp-2 text-2xl font-semibold">{product.name}</h2>
+        <h2 className="text-center text-lg font-semibold md:text-2xl">{product.name}</h2>
         <p>{product.description}</p>
         <div className="relative items-center justify-center text-center">
           {product.sales.length > 0 && (
