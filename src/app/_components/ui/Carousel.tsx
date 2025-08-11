@@ -55,10 +55,7 @@ export default function Carousel({ products, sportListView = false }: { products
         <ProductCard
           product={products[currentIndex]}
           loadingMethod="eager"
-          className={twMerge(
-            'h-[15rem] w-[80vw] sm:h-[20rem] md:h-[25rem] md:w-[20rem]',
-            sportListView && 'pointer-events-none'
-          )}
+          className={sportListView && 'pointer-events-none'}
         />)}
       </div>
     </div>
