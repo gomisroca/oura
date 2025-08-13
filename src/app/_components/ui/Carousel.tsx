@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProductWithSizes } from 'types';
 import ProductCard from '../product/ProductCard';
-import { twMerge } from 'tailwind-merge';
 
 export default function Carousel({ products, sportListView = false }: { products: ProductWithSizes[], sportListView?: Boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);

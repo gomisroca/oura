@@ -1,8 +1,5 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { type ProductWithSizes } from 'types';
 
@@ -17,21 +14,14 @@ function ProductCard({
   className?: string;
   loadingMethod?: 'lazy' | 'eager';
 }) {
-  const [showDetails, setShowDetails] = useState(false);
-
-  const toggleDetails = () => setShowDetails((prev) => !prev);
-
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={toggleDetails}
-      onKeyDown={(e) => e.key === 'Enter' && toggleDetails()}
+    <Link
+      href={`/product/${product.id}`}
+      aria-label={`View details for ${product.name}`}
       className={twMerge(
         'group relative flex h-[20rem] w-[17rem] flex-col items-center justify-center gap-2 overflow-hidden rounded-sm bg-neutral-100 shadow-sm md:h-[25rem] md:w-[20rem] dark:bg-neutral-900 dark:shadow-neutral-500/10',
         className
-      )}
-      aria-label={`Product Card for ${product.name}`}>
+      )}>
       <Image
         unoptimized
         className="cursor-pointer rounded-sm duration-200 ease-in-out group-hover:contrast-[1.05]"
@@ -47,13 +37,8 @@ function ProductCard({
         priority={loadingMethod === 'eager'}
         loading={loadingMethod}
       />
-      <div
-        className={`absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-neutral-100/95 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-neutral-900/95 ${showDetails ? 'translate-y-[-10rem] opacity-100' : 'opacity-0'}`}>
-        <Link href={`/product/${product.id}`} aria-label={`View details for ${product.name}`}>
-          <h2 className="line-clamp-1 text-center text-lg font-semibold underline underline-offset-4 transition-transform duration-200 hover:scale-105 md:line-clamp-2">
-            {product.name}
-          </h2>
-        </Link>
+      <div className="absolute bottom-[-10rem] flex w-full flex-col items-center justify-center gap-2 bg-neutral-100/95 p-4 opacity-0 duration-500 ease-in-out group-hover:translate-y-[-10rem] group-hover:opacity-100 dark:bg-neutral-900/95">
+        <h2 className="line-clamp-1 text-center text-lg font-semibold md:line-clamp-2">{product.name}</h2>
         <p className="line-clamp-2 text-sm text-ellipsis md:line-clamp-3">{product.description}</p>
         <div className="relative items-center justify-center text-center">
           {product.sales.length > 0 ? (
@@ -69,7 +54,7 @@ function ProductCard({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
