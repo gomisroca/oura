@@ -44,7 +44,9 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('SPORT')}
           disabled={selectedForm === 'SPORT'}
           className={
-            selectedForm === 'SPORT' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
+            selectedForm === 'SPORT'
+              ? 'bg-neutral-300 xl:bg-neutral-300 dark:bg-neutral-700 xl:dark:bg-neutral-700'
+              : ''
           }>
           Create Sport
         </Button>
@@ -52,7 +54,9 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('CATEGORY')}
           disabled={selectedForm === 'CATEGORY'}
           className={
-            selectedForm === 'CATEGORY' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
+            selectedForm === 'CATEGORY'
+              ? 'bg-neutral-300 xl:bg-neutral-300 dark:bg-neutral-700 xl:dark:bg-neutral-700'
+              : ''
           }>
           Create Category
         </Button>
@@ -60,7 +64,9 @@ function CategoryCreation() {
           onClick={() => setSelectedForm('SUBCATEGORY')}
           disabled={selectedForm === 'SUBCATEGORY'}
           className={
-            selectedForm === 'SUBCATEGORY' ? 'bg-slate-300 xl:bg-slate-300 dark:bg-slate-700 xl:dark:bg-slate-700' : ''
+            selectedForm === 'SUBCATEGORY'
+              ? 'bg-neutral-300 xl:bg-neutral-300 dark:bg-neutral-700 xl:dark:bg-neutral-700'
+              : ''
           }>
           Create Subcategory
         </Button>

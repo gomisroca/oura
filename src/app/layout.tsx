@@ -37,7 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <Navbar />
                 <main
                   role="main"
-                  className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-slate-200/90 to-slate-800/40 px-4 pt-20 pb-10 text-slate-800 xl:px-32 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-900/60 dark:text-slate-200">
+                  className="flex min-h-screen items-center justify-center bg-gradient-to-br from-pink-400/40 via-white to-sky-400/40 px-4 pt-20 pb-10 text-neutral-800 xl:px-32 dark:from-pink-600/40 dark:via-black dark:to-sky-600/40 dark:text-neutral-200">
                   {children}
                 </main>
               </div>

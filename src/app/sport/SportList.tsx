@@ -1,15 +1,16 @@
 'use client';
 
 import { type Sport } from 'generated/prisma';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { type ProductWithSizes } from 'types';
-import Carousel from './Carousel';
-import { useRouter } from 'next/navigation';
+
+import Carousel from '../_components/ui/Carousel';
 
 function SportList({
   products,
   sports,
-  sale = false
+  sale = false,
 }: {
   products: ProductWithSizes[];
   sports: Sport[];
@@ -20,10 +21,9 @@ function SportList({
   // Organize products by sport ID for better performance
   const productsBySport = products.reduce<Record<number, ProductWithSizes[]>>((acc, product) => {
     const sportId = product.sportId; // Local variable for easier access
-    if (sportId !== undefined && sportId !== null) { // Check if sportId is defined and not null
-      if (!acc[sportId]) {
-        acc[sportId] = [];
-      }
+    if (sportId !== undefined && sportId !== null) {
+      // Check if sportId is defined and not null
+      acc[sportId] ??= [];
       acc[sportId].push(product);
     }
     return acc;
@@ -38,7 +38,7 @@ function SportList({
             <div key={sport.id} className="relative flex items-center justify-center">
               <h2
                 onClick={() => router.push(`${sale ? '/sale/' + sport.id : '/sport/' + sport.id}`)}
-                className="absolute z-[1] cursor-pointer border-4 border-slate-200 bg-slate-950/20 p-4 text-4xl font-bold uppercase text-slate-200 drop-shadow-lg transition duration-200 [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)] hover:border-slate-300 hover:bg-slate-950/30"
+                className="absolute z-[1] cursor-pointer border-4 border-neutral-200 bg-neutral-950/20 p-4 text-4xl font-bold text-neutral-200 uppercase drop-shadow-lg transition duration-100 duration-200 ease-in [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)] hover:scale-110 hover:border-neutral-300 hover:bg-neutral-950/30 active:scale-90"
                 aria-label={`View products for ${sport.name}`}>
                 {sport.name}
               </h2>

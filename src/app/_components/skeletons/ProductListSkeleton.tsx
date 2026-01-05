@@ -7,7 +7,7 @@ export default function ProductListSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className="relative flex h-[25rem] w-[20rem] animate-pulse flex-col items-center justify-center rounded-xl border border-slate-600/10 bg-slate-200/30 shadow-md dark:border-slate-400/10 dark:bg-slate-800/30 dark:shadow-slate-500/10"></div>
+          className="relative flex h-[25rem] w-[20rem] animate-pulse flex-col items-center justify-center rounded-sm border border-neutral-600/10 bg-neutral-200/30 shadow-md dark:border-neutral-400/10 dark:bg-neutral-800/30 dark:shadow-neutral-500/10"></div>
       ))}
 
       <h1 className="absolute text-center text-2xl font-bold">Loading...</h1>

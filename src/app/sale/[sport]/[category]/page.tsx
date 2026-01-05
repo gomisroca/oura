@@ -26,7 +26,7 @@ export default async function CategoryList({
           <BackButton steps={-2}>Sale</BackButton>
           <BackButton>{sale.products[0]?.product.sport?.name ?? 'Sport'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{sale.products[0]?.product.category?.name}</span>
+            <span className="text-neutral-800 dark:text-neutral-400">{sale.products[0]?.product.category?.name}</span>
           </div>
         </div>
         <ProductList products={sale.products.map((p) => p.product)} />

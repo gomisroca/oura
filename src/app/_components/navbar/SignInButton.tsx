@@ -60,7 +60,7 @@ function EmailSignInButton({ provider }: SignInProps) {
           <Button type="submit" name="email">
             Sign In
           </Button>
-          {prompt && <div className="text-center text-sm text-slate-800 dark:text-slate-200">{prompt}</div>}
+          {prompt && <div className="text-center text-sm text-neutral-800 dark:text-neutral-200">{prompt}</div>}
         </form>
       </Modal>
     </div>

@@ -144,7 +144,7 @@ const INITIAL_FORM_STATE: FormState = {
 function Color({ color }: { color: string }) {
   return (
     <span
-      className={`h-4 w-4 rounded-full border border-slate-800 shadow-md transition duration-200 ease-in-out dark:border-slate-200 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`}`}></span>
+      className={`h-4 w-4 rounded-sm border border-neutral-800 shadow-md transition duration-200 ease-in-out dark:border-neutral-200 ${color === 'black' ? 'bg-black' : color === 'white' ? 'bg-white' : `bg-${color}-500`}`}></span>
   );
 }
 
@@ -171,7 +171,7 @@ function StockInput({
             min="0"
             step="1"
             value={colorObj.stock}
-            className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
             onChange={(e) => {
               setFormState((prev) => {
                 const updatedInventory = [...prev.inventory];
@@ -213,7 +213,7 @@ function ColorSelection({
               });
             }}
             name="color"
-            className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+            className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
             multiple
             required>
             {COLORS.map((color) => (
@@ -249,7 +249,7 @@ function SizeSelection({
           setFormState((prev) => ({ ...prev, inventory: selectedSizes.map((name) => ({ name, colors: [] })) }));
         }}
         name="size"
-        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
         multiple
         required>
         <option value="" disabled>
@@ -313,7 +313,7 @@ function SubcategorySelection({
       <p>{category.name} Subcategories</p>
       <select
         name="subcategory"
-        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
@@ -370,7 +370,7 @@ function CategorySelection({
       <p>{sport.name} Categories</p>
       <select
         name="category"
-        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
@@ -420,7 +420,7 @@ function SportSelection({ setFormState }: { setFormState: React.Dispatch<React.S
       <p>Sport</p>
       <select
         name="sport"
-        className="w-full rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
         onChange={(e) => {
           const selectedOption = e.target.options[e.target.selectedIndex];
           if (!selectedOption) return;
@@ -447,7 +447,7 @@ function GenderSelection({ setFormState }: { setFormState: React.Dispatch<React.
       <p>Gender</p>
       <select
         name="gender"
-        className="h-20 w-full overflow-hidden rounded-lg bg-slate-300 px-4 py-2 dark:bg-slate-700"
+        className="h-20 w-full overflow-hidden rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
         multiple
         onChange={(e) => {
           const selectedOptions = Array.from(e.target.selectedOptions);
@@ -593,7 +593,7 @@ export default function ProductCreation() {
     <div className="flex flex-col items-center justify-center gap-4">
       <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="name"
           type="text"
           placeholder="Name"
@@ -601,7 +601,7 @@ export default function ProductCreation() {
           required
         />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="description"
           type="text"
           placeholder="Description"
@@ -609,7 +609,7 @@ export default function ProductCreation() {
           onChange={handleChange}
         />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="basePrice"
           type="number"
           placeholder="Base Price"
@@ -619,7 +619,7 @@ export default function ProductCreation() {
           onChange={handleChange}
         />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           name="onSalePrice"
           type="number"
           placeholder="On Sale Price"
@@ -632,7 +632,7 @@ export default function ProductCreation() {
         <SportSelection setFormState={setFormState} />
         <SizeSelection inventory={formState.inventory} setFormState={setFormState} />
         <input
-          className="w-full rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700"
+          className="w-full rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700"
           type="file"
           name="image"
           accept="image/png, image/jpeg, image/jpg"

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { api } from '@/trpc/server';
 
-import SportList from '../_components/ui/SportList';
+import SportList from '../sport/SportList';
 
 export default async function SaleList({ searchParams }: { searchParams: Promise<{ gender: 'man' | 'woman' }> }) {
   const searchParamsData = await searchParams;

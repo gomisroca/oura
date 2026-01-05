@@ -56,7 +56,7 @@ function Dropdown({ button, children, className, closeOnChildClick = true }: Dro
           className={twMerge('absolute z-50 mt-2', className)}>
           <ul
             onClick={closeOnChildClick ? handleChildClick : undefined}
-            className="flex flex-col items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-slate-800 transition-all duration-200 ease-in-out dark:text-slate-200">
+            className="flex flex-col items-center justify-center gap-2 rounded-md p-2 text-center font-bold text-neutral-800 transition-all duration-200 ease-in-out dark:text-neutral-200">
             {children}
           </ul>
         </div>

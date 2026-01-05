@@ -99,11 +99,11 @@ export default function SportForm({ sports }: { sports: SportWithCategories[] })
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <div className="flex w-full max-w-md flex-col gap-6 rounded-lg bg-white p-6 shadow-lg dark:bg-slate-800">
+      <div className="flex w-full max-w-md flex-col gap-6 rounded-sm bg-white p-6 shadow-lg dark:bg-neutral-800">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Existing Sports</h2>
           {sports.map((sport: Sport) => (
-            <span className="rounded-full bg-slate-300 px-4 py-2 dark:bg-slate-700" key={sport.id}>
+            <span className="rounded-sm bg-neutral-300 px-4 py-2 dark:bg-neutral-700" key={sport.id}>
               {sport.name}
             </span>
           ))}
@@ -115,7 +115,7 @@ export default function SportForm({ sports }: { sports: SportWithCategories[] })
             </label>
             <input
               id="name"
-              className="w-full rounded-full bg-slate-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-700"
+              className="w-full rounded-sm bg-neutral-100 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-700"
               name="name"
               type="text"
               placeholder="Enter sport name"

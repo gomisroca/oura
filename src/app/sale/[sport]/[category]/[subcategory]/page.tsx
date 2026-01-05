@@ -30,7 +30,9 @@ export default async function SubcategoryList({
           <BackButton steps={-2}>{sale.products[0]?.product.sport?.name ?? 'Sport'}</BackButton>
           <BackButton>{sale.products[0]?.product.category?.name ?? 'Category'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{sale.products[0]?.product.subcategory?.name}</span>
+            <span className="text-neutral-800 dark:text-neutral-400">
+              {sale.products[0]?.product.subcategory?.name}
+            </span>
           </div>
         </div>
         <ProductList products={sale.products.map((p) => p.product)} />

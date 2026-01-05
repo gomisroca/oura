@@ -177,11 +177,9 @@ export const categoryRouter = createTRPCRouter({
   getSportsInSale: publicProcedure.query(async ({ ctx }) => {
     try {
       const sale = await getOngoingSale({ prisma: ctx.db });
-      if (sale) {
-        const sports = await getSportsInSale({ prisma: ctx.db, saleId: sale.id });
-        return { name: sale.name, sports };
-      }
-      return undefined;
+      if (!sale) return null;
+      const sports = await getSportsInSale({ prisma: ctx.db, saleId: sale.id });
+      return { name: sale.name, sports };
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;

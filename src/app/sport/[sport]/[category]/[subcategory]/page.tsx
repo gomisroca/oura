@@ -29,7 +29,7 @@ export default async function SubcategoryList({
           <BackButton steps={-2}>{products[0]?.sport?.name ?? 'Sport'}</BackButton>
           <BackButton>{products[0]?.category?.name ?? 'Category'}</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{products[0]?.subcategory?.name}</span>
+            <span className="text-neutral-800 dark:text-neutral-400">{products[0]?.subcategory?.name}</span>
           </div>
         </div>
         <ProductList products={products} />

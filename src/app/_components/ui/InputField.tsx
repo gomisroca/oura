@@ -41,7 +41,7 @@ function InputField({ name, type, placeholder, required = false, min, max, step,
     placeholder={placeholder} 
     value={value} 
     onChange={(e) => setValue(e.target.value)} 
-    className="w-full rounded-full px-4 py-2 bg-slate-300 dark:bg-slate-700"
+    className="w-full rounded-sm px-4 py-2 bg-neutral-300 dark:bg-neutral-700"
     min={min}
     max={max}
     step={step}

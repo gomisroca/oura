@@ -10,7 +10,7 @@ describe('Button', () => {
     const { getByRole } = render(<Button name="default-button">Click me</Button>);
     expect(getByRole('button')).toBeInTheDocument();
     expect(getByRole('button')).toHaveClass(
-      'rounded-full bg-slate-200/95 dark:bg-slate-800/95  xl:bg-slate-200/80 xl:dark:bg-slate-800/80 px-10 py-3 shadow-md font-semibold transition'
+      'justify-center cursor-pointer whitespace-nowrap text-nowrap duration-100 ease-in rounded-sm hover:scale-110 bg-neutral-100 active:scale-90 dark:bg-neutral-800 backdrop-blur-sm dark:shadow-neutral-500/10 dark:hover:bg-neutral-900 px-10 py-3 shadow-md font-semibold transition hover:bg-neutral-200 active:duration-100 active:bg-neutral-300 dark:active:bg-neutral-950 flex flex-row gap-2 items-center'
     );
   });
 

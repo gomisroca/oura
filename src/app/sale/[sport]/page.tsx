@@ -25,7 +25,7 @@ export default async function SportList({
         <div className="flex flex-row items-center justify-center md:absolute md:top-24 md:right-0 md:left-0">
           <BackButton>Sale</BackButton>
           <div className="cursor-not-allowed items-center justify-center text-sm uppercase">
-            <span className="text-slate-800 dark:text-slate-400">{sale.products[0]?.product.sport?.name}</span>
+            <span className="text-neutral-800 dark:text-neutral-400">{sale.products[0]?.product.sport?.name}</span>
           </div>
         </div>
         <ProductList products={sale.products.map((p) => p.product)} />

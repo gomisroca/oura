@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProductWithSizes } from 'types';
 import ProductCard from '../product/ProductCard';
-import { twMerge } from 'tailwind-merge';
 
 export default function Carousel({ products, sportListView = false }: { products: ProductWithSizes[], sportListView?: Boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -55,10 +54,7 @@ export default function Carousel({ products, sportListView = false }: { products
         <ProductCard
           product={products[currentIndex]}
           loadingMethod="eager"
-          className={twMerge(
-            'h-[15rem] w-[80vw] sm:h-[20rem] md:h-[25rem] md:w-[20rem]',
-            sportListView && 'pointer-events-none'
-          )}
+          className={sportListView && 'pointer-events-none'}
         />)}
       </div>
     </div>
