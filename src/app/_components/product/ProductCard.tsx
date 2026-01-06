@@ -24,7 +24,7 @@ function ProductCard({
       )}>
       <Image
         unoptimized
-        className="cursor-pointer rounded-sm duration-200 ease-in-out group-hover:contrast-[1.05]"
+        className="cursor-pointer rounded-sm duration-200 ease-in group-hover:scale-105 group-hover:contrast-[1.05]"
         src={
           product.image
             ? `https://${env.NEXT_PUBLIC_IMAGE_PROXY_HOSTNAME}/storage/v1/object/public/${product.image}?width=200&height=250`
