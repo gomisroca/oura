@@ -133,7 +133,7 @@ export const checkoutRouter = createTRPCRouter({
         },
       });
 
-      return { sessionId: session.id, orderId: order.id };
+      return { sessionId: session.id, orderId: order.id, url: session.url };
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error;

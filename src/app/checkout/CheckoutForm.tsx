@@ -40,19 +40,18 @@ function CheckoutForm() {
   const handleCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const stripe = await stripePromise;
       const data = await createCheckoutSession.mutateAsync(form);
-      if (stripe && data) {
-        await stripe.redirectToCheckout({
-          sessionId: data.sessionId,
-        });
+
+      if (data?.url) {
+        window.location.href = data.url;
       } else {
-        throw new Error('Unable to create checkout session');
+        throw new Error('Unable to get checkout URL');
       }
     } catch (_error) {
       setError(true);
     }
   };
+
   return (
     <>
       <form onSubmit={(e) => handleCheckout(e)} className="flex flex-col gap-2">
