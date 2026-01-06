@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { type ProductWithSizes } from 'types';
 
+import Button from '../_components/ui/Button';
 import Carousel from '../_components/ui/Carousel';
 
 function SportList({
@@ -35,13 +36,13 @@ function SportList({
         const sportProducts = productsBySport[sport.id];
         if (sportProducts && sportProducts.length > 0) {
           return (
-            <div key={sport.id} className="relative flex items-center justify-center">
-              <h2
+            <div key={sport.id} className="relative flex items-center justify-center overflow-x-hidden">
+              <Button
                 onClick={() => router.push(`${sale ? '/sale/' + sport.id : '/sport/' + sport.id}`)}
-                className="absolute z-[1] cursor-pointer border-4 border-neutral-200 bg-neutral-950/20 p-4 text-4xl font-bold text-neutral-200 uppercase drop-shadow-lg transition duration-100 duration-200 ease-in [text-shadow:_2px_2px_4px_rgb(0_0_0_/_40%)] hover:scale-110 hover:border-neutral-300 hover:bg-neutral-950/30 active:scale-90"
+                className="absolute z-[1] w-full cursor-pointer p-4 text-4xl font-bold uppercase drop-shadow-lg"
                 aria-label={`View products for ${sport.name}`}>
                 {sport.name}
-              </h2>
+              </Button>
               <Carousel products={sportProducts} sportListView={true} />
             </div>
           );
